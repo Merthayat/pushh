@@ -272,7 +272,7 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col items-center justify-between p-1 xs:p-1.5 sm:p-2.5 font-sans select-none bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
+    <div className="fixed inset-0 z-[200] h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col items-center justify-between p-1 xs:p-1.5 sm:p-2.5 font-sans select-none bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
       {/* SAME POSITIVE BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
@@ -291,7 +291,7 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
         >
           <div 
             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-            style={{ backgroundImage: `url('/buton.png')` }}
+            style={{ backgroundImage: `url('/butt.png')` }}
           />
           <span className="relative z-10 text-white font-black text-[9px] sm:text-xs tracking-wider [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.8)] uppercase select-none -translate-y-[1px]">
             GERİ DÖN

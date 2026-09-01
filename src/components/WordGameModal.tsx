@@ -506,7 +506,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col font-sans select-none overflow-hidden bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
+    <div className="fixed inset-0 z-[200] flex flex-col font-sans select-none overflow-hidden bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
       {/* 1. SAME BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES (/intro2.png) */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
@@ -527,7 +527,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         >
           <div 
             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-            style={{ backgroundImage: `url('/buton.png')` }}
+            style={{ backgroundImage: `url('/butt.png')` }}
           />
           <span className="relative z-10 text-white font-black text-[9px] sm:text-xs tracking-wider [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.8)] uppercase select-none -translate-y-[1px]">
             GERİ DÖN

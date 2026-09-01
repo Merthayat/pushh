@@ -1909,9 +1909,10 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
     title: "Paralarımız (Lira & Kuruş İlişkisi)",
     desc: "100 Kuruş = 1 TL dönüşümleri, para üstü ve market alışveriş hesaplamaları",
     generate: () => {
-      const mode = Math.random();
+      const mode = Math.floor(Math.random() * 3);
 
-      if (mode < 0.5) {
+      if (mode === 0) {
+        // Lira & Kuruş Dönüşümü
         const tl = Math.floor(Math.random() * 8) + 1;
         const kr = Math.floor(Math.random() * 9 + 1) * 10;
         const toplamKurus = tl * 100 + kr;
@@ -1927,10 +1928,14 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `${toplamKurus} kuruş kaç TL ve kaç kuruş eder?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="px-5 py-2 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
-                🪙 ${toplamKurus} Kuruş
+              <div class="flex items-center justify-center gap-2">
+                <img src="/paralar/1_tl_madeni_para.png" class="h-10 sm:h-14 w-10 sm:w-14 object-contain drop-shadow-md" />
+                <div class="px-4 py-2 rounded-2xl bg-amber-500 text-slate-950 font-black text-xl sm:text-2xl md:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                  🪙 ${toplamKurus} Kuruş
+                </div>
+                <img src="/paralar/50_kurus_madeni_para.png" class="h-9 sm:h-12 w-9 sm:w-12 object-contain drop-shadow-md" />
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu miktar kaç TL ve kaç kuruşa <span class="text-amber-300 underline decoration-amber-400 font-black">eşittir?</span>
               </div>
               <div class="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
@@ -1939,10 +1944,17 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           correct: dogru,
           wrong: yanlis
         };
-      } else {
+      } else if (mode === 1) {
+        // Alışveriş & Para Üstü Hesabı Görsel Banknotlu
         const ogrenci = getRastgeleOgrenci();
-        const fiyat = Math.floor(Math.random() * 35 + 10);
-        const verilen = (Math.ceil(fiyat / 50) + 1) * 50;
+        const verilenSecenekler = [
+          { val: 50, img: '/paralar/50_tl_kagit_para.png' },
+          { val: 100, img: '/paralar/100_tl_kagit_para.png' },
+          { val: 200, img: '/paralar/200_tl_kagit_para.png' },
+        ];
+        const secilenVerilen = verilenSecenekler[Math.floor(Math.random() * verilenSecenekler.length)];
+        const verilen = secilenVerilen.val;
+        const fiyat = Math.floor(Math.random() * (verilen - 15)) + 10;
         const paraUstu = verilen - fiyat;
 
         const dogru = paraUstu;
@@ -1953,17 +1965,63 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `${ogrenci} ${fiyat} TL tutan kitabı almak için satıcıya ${verilen} TL verdi. Kaç TL para üstü alır?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2.5">
+              <div class="flex items-center justify-center gap-3">
                 <span class="px-3.5 py-1.5 bg-rose-600 text-white font-black text-xs sm:text-sm rounded-xl border border-white shadow-md">Ürün: ${fiyat} TL</span>
-                <span class="px-3.5 py-1.5 bg-emerald-600 text-white font-black text-xs sm:text-sm rounded-xl border border-white shadow-md">Verilen: ${verilen} TL</span>
+                <img src="${secilenVerilen.img}" class="h-12 sm:h-16 md:h-18 max-w-[170px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                ${ogrenci} satıcıdan kaç TL <span class="text-amber-300 underline decoration-amber-400 font-black">para üstü</span> alır?
+              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+                ${ogrenci} satıcıya görseldeki <span class="text-amber-300 font-black">${verilen} TL</span>'yi verirse kaç TL <span class="text-emerald-300 underline font-black">para üstü</span> alır?
               </div>
             </div>
           `,
           correct: `${dogru} TL`,
           wrong: yanlis.map(y => `${y} TL`)
+        };
+      } else {
+        // Görseldeki Lira ve Kuruşları Toplama
+        const kombinasyonlar = [
+          {
+            images: ['/paralar/20_tl_kagit_para.png', '/paralar/5_tl_kagit_para.png', '/paralar/1_tl_madeni_para.png', '/paralar/50_kurus_madeni_para.png'],
+            dogru: "26 TL 50 Kr",
+            yanlis: ["25 TL 50 Kr", "27 TL", "26 TL"],
+            text: "Görseldeki paraların toplam değeri nedir?"
+          },
+          {
+            images: ['/paralar/50_tl_kagit_para.png', '/paralar/10_tl_kagit_para.png', '/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png'],
+            dogru: "62 TL",
+            yanlis: ["61 TL", "60 TL", "72 TL"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+          },
+          {
+            images: ['/paralar/100_tl_kagit_para.png', '/paralar/20_tl_kagit_para.png', '/paralar/5_tl_kagit_para.png'],
+            dogru: "125 TL",
+            yanlis: ["120 TL", "130 TL", "115 TL"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+          },
+          {
+            images: ['/paralar/50_kurus_madeni_para.png', '/paralar/50_kurus_madeni_para.png', '/paralar/25_kurus_madeni_para.png', '/paralar/25_kurus_madeni_para.png'],
+            dogru: "1 TL 50 Kr",
+            yanlis: ["1 TL", "2 TL", "1 TL 25 Kr"],
+            text: "Görseldeki madeni paraların toplam değeri nedir?"
+          }
+        ];
+        const k = kombinasyonlar[Math.floor(Math.random() * kombinasyonlar.length)];
+        return {
+          question: k.text,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
+              <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+                ${k.images.map(img => `
+                  <img src="${img}" class="${img.includes('madeni') ? 'h-11 sm:h-15 w-11 sm:w-15' : 'h-11 sm:h-15 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                `).join('')}
+              </div>
+              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+                ${k.text}
+              </div>
+            </div>
+          `,
+          correct: k.dogru,
+          wrong: k.yanlis
         };
       }
     }

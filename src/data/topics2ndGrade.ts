@@ -2248,22 +2248,34 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           if (tl === 5) return ['/paralar/5_tl_kagit_para.png'];
           if (tl === 1) return ['/paralar/1_tl_madeni_para.png'];
           
-          if (tl >= 50) return ['/paralar/50_tl_kagit_para.png'];
-          if (tl >= 20) return ['/paralar/20_tl_kagit_para.png'];
-          if (tl >= 10) return ['/paralar/10_tl_kagit_para.png'];
-          if (tl >= 5) return ['/paralar/5_tl_kagit_para.png'];
-          return ['/paralar/1_tl_madeni_para.png'];
+          const result: string[] = [];
+          let rem = tl;
+          const banknotlar = [
+            { val: 100, img: '/paralar/100_tl_kagit_para.png' },
+            { val: 50, img: '/paralar/50_tl_kagit_para.png' },
+            { val: 20, img: '/paralar/20_tl_kagit_para.png' },
+            { val: 10, img: '/paralar/10_tl_kagit_para.png' },
+            { val: 5, img: '/paralar/5_tl_kagit_para.png' },
+            { val: 1, img: '/paralar/1_tl_madeni_para.png' }
+          ];
+          for (const b of banknotlar) {
+            while (rem >= b.val && result.length < 4) {
+              result.push(b.img);
+              rem -= b.val;
+            }
+          }
+          return result.length > 0 ? result : ['/paralar/1_tl_madeni_para.png'];
         };
 
         const renderMoneyQuestionHTML = (images: string[], questionText: string) => {
           return `
-            <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto max-h-full">
+            <div class="flex flex-col items-center justify-center w-full gap-2 sm:gap-3 my-auto max-h-full">
               <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap my-0.5 max-w-full">
                 ${images.map(imgSrc => `
-                  <img src="${imgSrc}" class="h-14 sm:h-20 md:h-24 max-w-[180px] object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+                  <img src="${imgSrc}" class="${imgSrc.includes('madeni') ? 'h-12 sm:h-16 md:h-18 w-12 sm:w-16 md:w-18' : 'h-12 sm:h-16 md:h-20 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
                 `).join('')}
               </div>
-              <div class="text-xs sm:text-sm md:text-base font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-2">
+              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-2">
                 ${questionText}
               </div>
             </div>
@@ -2304,18 +2316,17 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const nesne = nesneler[Math.floor(Math.random() * nesneler.length)];
         const ogrenci = getRastgeleOgrenci();
 
-        const tur = Math.floor(Math.random() * 4);
+        const tur = Math.floor(Math.random() * 5);
 
         if (tur === 0) {
           // Unit Price Shopping (Tanesi X TL olan...)
-          // Prices must be valid single banknote values so image matches price exactly!
           const birimFiyatList = [5, 10, 20, 50];
           const birimFiyat = birimFiyatList[Math.floor(Math.random() * birimFiyatList.length)];
-          const maxAdet = Math.min(5, Math.floor(100 / birimFiyat));
+          const maxAdet = Math.min(4, Math.floor(100 / birimFiyat));
           const adet = Math.floor(Math.random() * (maxAdet - 1)) + 2; // at least 2
           const toplam = birimFiyat * adet; // strictly <= 100
 
-          const images = getParaGorselleriByTL(birimFiyat); // Single banknote of unit price (e.g., 20 TL banknote)
+          const images = getParaGorselleriByTL(birimFiyat);
           const questionText = `Tanesi ${birimFiyat} TL olan ${getNesneAyrilma(nesne)} ${adet} tane alan ${ogrenci} kaç TL öder?`;
 
           return {
@@ -2333,7 +2344,7 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           const harcanan = harcananCandidates[Math.floor(Math.random() * harcananCandidates.length)];
           const kalan = verilecek - harcanan; // strictly <= 100
 
-          const images = getParaGorselleriByTL(verilecek); // Banknote of the given money (e.g. 50 TL banknote)
+          const images = getParaGorselleriByTL(verilecek);
           const questionText = `${verilecek} TL parası olan ${ogrenci}, ${harcanan} TL'ye bir ${nesne} alırsa kaç TL parası kalır?`;
 
           return {
@@ -2345,14 +2356,12 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           };
         } else if (tur === 2) {
           // Two Different Items Shopping (İki farklı ürün)
-          // Both item prices must be valid single banknote values (5, 10, 20, 50)
           const banknotlar = [5, 10, 20, 50];
           const fiyat1 = banknotlar[Math.floor(Math.random() * banknotlar.length)];
           const fiyat2Candidates = banknotlar.filter(f => f + fiyat1 <= 100);
           const fiyat2 = fiyat2Candidates[Math.floor(Math.random() * fiyat2Candidates.length)];
           const toplam = fiyat1 + fiyat2; // strictly <= 100
 
-          // Exactly 2 banknotes representing the prices of item 1 and item 2!
           const images = [...getParaGorselleriByTL(fiyat1), ...getParaGorselleriByTL(fiyat2)];
           const nesne2Options = nesneler.filter(n => n !== nesne);
           const nesne2 = nesne2Options[Math.floor(Math.random() * nesne2Options.length)];
@@ -2365,18 +2374,61 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
             wrong: get3WrongOptions(toplam).map(v => `${v} TL`),
             isLong: false
           };
+        } else if (tur === 3) {
+          // Doğrudan Görseldeki Paraları Toplama
+          const kombinasyonlar = [
+            {
+              images: ['/paralar/50_tl_kagit_para.png', '/paralar/20_tl_kagit_para.png', '/paralar/5_tl_kagit_para.png'],
+              toplam: 75,
+              text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+            },
+            {
+              images: ['/paralar/100_tl_kagit_para.png', '/paralar/50_tl_kagit_para.png'],
+              toplam: 150,
+              text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+            },
+            {
+              images: ['/paralar/20_tl_kagit_para.png', '/paralar/20_tl_kagit_para.png', '/paralar/10_tl_kagit_para.png'],
+              toplam: 50,
+              text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+            },
+            {
+              images: ['/paralar/50_tl_kagit_para.png', '/paralar/10_tl_kagit_para.png', '/paralar/10_tl_kagit_para.png'],
+              toplam: 70,
+              text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+            },
+            {
+              images: ['/paralar/20_tl_kagit_para.png', '/paralar/10_tl_kagit_para.png', '/paralar/5_tl_kagit_para.png', '/paralar/1_tl_madeni_para.png'],
+              toplam: 36,
+              text: "Görseldeki paraların toplam değeri kaç TL'dir?"
+            },
+            {
+              images: ['/paralar/50_kurus_madeni_para.png', '/paralar/50_kurus_madeni_para.png', '/paralar/1_tl_madeni_para.png'],
+              toplam: 2,
+              text: "Görseldeki madeni paraların toplam değeri kaç TL'dir?"
+            }
+          ];
+          const k = kombinasyonlar[Math.floor(Math.random() * kombinasyonlar.length)];
+          return {
+            question: k.text,
+            questionHTML: renderMoneyQuestionHTML(k.images, k.text),
+            correct: `${k.toplam} TL`,
+            wrong: get3WrongOptions(k.toplam).map(v => `${v} TL`),
+            isLong: false
+          };
         } else {
           // Kuruş to TL Conversion Problem
           const liraList = [1, 2, 3, 4, 5];
           const lira = liraList[Math.floor(Math.random() * liraList.length)];
           const kurus = lira * 100;
 
-          // Display 50 kuruş or 1 TL coins representing kuruş
           let images: string[] = [];
           if (kurus === 100) {
             images = ['/paralar/50_kurus_madeni_para.png', '/paralar/50_kurus_madeni_para.png'];
           } else if (kurus === 200) {
             images = ['/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png'];
+          } else if (kurus === 300) {
+            images = ['/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png'];
           } else {
             images = ['/paralar/1_tl_madeni_para.png'];
           }

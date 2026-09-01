@@ -672,54 +672,212 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
     title: "Paralarımız (TL ve Kuruş)",
     desc: "1 TL, 50 Kuruş, 25 Kuruş madeni ve 5 TL, 10 TL, 20 TL kağıt paraları tanıma.",
     generate: () => {
-      const sorular = [
-        {
-          soru: "2 tane 50 Kuruş bir araya gelirse toplam kaç lira eder?",
-          dogru: "1 TL",
-          yanlis: ["2 TL", "50 Kuruş", "5 TL"],
-          emoji: "🪙 🪙"
-        },
-        {
-          soru: "4 tane 25 Kuruş toplam kaç lira yapar?",
-          dogru: "1 TL",
-          yanlis: ["100 TL", "50 Kuruş", "2 TL"],
-          emoji: "🪙 🪙 🪙 🪙"
-        },
-        {
-          soru: "2 tane 10 TL paramız varsa toplam paramız kaç TL'dir?",
-          dogru: "20 TL",
-          yanlis: ["10 TL", "15 TL", "30 TL"],
-          emoji: "💵 💵"
-        },
-        {
-          soru: "En küçük madeni paramız hangisidir?",
-          dogru: "1 Kuruş",
-          yanlis: ["1 TL", "5 Kuruş", "50 Kuruş"],
-          emoji: "🪙"
-        },
-        {
-          soru: "Kumbaramda 5 TL ve 10 TL kağıt para var. Toplam param kaç TL'dir?",
-          dogru: "15 TL",
-          yanlis: ["12 TL", "20 TL", "50 TL"],
-          emoji: "🐷 💰"
-        }
-      ];
-      const s = sorular[Math.floor(Math.random() * sorular.length)];
-      const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow-xl">${s.emoji}</div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
-            ${s.soru}
+      const mode = Math.floor(Math.random() * 4);
+
+      if (mode === 0) {
+        // Tek bir parayı tanıma
+        const paralar = [
+          { name: "1 Kuruş", img: "/paralar/1_kurus_madeni_para.png", wrong: ["5 Kuruş", "10 Kuruş", "1 TL"] },
+          { name: "5 Kuruş", img: "/paralar/5_kurus_madeni_para.png", wrong: ["1 Kuruş", "10 Kuruş", "25 Kuruş"] },
+          { name: "10 Kuruş", img: "/paralar/10_kurus_madeni_para.png", wrong: ["5 Kuruş", "25 Kuruş", "50 Kuruş"] },
+          { name: "25 Kuruş", img: "/paralar/25_kurus_madeni_para.png", wrong: ["10 Kuruş", "50 Kuruş", "1 TL"] },
+          { name: "50 Kuruş", img: "/paralar/50_kurus_madeni_para.png", wrong: ["25 Kuruş", "1 TL", "5 TL"] },
+          { name: "1 TL", img: "/paralar/1_tl_madeni_para.png", wrong: ["50 Kuruş", "5 TL", "10 TL"] },
+          { name: "5 TL", img: "/paralar/5_tl_kagit_para.png", wrong: ["10 TL", "20 TL", "50 TL"] },
+          { name: "10 TL", img: "/paralar/10_tl_kagit_para.png", wrong: ["5 TL", "20 TL", "50 TL"] },
+          { name: "20 TL", img: "/paralar/20_tl_kagit_para.png", wrong: ["10 TL", "50 TL", "100 TL"] },
+          { name: "50 TL", img: "/paralar/50_tl_kagit_para.png", wrong: ["20 TL", "100 TL", "200 TL"] },
+          { name: "100 TL", img: "/paralar/100_tl_kagit_para.png", wrong: ["50 TL", "20 TL", "200 TL"] },
+          { name: "200 TL", img: "/paralar/200_tl_kagit_para.png", wrong: ["100 TL", "50 TL", "20 TL"] },
+        ];
+        const p = paralar[Math.floor(Math.random() * paralar.length)];
+        const isCoin = p.img.includes('madeni');
+        const questionText = "Görseldeki paranın değeri nedir?";
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
+            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
+              <img src="${p.img}" alt="${p.name}" class="${isCoin ? 'h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24' : 'h-14 sm:h-18 md:h-22 max-w-[200px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+            </div>
+            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              ${questionText}
+            </div>
           </div>
-        </div>
-      `;
-      return {
-        question: s.soru,
-        questionHTML,
-        correct: s.dogru,
-        wrong: s.yanlis,
-        isLong: true
-      };
+        `;
+        return {
+          question: questionText,
+          questionHTML,
+          correct: p.name,
+          wrong: p.wrong,
+          isLong: false
+        };
+      } else if (mode === 1) {
+        // Paraları toplama (Aynı madeni veya kağıt paralar)
+        const toplamSorulari = [
+          {
+            images: ["/paralar/50_kurus_madeni_para.png", "/paralar/50_kurus_madeni_para.png"],
+            text: "Görseldeki 2 tane 50 Kuruşun toplam değeri nedir?",
+            correct: "1 TL",
+            wrong: ["2 TL", "50 Kuruş", "5 TL"],
+            isCoin: true
+          },
+          {
+            images: ["/paralar/25_kurus_madeni_para.png", "/paralar/25_kurus_madeni_para.png", "/paralar/25_kurus_madeni_para.png", "/paralar/25_kurus_madeni_para.png"],
+            text: "Görseldeki 4 tane 25 Kuruş toplam kaç lira yapar?",
+            correct: "1 TL",
+            wrong: ["2 TL", "50 Kuruş", "100 TL"],
+            isCoin: true
+          },
+          {
+            images: ["/paralar/10_tl_kagit_para.png", "/paralar/10_tl_kagit_para.png"],
+            text: "Görseldeki 2 tane 10 TL kağıt paranın toplamı kaç TL'dir?",
+            correct: "20 TL",
+            wrong: ["10 TL", "15 TL", "30 TL"],
+            isCoin: false
+          },
+          {
+            images: ["/paralar/5_tl_kagit_para.png", "/paralar/5_tl_kagit_para.png"],
+            text: "Görseldeki 2 tane 5 TL kağıt paranın toplamı kaç TL'dir?",
+            correct: "10 TL",
+            wrong: ["15 TL", "20 TL", "5 TL"],
+            isCoin: false
+          },
+          {
+            images: ["/paralar/20_tl_kagit_para.png", "/paralar/20_tl_kagit_para.png"],
+            text: "Görseldeki 2 tane 20 TL kağıt paranın toplamı kaç TL'dir?",
+            correct: "40 TL",
+            wrong: ["30 TL", "50 TL", "20 TL"],
+            isCoin: false
+          },
+          {
+            images: ["/paralar/1_tl_madeni_para.png", "/paralar/1_tl_madeni_para.png", "/paralar/1_tl_madeni_para.png"],
+            text: "Görseldeki 3 tane 1 TL madeni paranın toplamı kaç TL'dir?",
+            correct: "3 TL",
+            wrong: ["2 TL", "4 TL", "5 TL"],
+            isCoin: true
+          }
+        ];
+        const s = toplamSorulari[Math.floor(Math.random() * toplamSorulari.length)];
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
+            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+              ${s.images.map(img => `
+                <img src="${img}" class="${s.isCoin ? 'h-12 sm:h-16 md:h-18 w-12 sm:w-16 md:w-18' : 'h-11 sm:h-15 md:h-16 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+              `).join('')}
+            </div>
+            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              ${s.text}
+            </div>
+          </div>
+        `;
+        return {
+          question: s.text,
+          questionHTML,
+          correct: s.correct,
+          wrong: s.wrong,
+          isLong: false
+        };
+      } else if (mode === 2) {
+        // Karışık Paraları Toplama
+        const karisikSorular = [
+          {
+            images: ["/paralar/10_tl_kagit_para.png", "/paralar/5_tl_kagit_para.png"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?",
+            correct: "15 TL",
+            wrong: ["12 TL", "20 TL", "25 TL"]
+          },
+          {
+            images: ["/paralar/20_tl_kagit_para.png", "/paralar/10_tl_kagit_para.png"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?",
+            correct: "30 TL",
+            wrong: ["25 TL", "35 TL", "40 TL"]
+          },
+          {
+            images: ["/paralar/50_tl_kagit_para.png", "/paralar/20_tl_kagit_para.png"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?",
+            correct: "70 TL",
+            wrong: ["60 TL", "80 TL", "75 TL"]
+          },
+          {
+            images: ["/paralar/5_tl_kagit_para.png", "/paralar/1_tl_madeni_para.png"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?",
+            correct: "6 TL",
+            wrong: ["5 TL", "7 TL", "10 TL"]
+          },
+          {
+            images: ["/paralar/10_tl_kagit_para.png", "/paralar/1_tl_madeni_para.png", "/paralar/1_tl_madeni_para.png"],
+            text: "Görseldeki paraların toplam değeri kaç TL'dir?",
+            correct: "12 TL",
+            wrong: ["11 TL", "13 TL", "15 TL"]
+          }
+        ];
+        const s = karisikSorular[Math.floor(Math.random() * karisikSorular.length)];
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
+            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+              ${s.images.map(img => `
+                <img src="${img}" class="${img.includes('madeni') ? 'h-12 sm:h-15 w-12 sm:w-15' : 'h-11 sm:h-15 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+              `).join('')}
+            </div>
+            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              ${s.text}
+            </div>
+          </div>
+        `;
+        return {
+          question: s.text,
+          questionHTML,
+          correct: s.correct,
+          wrong: s.wrong,
+          isLong: false
+        };
+      } else {
+        // En büyük / En küçük Madeni veya Kağıt para özellikleri
+        const genelSorular = [
+          {
+            img: "/paralar/1_kurus_madeni_para.png",
+            text: "En küçük değere sahip madeni paramız hangisidir?",
+            correct: "1 Kuruş",
+            wrong: ["5 Kuruş", "10 Kuruş", "1 TL"]
+          },
+          {
+            img: "/paralar/1_tl_madeni_para.png",
+            text: "En büyük değere sahip madeni paramız hangisidir?",
+            correct: "1 TL",
+            wrong: ["50 Kuruş", "5 TL", "25 Kuruş"]
+          },
+          {
+            img: "/paralar/5_tl_kagit_para.png",
+            text: "En küçük değere sahip kağıt paramız hangisidir?",
+            correct: "5 TL",
+            wrong: ["1 TL", "10 TL", "20 TL"]
+          },
+          {
+            img: "/paralar/200_tl_kagit_para.png",
+            text: "En büyük değere sahip kağıt paramız hangisidir?",
+            correct: "200 TL",
+            wrong: ["100 TL", "50 TL", "500 TL"]
+          }
+        ];
+        const s = genelSorular[Math.floor(Math.random() * genelSorular.length)];
+        const isCoin = s.img.includes('madeni');
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
+            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
+              <img src="${s.img}" class="${isCoin ? 'h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24' : 'h-14 sm:h-18 md:h-22 max-w-[200px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]" />
+            </div>
+            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+              ${s.text}
+            </div>
+          </div>
+        `;
+        return {
+          question: s.text,
+          questionHTML,
+          correct: s.correct,
+          wrong: s.wrong,
+          isLong: false
+        };
+      }
     }
   },
 

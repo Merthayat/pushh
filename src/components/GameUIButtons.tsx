@@ -434,7 +434,7 @@ export const GoldCoinDisplayCard: React.FC<GoldCoinDisplayCardProps> = ({ sessio
       {/* Session Earned Coin Pill */}
       {sessionCoins > 0 && (
         <div
-          style={{ backgroundImage: `url('/buton.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+          style={{ backgroundImage: `url('/butt.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
           className="relative text-white font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-lg flex items-center justify-center gap-2 shrink-0 min-w-[130px] sm:min-w-[160px] min-h-[40px] sm:min-h-[46px]"
         >
           {/* 3D Coin Icon */}
@@ -455,7 +455,7 @@ export const GoldCoinDisplayCard: React.FC<GoldCoinDisplayCardProps> = ({ sessio
 
       {/* Cumulative Total Coins Box */}
       <div
-        style={{ backgroundImage: `url('/buton.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+        style={{ backgroundImage: `url('/butt.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
         className="relative text-white font-black px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl shadow-lg flex items-center justify-center gap-2 shrink-0 min-w-[130px] sm:min-w-[160px] min-h-[40px] sm:min-h-[46px]"
       >
         {/* 3D Coin Icon */}

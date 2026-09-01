@@ -155,22 +155,22 @@ export const ModernStatsView: React.FC<ModernStatsViewProps> = ({
   const totalGroupCorrect = groupsList.reduce((sum, g) => sum + (g.dogru || 0), 0);
 
   return (
-    <div className="fixed inset-0 bg-[#0f0a2e]/92 backdrop-blur-xl z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 bg-[#0f0a2e]/95 backdrop-blur-xl z-[300] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto">
       {/* VIBRANT PURPLE CONTAINER FRAME */}
-      <div className="bg-gradient-to-b from-[#3b239b] via-[#2f1b82] to-[#1e0f5c] text-white rounded-[28px] sm:rounded-[36px] border-4 border-[#7d60ff]/50 shadow-[0_25px_70px_rgba(15,5,45,0.9)] max-w-2xl w-full flex flex-col max-h-[95vh] overflow-hidden relative">
+      <div className="bg-gradient-to-b from-[#3b239b] via-[#2f1b82] to-[#1e0f5c] text-white rounded-[28px] sm:rounded-[36px] border-4 border-[#7d60ff]/50 shadow-[0_25px_70px_rgba(15,5,45,0.9)] max-w-2xl w-full flex flex-col max-h-[92vh] overflow-hidden relative my-auto">
         
         {/* HEADER: GRUPLAR YARIŞIYOR İSTATİSTİK SAYFASI */}
         <div className="p-3.5 sm:p-5 pb-2 shrink-0">
           <div className="bg-gradient-to-r from-[#2a1380] via-[#381f96] to-[#2a1380] rounded-[22px] sm:rounded-[26px] p-3.5 sm:p-4 border-2 border-amber-400/40 shadow-xl relative overflow-hidden flex items-center justify-between gap-3">
             <button
               onClick={onClose}
-              className="absolute top-3 right-3 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer z-20"
+              className="absolute top-3 right-3 p-1.5 sm:p-2 rounded-full bg-white/10 hover:bg-white/25 text-white transition-all cursor-pointer z-30 shadow-md border border-white/20 active:scale-95"
               title="Kapat"
             >
-              <X size={20} />
+              <X size={20} className="sm:w-5 sm:h-5" />
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 pr-8">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg border-2 border-amber-300 shrink-0 text-2xl sm:text-3xl">
                 🏆
               </div>
@@ -179,7 +179,7 @@ export const ModernStatsView: React.FC<ModernStatsViewProps> = ({
                   <Users size={16} />
                   <span>GRUPLAR YARIŞIYOR</span>
                 </div>
-                <h2 className="text-lg sm:text-2xl font-black text-white tracking-tight drop-shadow-sm">
+                <h2 className="text-base sm:text-xl md:text-2xl font-black text-white tracking-tight drop-shadow-sm">
                   Üç Grubun İstatistik Tablosu
                 </h2>
                 <p className="text-[11px] sm:text-xs font-bold text-purple-200/80">

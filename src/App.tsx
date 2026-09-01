@@ -1752,7 +1752,7 @@ const TopicButtonReferenceStyle: React.FC<{
       <div className="z-10 shrink-0 relative w-[42px] h-[33px] sm:w-[48px] sm:h-[37px] group-hover:scale-110 transition-transform filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)]">
         <div 
           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url('/playl.png')` }}
+          style={{ backgroundImage: `url('/ply.png')` }}
         />
       </div>
     </button>
@@ -3181,7 +3181,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
 
@@ -3210,7 +3210,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
 
@@ -3239,7 +3239,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
 
@@ -3268,7 +3268,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
 
@@ -3282,7 +3282,7 @@ export default function App() {
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
                   <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <span className="text-xl sm:text-2xl md:text-3xl filter drop-shadow-md">🎮</span>
+                    <img src="/icon_5.png" alt="5. Diğer Oyunlar" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-pink-200 flex items-center gap-1 drop-shadow-xs">
@@ -3296,7 +3296,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
 
@@ -3310,7 +3310,7 @@ export default function App() {
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
                   <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <span className="text-xl sm:text-2xl md:text-3xl filter drop-shadow-md">🌍</span>
+                    <img src="/icon_6.png" alt="6. İngilizce Oyunlar" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-sky-200 flex items-center gap-1 drop-shadow-xs">
@@ -3324,7 +3324,7 @@ export default function App() {
                     </p>
                   </div>
                   <div className="z-10 shrink-0 relative w-[54px] h-[22px] sm:w-[74px] sm:h-[30px] md:w-[90px] md:h-[38px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                    <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                   </div>
                 </button>
               </div>
@@ -3420,7 +3420,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3446,7 +3446,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3472,7 +3472,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3498,7 +3498,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
@@ -3528,7 +3528,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3554,7 +3554,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3580,7 +3580,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
@@ -3606,7 +3606,7 @@ export default function App() {
                       </div>
 
                       <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
@@ -3644,7 +3644,7 @@ export default function App() {
                       <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/playl.png')` }}
+                          style={{ backgroundImage: `url('/ply.png')` }}
                         />
                       </div>
                     </button>
@@ -3677,7 +3677,7 @@ export default function App() {
                       <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/playl.png')` }}
+                          style={{ backgroundImage: `url('/ply.png')` }}
                         />
                       </div>
                     </button>
@@ -3710,7 +3710,7 @@ export default function App() {
                       <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/playl.png')` }}
+                          style={{ backgroundImage: `url('/ply.png')` }}
                         />
                       </div>
                     </button>
@@ -3743,7 +3743,7 @@ export default function App() {
                       <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/playl.png')` }}
+                          style={{ backgroundImage: `url('/ply.png')` }}
                         />
                       </div>
                     </button>
@@ -3778,7 +3778,7 @@ export default function App() {
                         <div className="z-10 shrink-0 relative w-[42px] h-[17px] sm:w-[54px] sm:h-[21px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/playl.png')` }}
+                            style={{ backgroundImage: `url('/ply.png')` }}
                           />
                         </div>
                       </button>
@@ -3809,7 +3809,7 @@ export default function App() {
                         <div className="z-10 shrink-0 relative w-[42px] h-[17px] sm:w-[54px] sm:h-[21px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/playl.png')` }}
+                            style={{ backgroundImage: `url('/ply.png')` }}
                           />
                         </div>
                       </button>
@@ -3843,7 +3843,7 @@ export default function App() {
                         <div className="z-10 shrink-0 relative w-[46px] h-[18px] sm:w-[58px] sm:h-[23px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/playl.png')` }}
+                            style={{ backgroundImage: `url('/ply.png')` }}
                           />
                         </div>
                       </button>
@@ -4416,112 +4416,60 @@ export default function App() {
 
       {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK) */}
       {gameState === 'playing' && playerCountMode === 1 && (
-        <div className="flex-1 flex flex-col p-1.5 sm:p-3 max-w-3xl mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full">
-          
-          {/* ACTIVE MASCOT & TOPIC TITLE HEADER BAR - 3D CARTOON GAME UI STYLE WITH BASBACK.PNG BACKGROUND */}
+        <div className="flex-1 flex flex-col p-2 sm:p-4 max-w-4xl mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full">
+          {/* TOP BAR: BASBACK.PNG */}
           <div
             style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-            className="relative overflow-hidden bg-cover bg-center rounded-2xl px-2.5 sm:px-4 py-1 sm:py-1.5 mb-1 sm:mb-1.5 shrink-0 flex items-center gap-2 min-h-[42px] sm:min-h-[50px]"
+            className="relative overflow-hidden bg-cover bg-center rounded-2xl p-2 sm:p-3 mb-2 shrink-0 flex items-center justify-between gap-2 shadow-lg min-h-[58px]"
           >
-            {/* Top Gloss Overlay */}
-            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/5 to-transparent pointer-events-none rounded-t-2xl z-0" />
-
-            <div className="flex-1 min-w-0 z-10 flex items-center justify-center text-center">
-              {(() => {
-                const titleStr = topics[currentTopic]?.title || '';
-                const len = titleStr.length;
-                const sizeClass =
-                  len <= 15
-                    ? 'text-sm sm:text-lg md:text-xl'
-                    : len <= 28
-                    ? 'text-xs sm:text-base md:text-lg'
-                    : len <= 40
-                    ? 'text-[11px] sm:text-sm md:text-base'
-                    : 'text-[10px] sm:text-xs md:text-sm';
-                return (
-                  <h2 className={`${sizeClass} font-black text-amber-950 tracking-tight sm:tracking-wide leading-snug uppercase drop-shadow-[0_2px_3px_rgba(0,0,0,0.35)] [text-shadow:_0_1px_1px_rgba(255,255,255,0.5)] break-words whitespace-normal line-clamp-2 text-center`}>
-                    {titleStr}
-                  </h2>
-                );
-              })()}
+            {/* LEFT: AVATAR & GROUP */}
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-yellow-300 shadow-md bg-blue-900/80 flex items-center justify-center overflow-hidden shrink-0">
+                <img src="/icon_1.png" alt="1. GRUP" className="w-full h-full object-cover scale-[1.35]" />
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="font-black text-xs sm:text-base text-yellow-950 uppercase tracking-tight truncate drop-shadow-sm">
+                  1. GRUP
+                </span>
+                <span className="text-[10px] sm:text-xs font-bold text-amber-900 truncate">
+                  {topics[currentTopic]?.title || 'Etkinlik'}
+                </span>
+              </div>
             </div>
-          </div>
 
-          {/* TOP BAR: LIVES, SCORE, STREAK - WITH BASBACK2.PNG BACKGROUND */}
-          <div
-            style={{ backgroundImage: `url('/basback2.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-            className="relative overflow-hidden bg-cover bg-center rounded-2xl p-1.5 sm:p-2 flex justify-between items-center shrink-0 mb-1 sm:mb-1.5 min-h-[38px] sm:min-h-[44px]"
-          >
-            {/* Top Gloss Overlay */}
-            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/35 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
-
-            {/* LIVES */}
-            <div className="flex items-center gap-1 z-10">
-              <div className="flex gap-1 sm:gap-1.5 items-center">
+            {/* RIGHT: SCORE & LIVES */}
+            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+              <div className="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 px-3 py-1 rounded-xl font-black text-xs sm:text-base shadow-md border border-yellow-200">
+                PUAN: {score} / 10
+              </div>
+              <div className="flex items-center gap-1 bg-black/40 px-2.5 py-1 rounded-xl border border-white/20">
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <Heart
-                    key={i}
-                    size={20}
-                    className={
-                      i < lives
-                        ? "fill-red-500 text-rose-200 filter drop-shadow-[0_2px_6px_rgba(225,29,72,0.9)] [filter:_drop-shadow(0_1px_2px_rgba(0,0,0,0.95))] animate-pulse scale-105"
-                        : "fill-slate-900/80 text-slate-500 filter drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] opacity-60"
-                    }
-                  />
+                  <span key={i} className={`text-base sm:text-xl transition-all ${i < lives ? 'scale-110 drop-shadow-[0_0_6px_#ef4444]' : 'opacity-25 grayscale'}`}>
+                    ❤️
+                  </span>
                 ))}
               </div>
             </div>
-
-            {/* SCORE */}
-            <div 
-              style={{ backgroundImage: `url('/buton.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-              className="relative z-10 flex items-center justify-center text-center px-3 sm:px-5 py-1 sm:py-1.5 rounded-xl shrink-0 filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] min-h-[34px] sm:min-h-[40px]"
-            >
-              <span className="font-black text-xs sm:text-sm md:text-base text-white uppercase tracking-wider leading-none [text-shadow:_1px_1px_0_#000,_-1px_1px_0_#000,_1px_-1px_0_#000,_-1px_-1px_0_#000,_0_2px_4px_rgba(0,0,0,0.9)] flex items-center justify-center">
-                PUAN: {score} / 10
-              </span>
-            </div>
-
-            {/* STREAK & REMAINING QUESTIONS */}
-            <div className="flex items-center gap-1.5 z-10">
-              {streak >= 3 && (
-                <div className="bg-gradient-to-b from-amber-400 to-orange-500 text-white border-2 border-white px-1.5 py-0.5 rounded-full font-black text-[10px] sm:text-xs flex items-center gap-1 shadow-[0_2px_0_#c2410c] animate-bounce">
-                  <Flame size={12} className="fill-amber-200 text-white" />
-                  <span>{streak}x</span>
-                </div>
-              )}
-              <div className="text-xs sm:text-sm font-black text-amber-200 uppercase tracking-wider [text-shadow:_1px_1px_0_#000,_-1px_1px_0_#000,_1px_-1px_0_#000,_-1px_-1px_0_#000,_0_2px_4px_rgba(0,0,0,0.9)]">
-                {10 - score} KALDI
-              </div>
-            </div>
           </div>
 
-          {/* QUESTION CARD - CLEAN CRISP ARK22.PNG BACKGROUND */}
-          <div className="relative flex-1 rounded-2xl p-1 sm:p-2 flex flex-col items-center justify-center text-center my-1 sm:my-1.5 min-h-[180px] sm:min-h-[250px] md:min-h-[300px] w-full max-w-3xl mx-auto z-10 overflow-hidden">
-            {/* ARK22.PNG QUESTION BACKGROUND - FIT TO BOARD */}
-            <div 
-              className="absolute inset-0 bg-[length:100%_100%] bg-center bg-no-repeat pointer-events-none rounded-2xl"
-              style={{ backgroundImage: `url('/ark22.png')` }}
-            />
-
-            {/* TOP EMBLEM EMBOSSED "SORU" BADGE */}
-            <div className="absolute top-1 sm:top-1.5 z-20 px-2.5 py-0.5 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 border border-amber-200 text-amber-950 font-black text-[9px] sm:text-[11px] rounded-full shadow-[0_2px_6px_rgba(0,0,0,0.4)] flex items-center gap-1 uppercase tracking-wider">
-              <Sparkles className="w-2.5 h-2.5 fill-amber-950 text-amber-950" />
-              <span>SORU</span>
-              <Sparkles className="w-2.5 h-2.5 fill-amber-950 text-amber-950" />
-            </div>
-
-            {/* QUESTION TEXT - STRICTLY INSIDE INNER WOODEN BOARD PLANK AREA */}
-            <div className="absolute top-[10%] bottom-[11%] left-[10%] right-[10%] z-10 flex flex-col items-center justify-center text-center overflow-y-auto no-scrollbar px-2 py-1">
+          {/* CENTER: QUESTION CONTAINER WITH BASBACK2.PNG OR ARK22.PNG */}
+          <div
+            style={{ backgroundImage: `url('/ark22.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+            className="relative flex-1 rounded-3xl p-4 sm:p-6 my-2 flex flex-col items-center justify-center text-center shadow-2xl overflow-hidden min-h-[160px] sm:min-h-[220px]"
+          >
+            <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2 sm:px-6">
               {currentQuestionData?.questionHTML ? (
-                <div dangerouslySetInnerHTML={{ __html: currentQuestionData.questionHTML }} className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-black w-full h-full flex flex-col items-center justify-center min-h-0" />
+                <div 
+                  dangerouslySetInnerHTML={{ __html: currentQuestionData.questionHTML }} 
+                  className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-black w-full flex flex-col items-center justify-center min-h-0 text-sm sm:text-base md:text-lg" 
+                />
               ) : (
-                <div className={`my-auto font-black text-white leading-tight tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-2 py-1 max-w-full text-center ${
-                  (currentQuestionData?.question?.length || 0) < 20
-                    ? "text-2xl xs:text-3xl sm:text-4xl md:text-5xl whitespace-nowrap"
-                    : (currentQuestionData?.question?.length || 0) < 55
-                    ? "text-lg xs:text-xl sm:text-2xl md:text-3xl leading-snug break-words"
-                    : "text-base xs:text-lg sm:text-xl md:text-2xl leading-snug break-words"
+                <div className={`my-auto font-black text-white leading-snug tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_6px_#000,_0_4px_14px_rgba(0,0,0,0.9)] px-2 py-1 max-w-full text-center ${
+                  (currentQuestionData?.question?.length || 0) < 25
+                    ? "text-lg xs:text-xl sm:text-2xl md:text-3xl"
+                    : (currentQuestionData?.question?.length || 0) < 60
+                    ? "text-base xs:text-lg sm:text-xl md:text-2xl"
+                    : "text-sm xs:text-base sm:text-lg md:text-xl"
                 }`}>
                   {currentQuestionData?.question}
                 </div>
@@ -4529,78 +4477,40 @@ export default function App() {
             </div>
           </div>
 
-          {/* OPTIONS GRID - 3D CARTOON GAME BUTTONS WITH BUTON2.PNG BACKGROUND */}
-          <div className="grid grid-cols-2 gap-x-2 sm:gap-x-3 gap-y-1 sm:gap-y-1.5 w-full max-w-2xl mx-auto shrink-0 z-10">
+          {/* BOTTOM: 2x2 OPTIONS GRID WITH BUT1.PNG (TAHTALI BUTON) */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full shrink-0">
             {optionsList.map((opt, idx) => {
-              let btnTransform = "filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-[0.98]";
-              let textColor = "text-white font-black [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.95),0_0_12px_rgba(0,0,0,0.85)] drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)]";
+              const isCorrect = selectedOption !== null && currentQuestionData && opt === currentQuestionData.correct;
+              const isWrong = selectedOption !== null && currentQuestionData && opt === selectedOption && opt !== currentQuestionData.correct;
 
-              if (selectedOption !== null && currentQuestionData) {
-                if (opt === currentQuestionData.correct) {
-                  btnTransform = "scale-105";
-                  textColor = "text-emerald-200 font-black [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.95),0_0_12px_rgba(0,0,0,0.85)] drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)]";
-                } else if (opt === selectedOption) {
-                  btnTransform = "scale-95 opacity-80";
-                  textColor = "text-rose-200 font-black [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.95),0_0_12px_rgba(0,0,0,0.85)] drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)]";
-                }
+              let feedbackClasses = "";
+              if (isCorrect) {
+                feedbackClasses = "ring-4 ring-emerald-400 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.9)] animate-pulse";
+              } else if (isWrong) {
+                feedbackClasses = "ring-4 ring-rose-500 scale-95 opacity-80 shadow-[0_0_25px_rgba(244,63,94,0.9)]";
               }
 
-              // Calculate max option length in current question for uniform option sizing across all choices
               const maxOptLen = Math.max(...optionsList.map(o => String(o).trim().length), 0);
               let fontSizeClass = "";
               if (maxOptLen <= 2) {
-                fontSizeClass = "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black";
-              } else if (maxOptLen <= 4) {
                 fontSizeClass = "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black";
-              } else if (maxOptLen <= 8) {
+              } else if (maxOptLen <= 5) {
+                fontSizeClass = "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
+              } else if (maxOptLen <= 10) {
                 fontSizeClass = "text-base xs:text-lg sm:text-xl md:text-2xl font-black";
-              } else if (maxOptLen <= 14) {
-                fontSizeClass = "text-sm sm:text-base md:text-lg lg:text-xl font-black";
               } else {
-                fontSizeClass = "text-xs sm:text-sm md:text-base font-black";
+                fontSizeClass = "text-sm sm:text-base md:text-lg font-black";
               }
-
-              const isCorrect = selectedOption !== null && currentQuestionData && opt === currentQuestionData.correct;
-              const isWrong = selectedOption !== null && currentQuestionData && opt === selectedOption && opt !== currentQuestionData.correct;
 
               return (
                 <button
                   key={idx}
                   onClick={() => handleAnswer(opt)}
                   disabled={feedbackState !== 'none'}
-                  className={`relative group w-full aspect-[757/240] h-12 sm:h-14 md:h-16 max-h-[66px] transition-all flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-visible ${btnTransform}`}
+                  style={{ backgroundImage: `url('/but1.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+                  className={`relative group w-full py-3.5 sm:py-5 px-3 rounded-2xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden drop-shadow-lg active:scale-95 ${feedbackClasses}`}
                 >
-                  {/* ORGANIC PNG CONTOUR GLOW BEHIND BUT1.PNG (TRACES LEAVES, VINES & WOOD EDGES EXACTLY) */}
-                  {isCorrect && (
-                    <img
-                      src="/but1.png"
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-fill pointer-events-none transition-all duration-300 blur-md scale-110 opacity-90 filter brightness-[1.6] sepia-1 hue-rotate-[90deg] saturate-[4] z-0 animate-pulse"
-                    />
-                  )}
-
-                  {isWrong && (
-                    <img
-                      src="/but1.png"
-                      alt=""
-                      className="absolute inset-0 w-full h-full object-fill pointer-events-none transition-all duration-300 blur-md scale-105 opacity-90 filter brightness-[1.5] sepia-1 hue-rotate-[300deg] saturate-[4] z-0"
-                    />
-                  )}
-
-                  {/* BUTTON BACKGROUND IMAGE (BUT1.PNG) WITH CONTOUR-FOLLOWING DROP-SHADOW GLOW */}
-                  <img
-                    src="/but1.png"
-                    alt=""
-                    className={`absolute inset-0 w-full h-full object-fill pointer-events-none transition-all duration-300 z-10 ${
-                      isCorrect
-                        ? 'filter drop-shadow-[0_0_10px_#22c55e] drop-shadow-[0_0_22px_#10b981] drop-shadow-[0_0_36px_#4ade80] scale-105 animate-pulse'
-                        : isWrong
-                        ? 'filter drop-shadow-[0_0_10px_#ef4444] drop-shadow-[0_0_22px_#f43f5e] drop-shadow-[0_0_36px_#fb7185] scale-95'
-                        : 'group-hover:scale-[1.02]'
-                    }`}
-                  />
-
-                  <span className={`relative z-30 px-3 flex items-center justify-center text-center pointer-events-none ${textColor} ${fontSizeClass}`}>
+                  <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${fontSizeClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
                     {opt}
                   </span>
                 </button>
@@ -4633,117 +4543,124 @@ export default function App() {
 
           {/* SPLIT SCREEN GRID FOR 2 OR 3 PLAYERS */}
           <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
-            {players.map((p, pIdx) => (
-              <div
-                key={p.id}
-                className={`relative flex flex-col justify-between p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl border-3 ${p.colorTheme.border} bg-gradient-to-b ${p.colorTheme.bg} shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
-              >
-                {/* PLAYER HEADER BAR */}
-                <div className={`relative overflow-hidden ${p.colorTheme.headerBg} rounded-xl p-2 sm:p-2.5 flex items-center justify-between shadow-md shrink-0 border border-white/40`}>
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="font-black text-xs sm:text-sm text-white uppercase tracking-wider truncate drop-shadow-md">
-                      {p.avatar}
-                    </span>
-                  </div>
+            {players.map((p, pIdx) => {
+              const avatarImg = pIdx === 0 ? "/icon_1.png" : pIdx === 1 ? "/icon_2.png" : "/icon_3.png";
 
-                  {/* LIVES */}
-                  <div className="flex items-center gap-1">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <Heart
-                        key={i}
-                        size={18}
-                        className={
-                          i < p.lives
-                            ? "fill-red-500 text-rose-200 filter drop-shadow-[0_1px_4px_rgba(225,29,72,0.9)] animate-pulse"
-                            : "fill-slate-900/80 text-slate-600 opacity-50"
-                        }
-                      />
-                    ))}
-                  </div>
-
-                  {/* SCORE */}
-                  <div className="bg-black/50 border border-amber-300/80 text-amber-300 px-2.5 py-0.5 rounded-lg font-black text-xs sm:text-sm shadow-inner shrink-0">
-                    PUAN: {p.score} / 10
-                  </div>
-                </div>
-
-                {/* QUESTION AREA FOR THIS PLAYER */}
-                <div className="relative flex-1 rounded-2xl p-1 sm:p-2 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[135px] sm:min-h-[155px]">
-                  <div 
-                    className="absolute inset-0 bg-[length:100%_100%] bg-center bg-no-repeat pointer-events-none rounded-xl"
-                    style={{ backgroundImage: `url('/ark22.png')` }}
-                  />
-                  
-                  {p.lives <= 0 ? (
-                    <div className="relative z-20 flex flex-col items-center justify-center gap-1.5 p-2">
-                      <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
-                      <div className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
-                        ELENDİ!
+              return (
+                <div
+                  key={p.id}
+                  className="relative flex flex-col justify-between p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border-2 border-yellow-400/60 shadow-2xl overflow-hidden min-h-0 z-10 transition-all"
+                >
+                  {/* PLAYER HEADER BAR */}
+                  <div
+                    style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+                    className="relative flex items-center justify-between z-10 shrink-0 p-2 rounded-xl border border-yellow-400/30"
+                  >
+                    {/* LEFT: AVATAR & GROUP NAME */}
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-yellow-300 shadow-md bg-blue-950 flex items-center justify-center overflow-hidden shrink-0">
+                        <img src={avatarImg} alt={`${pIdx + 1}. GRUP`} className="w-full h-full object-cover scale-[1.35]" />
                       </div>
-                      <div className="text-white/90 text-xs sm:text-sm font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
-                        Diğer oyuncular yarışıyor...
+                      <span className="font-black text-xs sm:text-sm text-yellow-950 uppercase tracking-tight truncate drop-shadow-sm">
+                        {pIdx + 1}. GRUP
+                      </span>
+                    </div>
+
+                    {/* RIGHT: SCORE & HEARTS */}
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="bg-amber-400 text-blue-950 font-black text-xs px-2 py-0.5 rounded-lg shadow-sm">
+                        {p.score} / 10
+                      </span>
+                      <div className="flex items-center gap-0.5">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <span key={i} className={`text-xs sm:text-sm ${i < p.lives ? 'scale-110' : 'opacity-25 grayscale'}`}>
+                            ❤️
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  ) : (
-                    <div className="absolute top-[7%] bottom-[8%] left-[10%] right-[10%] z-10 flex flex-col items-center justify-center text-center overflow-visible px-1">
-                      {p.currentQuestionData?.questionHTML ? (
-                        <div dangerouslySetInnerHTML={{ __html: p.currentQuestionData.questionHTML }} className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-black w-full h-full flex flex-col items-center justify-center min-h-0 scale-90 xs:scale-95 sm:scale-100 origin-center" />
-                      ) : (
-                        <div className={`my-auto font-black text-white leading-tight tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-1 py-0.5 max-w-full text-center ${
-                          (p.currentQuestionData?.question?.length || 0) < 20
-                            ? "text-xl xs:text-2xl sm:text-3xl md:text-4xl whitespace-nowrap"
-                            : (p.currentQuestionData?.question?.length || 0) < 55
-                            ? "text-sm xs:text-base sm:text-lg md:text-xl leading-snug break-words"
-                            : "text-xs xs:text-sm sm:text-base leading-snug break-words"
-                        }`}>
-                          {p.currentQuestionData?.question}
+                  </div>
+
+                  {/* QUESTION AREA FOR THIS PLAYER */}
+                  <div
+                    style={{ backgroundImage: `url('/ark22.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+                    className="relative flex-1 rounded-2xl p-2 sm:p-4 my-2 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[140px] sm:min-h-[170px]"
+                  >
+                    {p.lives <= 0 ? (
+                      <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
+                        <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
+                        <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
+                          ELENDİ!
                         </div>
-                      )}
+                        <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
+                          Diğer oyuncular yarışıyor...
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="relative z-10 flex flex-col items-center justify-center text-center overflow-visible px-2 w-full">
+                        {p.currentQuestionData?.questionHTML ? (
+                          <div 
+                            dangerouslySetInnerHTML={{ __html: p.currentQuestionData.questionHTML }} 
+                            className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-extrabold text-base sm:text-xl md:text-2xl leading-snug w-full flex flex-col items-center justify-center min-h-0 scale-90 xs:scale-95 sm:scale-100 origin-center" 
+                          />
+                        ) : (
+                          <div className={`my-auto font-black text-white leading-snug tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-1 py-0.5 max-w-full text-center ${
+                            (p.currentQuestionData?.question?.length || 0) < 25
+                              ? "text-lg sm:text-xl md:text-2xl font-black"
+                              : (p.currentQuestionData?.question?.length || 0) < 60
+                              ? "text-sm sm:text-base md:text-lg font-black"
+                              : "text-xs sm:text-sm md:text-base font-black"
+                          }`}>
+                            {p.currentQuestionData?.question}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
+                  {p.lives > 0 && (
+                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0 z-10">
+                      {p.shuffledOptions.map((opt, oIdx) => {
+                        const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
+                        const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
+
+                        let btnClass = "";
+                        if (isCorrect) {
+                          btnClass = "ring-4 ring-emerald-400 scale-105 shadow-[0_0_20px_rgba(16,185,129,0.9)] animate-pulse";
+                        } else if (isWrong) {
+                          btnClass = "ring-4 ring-rose-500 scale-95 opacity-80 shadow-[0_0_20px_rgba(244,63,94,0.9)]";
+                        }
+
+                        const maxOptLen = Math.max(...(p.shuffledOptions || []).map(o => String(o).trim().length), 0);
+                        let fontClass = "";
+                        if (maxOptLen <= 2) {
+                          fontClass = playerCountMode === 3 ? "text-base xs:text-lg sm:text-xl md:text-2xl font-black" : "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
+                        } else if (maxOptLen <= 5) {
+                          fontClass = playerCountMode === 3 ? "text-sm xs:text-base sm:text-lg md:text-xl font-black" : "text-base xs:text-lg sm:text-xl md:text-2xl font-black";
+                        } else {
+                          fontClass = "text-xs xs:text-sm sm:text-base font-black";
+                        }
+
+                        return (
+                          <button
+                            key={oIdx}
+                            onClick={() => handlePlayerAnswer(pIdx, opt)}
+                            disabled={p.feedbackState !== 'none'}
+                            style={{ backgroundImage: `url('/but1.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+                            className={`relative group w-full py-2.5 sm:py-3.5 px-2 rounded-xl sm:rounded-2xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden drop-shadow-md active:scale-95 ${btnClass}`}
+                          >
+                            <span className={`relative z-10 truncate ${fontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                              {opt}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
-
-                {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
-                {p.lives > 0 && (
-                  <div className="grid grid-cols-2 gap-1 sm:gap-1.5 w-full shrink-0 z-10">
-                    {p.shuffledOptions.map((opt, oIdx) => {
-                      const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
-                      const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
-
-                      let btnClass = "bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-blue-950 border-2 border-white shadow-[0_2px_0_#b45309] hover:scale-[1.02] active:scale-95";
-                      if (isCorrect) {
-                        btnClass = "bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white border-2 border-emerald-200 shadow-[0_0_12px_#22c55e] scale-105 animate-pulse";
-                      } else if (isWrong) {
-                        btnClass = "bg-gradient-to-r from-rose-600 via-red-600 to-pink-600 text-white border-2 border-rose-200 shadow-[0_0_12px_#ef4444] scale-95 opacity-80";
-                      }
-
-                      const maxOptLen = Math.max(...(p.shuffledOptions || []).map(o => String(o).trim().length), 0);
-                      let fontClass = "";
-                      if (maxOptLen <= 2) {
-                        fontClass = playerCountMode === 3 ? "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black" : "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black";
-                      } else if (maxOptLen <= 5) {
-                        fontClass = playerCountMode === 3 ? "text-base xs:text-lg sm:text-xl md:text-2xl font-black" : "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
-                      } else {
-                        fontClass = "text-xs xs:text-sm sm:text-base font-black";
-                      }
-
-                      return (
-                        <button
-                          key={oIdx}
-                          onClick={() => handlePlayerAnswer(pIdx, opt)}
-                          disabled={p.feedbackState !== 'none'}
-                          className={`relative group w-full py-1.5 sm:py-2.5 px-1.5 rounded-xl transition-all flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden ${btnClass}`}
-                        >
-                          <span className={`relative z-10 truncate ${fontClass} [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.95),0_0_10px_rgba(0,0,0,0.85)] drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)] text-white font-black`}>
-                            {opt}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

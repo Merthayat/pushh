@@ -88,7 +88,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col font-sans select-none overflow-hidden bg-slate-900 text-white">
+    <div className="fixed inset-0 z-[200] flex flex-col font-sans select-none overflow-hidden bg-slate-900 text-white">
       {/* 1. SAME BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES (/intro2.png) */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
@@ -109,7 +109,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
         >
           <div 
             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-            style={{ backgroundImage: `url('/buton.png')` }}
+            style={{ backgroundImage: `url('/butt.png')` }}
           />
           <span className="relative z-10 text-white font-black text-[9px] sm:text-xs tracking-wider [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.8)] uppercase select-none -translate-y-[1px]">
             ANA MENÜ
@@ -190,7 +190,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
                 </div>
 
                 <div className="relative w-[65px] h-[26px] sm:w-[84px] sm:h-[34px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] flex items-center justify-center ml-auto sm:ml-0">
-                  <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/playl.png')` }} />
+                  <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                 </div>
               </div>
             </div>
