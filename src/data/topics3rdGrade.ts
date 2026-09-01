@@ -886,15 +886,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `6'şar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">6'şar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -966,15 +966,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `7'şer ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">7'şer ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1046,15 +1046,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `8'er ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">8'er ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1126,15 +1126,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `9'ar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">9'ar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1205,15 +1205,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `10'ar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 1000 içinde <span class="text-amber-300 font-black">10'ar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1294,15 +1294,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `100'er ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                     ${item}
                   </span>
-                `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+                `).join('')}
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 1000 içinde <span class="text-amber-300 font-black">100'er ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1366,15 +1366,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `Ritmik saymada soru işareti yerine hangi sayı gelmelidir? [${gorunum.join(' - ')}]`,
         questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-            <div class="flex items-center justify-center gap-1 sm:gap-2 flex-wrap max-w-md">
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
               ${gorunum.map(item => `
-                <span class="px-3 py-1.5 rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-sm sm:text-base md:text-lg whitespace-nowrap">
+                <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
                   ${item}
                 </span>
-              `).join('<span class="text-amber-300 font-black text-sm sm:text-base mx-0.5">➔</span>')}
+              `).join('')}
             </div>
-            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
               ${adim}'şar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada <span class="text-amber-300 underline decoration-amber-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
             </div>
           </div>
@@ -1544,15 +1544,15 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `Örüntüde sıradaki sayı kaçtır? [${dizi.join(', ')}, ?]`,
         questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-            <div class="flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center max-w-md">
-              ${dizi.map(n => `<span class="px-3.5 py-1.5 rounded-xl bg-blue-900 text-white font-black text-base sm:text-lg border border-blue-400 shadow-md">${n}</span>`).join('')}
-              <span class="px-3.5 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-base sm:text-lg border-2 border-white shadow-md animate-pulse">?</span>
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5 text-center">
+            <div class="flex items-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap justify-center max-w-full overflow-hidden my-0.5">
+              ${dizi.map(n => `<span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-blue-900 text-white font-black text-xs xs:text-sm sm:text-base border border-blue-400 shadow-md shrink-0">${n}</span>`).join('')}
+              <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base border-2 border-white shadow-md animate-pulse shrink-0">?</span>
             </div>
-            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
               Kuralı keşfederek <span class="text-amber-300 underline decoration-amber-400 font-black">soru işareti (?)</span> yerine gelecek sayıyı bulunuz:
             </div>
-            <div class="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+            <div class="text-[10px] xs:text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
               (Kural: Her adımda +${artis} artmaktadır)
             </div>
           </div>
@@ -1927,18 +1927,18 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${toplamKurus} kuruş kaç TL ve kaç kuruş eder?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2">
-                <img src="/paralar/1_tl_madeni_para.png" class="h-10 sm:h-14 w-10 sm:w-14 object-contain drop-shadow-md" />
-                <div class="px-4 py-2 rounded-2xl bg-amber-500 text-slate-950 font-black text-xl sm:text-2xl md:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-2 flex-nowrap max-w-full overflow-hidden">
+                <img src="/paralar/1_tl_madeni_para.png" class="h-8 sm:h-12 w-8 sm:w-12 object-contain drop-shadow-md shrink-0" />
+                <div class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-amber-500 text-slate-950 font-black text-base sm:text-xl md:text-2xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
                   🪙 ${toplamKurus} Kuruş
                 </div>
-                <img src="/paralar/50_kurus_madeni_para.png" class="h-9 sm:h-12 w-9 sm:w-12 object-contain drop-shadow-md" />
+                <img src="/paralar/50_kurus_madeni_para.png" class="h-7 sm:h-10 w-7 sm:w-10 object-contain drop-shadow-md shrink-0" />
               </div>
-              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 Bu miktar kaç TL ve kaç kuruşa <span class="text-amber-300 underline decoration-amber-400 font-black">eşittir?</span>
               </div>
-              <div class="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
+              <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
             </div>
           `,
           correct: dogru,
@@ -1964,12 +1964,12 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${ogrenci} ${fiyat} TL tutan kitabı almak için satıcıya ${verilen} TL verdi. Kaç TL para üstü alır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-3">
-                <span class="px-3.5 py-1.5 bg-rose-600 text-white font-black text-xs sm:text-sm rounded-xl border border-white shadow-md">Ürün: ${fiyat} TL</span>
-                <img src="${secilenVerilen.img}" class="h-12 sm:h-16 md:h-18 max-w-[170px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-2 flex-nowrap max-w-full overflow-hidden">
+                <span class="px-2.5 py-1 bg-rose-600 text-white font-black text-[11px] xs:text-xs sm:text-sm rounded-lg sm:rounded-xl border border-white shadow-md shrink-0 whitespace-nowrap">Ürün: ${fiyat} TL</span>
+                <img src="${secilenVerilen.img}" class="h-10 sm:h-14 md:h-16 max-w-[140px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
               </div>
-              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${ogrenci} satıcıya görseldeki <span class="text-amber-300 font-black">${verilen} TL</span>'yi verirse kaç TL <span class="text-emerald-300 underline font-black">para üstü</span> alır?
               </div>
             </div>
@@ -2009,13 +2009,13 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: k.text,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
                 ${k.images.map(img => `
-                  <img src="${img}" class="${img.includes('madeni') ? 'h-11 sm:h-15 w-11 sm:w-15' : 'h-11 sm:h-15 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                  <img src="${img}" class="${img.includes('madeni') ? 'h-9 sm:h-13 w-9 sm:w-13' : 'h-9 sm:h-13 max-w-[120px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
                 `).join('')}
               </div>
-              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${k.text}
               </div>
             </div>

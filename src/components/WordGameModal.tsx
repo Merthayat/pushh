@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Sparkles, RotateCcw, ArrowLeft, Trophy, Flame, 
   HelpCircle, Swords, Zap, CheckCircle2, XCircle, Heart, Star, Clock, Users, User
@@ -10,6 +10,8 @@ interface WordGameModalProps {
   gameType: 'zit_anlam' | 'es_anlam' | 'ingilizce';
   onClose: () => void;
   playMp3?: (src: string, onEnded?: () => void) => void;
+  playerCountMode?: 1 | 2 | 3;
+  onSwitchPlayerCountMode?: (mode: 1 | 2 | 3) => void;
 }
 
 type GameMode = 'duel2' | 'duel3' | 'quiz1' | 'matching';
@@ -106,9 +108,16 @@ function generateWordQuestion(data: WordPair[], excludeWord?: string) {
 }
 
 // Helper function for automatic max font size that never line-wraps
-const getWordOptionFontSize = (options: string[], isDuel: boolean = false) => {
+const getWordOptionFontSize = (options: string[], mode: 1 | 2 | 3 = 1) => {
   const maxOptLen = Math.max(...options.map(o => String(o || '').trim().length), 0);
-  if (isDuel) {
+  if (mode === 3) {
+    if (maxOptLen <= 4) return 'text-xs xs:text-sm sm:text-base font-black';
+    if (maxOptLen <= 7) return 'text-[11px] xs:text-xs sm:text-sm font-black';
+    if (maxOptLen <= 11) return 'text-[10px] xs:text-[11px] sm:text-xs font-black';
+    if (maxOptLen <= 15) return 'text-[9px] xs:text-[10px] sm:text-[11px] font-black';
+    return 'text-[8px] xs:text-[9px] sm:text-[10px] font-black';
+  }
+  if (mode === 2) {
     if (maxOptLen <= 4) return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
     if (maxOptLen <= 7) return 'text-xs xs:text-sm sm:text-base md:text-lg font-black';
     if (maxOptLen <= 11) return 'text-[11px] xs:text-xs sm:text-sm md:text-base font-black';
@@ -126,7 +135,9 @@ const getWordOptionFontSize = (options: string[], isDuel: boolean = false) => {
 export const WordGameModal: React.FC<WordGameModalProps> = ({
   gameType,
   onClose,
-  playMp3
+  playMp3,
+  playerCountMode = 2,
+  onSwitchPlayerCountMode
 }) => {
   const isZit = gameType === 'zit_anlam';
   const isEs = gameType === 'es_anlam';
@@ -144,10 +155,26 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
     return baseData;
   }, [baseData, isIng, englishGrade]);
 
-  // Active Mode: default to 2-player duel
-  const [activeMode, setActiveMode] = useState<GameMode>('duel2');
+  // Derive initial activeMode from playerCountMode
+  const initialMode: GameMode = playerCountMode === 1 ? 'quiz1' : playerCountMode === 3 ? 'duel3' : 'duel2';
+  const [activeMode, setActiveMode] = useState<GameMode>(initialMode);
 
-  // Sound helper (TTS was completely removed per instructions)
+  // Synchronize activeMode when global playerCountMode changes
+  useEffect(() => {
+    if (activeMode !== 'matching') {
+      setActiveMode(playerCountMode === 1 ? 'quiz1' : playerCountMode === 3 ? 'duel3' : 'duel2');
+    }
+  }, [playerCountMode]);
+
+  const handleSwitchPlayerMode = (mode: 1 | 2 | 3) => {
+    if (onSwitchPlayerCountMode) {
+      onSwitchPlayerCountMode(mode);
+    }
+    setActiveMode(mode === 1 ? 'quiz1' : mode === 3 ? 'duel3' : 'duel2');
+    playSound('click');
+  };
+
+  // Sound helper
   const playSound = (type: 'correct' | 'wrong' | 'win' | 'click' | 'flip') => {
     if (playMp3) {
       if (type === 'correct') playMp3('/para.mp3');
@@ -209,20 +236,19 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   }, [activeMode, initMatchingGame]);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout | null = null;
-    if (activeMode === 'matching' && !isMatchComplete && cards.length > 0) {
+    let interval: any = null;
+    if (activeMode === 'matching' && !isMatchComplete) {
       interval = setInterval(() => {
-        setMatchTimer(prev => prev + 1);
+        setMatchTimer(t => t + 1);
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [activeMode, isMatchComplete, cards.length]);
+  }, [activeMode, isMatchComplete]);
 
   const handleCardClick = (cardId: string) => {
-    if (flippedCardIds.length >= 2 || isMatchComplete) return;
-
+    if (flippedCardIds.length >= 2) return;
     const clickedCard = cards.find(c => c.id === cardId);
     if (!clickedCard || clickedCard.isFlipped || clickedCard.isMatched) return;
 
@@ -230,20 +256,19 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
     const newFlipped = [...flippedCardIds, cardId];
     setFlippedCardIds(newFlipped);
-
     setCards(prev => prev.map(c => c.id === cardId ? { ...c, isFlipped: true } : c));
 
     if (newFlipped.length === 2) {
       setMatchMoves(m => m + 1);
-      const firstCard = cards.find(c => c.id === newFlipped[0]);
-      const secondCard = clickedCard;
+      const card1 = cards.find(c => c.id === newFlipped[0])!;
+      const card2 = clickedCard;
 
-      if (firstCard && secondCard && firstCard.pairId === secondCard.pairId) {
-        // MATCH FOUND
+      if (card1.pairId === card2.pairId) {
+        // MATCH!
         setTimeout(() => {
           playSound('correct');
           setCards(prev => prev.map(c => 
-            (c.id === firstCard.id || c.id === secondCard.id) 
+            (c.id === card1.id || c.id === card2.id) 
               ? { ...c, isMatched: true, isFlipped: true } 
               : c
           ));
@@ -362,7 +387,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         img: PLAYER_THEMES[i].img,
         colorTheme: PLAYER_THEMES[i],
         score: 0,
-        lives: 3, // 3 hata yapan elenir
+        lives: 3,
         currentQuestion: generateWordQuestion(rawData),
         selectedOption: null,
         feedback: 'none',
@@ -404,7 +429,6 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           feedback: 'correct'
         };
 
-        // Check if player reached target score (10 points)
         if (nextScore >= duelTargetScore) {
           setTimeout(() => {
             setDuelWinnerIndex(pIdx);
@@ -415,7 +439,6 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             } catch {}
           }, 300);
         } else {
-          // Next question for this player
           setTimeout(() => {
             setDuelPlayers(curr => {
               const currentP = curr[pIdx];
@@ -432,7 +455,6 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           }, 550);
         }
       } else {
-        // Wrong answer -> lose 1 life
         playSound('wrong');
         const nextLives = p.lives - 1;
         const isEliminated = nextLives <= 0;
@@ -446,34 +468,46 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         };
 
         if (isEliminated) {
-          // Check how many players remain active
           const activeRemaining = nextPlayers.filter(pl => !pl.isEliminated);
           if (activeRemaining.length === 1) {
-            const winnerIdx = activeRemaining[0].id;
+            const winner = activeRemaining[0];
             setTimeout(() => {
-              setDuelWinnerIndex(winnerIdx);
+              setDuelWinnerIndex(winner.id);
               setIsDuelFinished(true);
               playSound('win');
               try {
                 confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
               } catch {}
-            }, 300);
+            }, 500);
           } else if (activeRemaining.length === 0) {
-            // Find player with highest score
-            const highestScorer = [...nextPlayers].sort((a, b) => b.score - a.score)[0];
-            const winnerIdx = highestScorer ? highestScorer.id : 0;
+            let maxScorer = nextPlayers[0];
+            nextPlayers.forEach(pl => {
+              if (pl.score > maxScorer.score) maxScorer = pl;
+            });
             setTimeout(() => {
-              setDuelWinnerIndex(winnerIdx);
+              setDuelWinnerIndex(maxScorer.id);
               setIsDuelFinished(true);
               playSound('win');
-            }, 300);
+            }, 500);
+          } else {
+            setTimeout(() => {
+              setDuelPlayers(curr => {
+                const currentP = curr[pIdx];
+                if (!currentP) return curr;
+                const updated = [...curr];
+                updated[pIdx] = {
+                  ...currentP,
+                  feedback: 'none'
+                };
+                return updated;
+              });
+            }, 800);
           }
         } else {
-          // Next question for this player after brief red flash
           setTimeout(() => {
             setDuelPlayers(curr => {
               const currentP = curr[pIdx];
-              if (!currentP || currentP.isEliminated) return curr;
+              if (!currentP) return curr;
               const updated = [...curr];
               updated[pIdx] = {
                 ...currentP,
@@ -483,7 +517,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
               };
               return updated;
             });
-          }, 700);
+          }, 800);
         }
       }
 
@@ -491,11 +525,10 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
     });
   };
 
-  // Determine if completion screen should be shown
   const showCompletionScreen = 
-    (activeMode === 'duel2' || activeMode === 'duel3') ? isDuelFinished :
-    activeMode === 'quiz1' ? isQuizGameOver :
-    activeMode === 'matching' ? isMatchComplete : false;
+    (activeMode === 'matching' && isMatchComplete) ||
+    (activeMode === 'quiz1' && isQuizGameOver) ||
+    ((activeMode === 'duel2' || activeMode === 'duel3') && isDuelFinished);
 
   const restartCurrentGame = () => {
     playSound('click');
@@ -506,8 +539,8 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col font-sans select-none overflow-hidden bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
-      {/* 1. SAME BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES (/intro2.png) */}
+    <div className="fixed inset-0 top-[52px] xs:top-[60px] sm:top-[74px] md:top-[80px] z-40 flex flex-col font-sans select-none overflow-hidden bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
+      {/* 1. BACKGROUND IMAGE & STAGE LIGHTING OVERLAYS */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
           src="/intro2.png" 
@@ -515,104 +548,18 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105"
         />
+        {/* STAGE LIGHTING & AMBIENT GLOW (MATCHING ALL MAIN GRADE ACTIVITIES) */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* 2. TOP HEADER BAR - MATCHING CLASSROOM HEADER STYLING */}
-      <header className="relative z-30 bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-b-3 border-yellow-400 dark:border-yellow-500/80 px-2 sm:px-4 py-1.5 flex items-center justify-between shadow-lg shrink-0">
-        {/* ANA SAYFA / GERİ BUTTON */}
-        <button
-          onClick={onClose}
-          title="Ana Sayfaya Dön"
-          className="group relative w-[88px] h-[30px] sm:w-[110px] sm:h-[38px] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
-        >
-          <div 
-            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-            style={{ backgroundImage: `url('/butt.png')` }}
-          />
-          <span className="relative z-10 text-white font-black text-[9px] sm:text-xs tracking-wider [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.8)] uppercase select-none -translate-y-[1px]">
-            GERİ DÖN
-          </span>
-        </button>
-
-        {/* CENTER TITLE BADGE */}
-        <div className="flex flex-col items-center justify-center text-center">
-          <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-blue-950 font-black text-[8px] sm:text-[10px] tracking-wider uppercase shadow-xs border border-white">
-            <Sparkles size={10} className="text-blue-950 shrink-0" />
-            <span>{isIng ? '🇬🇧 6. BÖLÜM & İNGİLİZCE OYUNLAR' : '🎲 5. BÖLÜM & DİĞER OYUNLAR'}</span>
-            <Sparkles size={10} className="text-blue-950 shrink-0" />
-          </div>
-          <h1 className="text-xs sm:text-sm md:text-base font-black text-amber-950 dark:text-amber-300 tracking-wide uppercase drop-shadow-sm leading-tight mt-0.5">
-            {gameTitle}
-          </h1>
-        </div>
-
-        {/* RESTART BUTTON */}
-        <button
-          onClick={restartCurrentGame}
-          title="Yeniden Başlat"
-          className="group relative w-8 h-8 sm:w-10 sm:h-10 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
-        >
-          <img 
-            src="/tekrar.png" 
-            alt="Yeniden Başlat" 
-            className="w-full h-full object-contain pointer-events-none" 
-          />
-        </button>
-      </header>
-
-      {/* 3. MODE SELECTOR & GRADE BAR */}
+      {/* 2. SUB-HEADER: GRADE SELECTION & CONTROLS (SPACED NICELY BELOW GLOBAL HEADER) */}
       {!showCompletionScreen && (
-        <div className="relative z-20 px-2 py-1 bg-black/40 backdrop-blur-sm border-b border-amber-400/30 flex flex-col items-center justify-center gap-1 shrink-0">
-          <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
-            <button
-              onClick={() => { setActiveMode('duel2'); playSound('click'); }}
-              className={`px-2.5 py-1 rounded-xl font-black text-[10px] sm:text-xs flex items-center gap-1 transition-all cursor-pointer ${
-                activeMode === 'duel2'
-                  ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 text-slate-950 shadow-md scale-105 border-2 border-white'
-                  : 'bg-white/10 text-white/85 hover:bg-white/20'
-              }`}
-            >
-              <span>⚔️ 2 Kişilik Kapışma</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveMode('duel3'); playSound('click'); }}
-              className={`px-2.5 py-1 rounded-xl font-black text-[10px] sm:text-xs flex items-center gap-1 transition-all cursor-pointer ${
-                activeMode === 'duel3'
-                  ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white shadow-md scale-105 border-2 border-white'
-                  : 'bg-white/10 text-white/85 hover:bg-white/20'
-              }`}
-            >
-              <span>👑 3 Kişilik Kapışma</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveMode('quiz1'); playSound('click'); }}
-              className={`px-2.5 py-1 rounded-xl font-black text-[10px] sm:text-xs flex items-center gap-1 transition-all cursor-pointer ${
-                activeMode === 'quiz1'
-                  ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-md scale-105 border-2 border-white'
-                  : 'bg-white/10 text-white/85 hover:bg-white/20'
-              }`}
-            >
-              <span>🎯 1 Kişilik Test</span>
-            </button>
-
-            <button
-              onClick={() => { setActiveMode('matching'); playSound('click'); }}
-              className={`px-2.5 py-1 rounded-xl font-black text-[10px] sm:text-xs flex items-center gap-1 transition-all cursor-pointer ${
-                activeMode === 'matching'
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 shadow-md scale-105 border-2 border-white'
-                  : 'bg-white/10 text-white/85 hover:bg-white/20'
-              }`}
-            >
-              <span>🧩 Hafıza Kartı</span>
-            </button>
-          </div>
-
-          {/* ENGLISH GRADE FILTER TABS */}
-          {isIng && (
-            <div className="flex items-center justify-center gap-1 sm:gap-1.5 flex-wrap pt-0.5">
-              <span className="text-[9px] sm:text-[10px] font-black text-amber-300 mr-1 uppercase">
+        <div className="relative z-20 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-950/65 backdrop-blur-md border-b-2 border-amber-400/50 flex items-center justify-between gap-2 shrink-0 shadow-lg">
+          {isIng ? (
+            <div className="flex items-center justify-start gap-1 sm:gap-2 flex-wrap flex-1 min-w-0">
+              <span className="text-[11px] sm:text-xs font-black text-amber-300 mr-1 uppercase drop-shadow-sm whitespace-nowrap">
                 Sınıf Seç:
               </span>
               {[
@@ -625,329 +572,309 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   key={g.id}
                   onClick={() => {
                     setEnglishGrade(g.id as any);
+                    if (activeMode === 'matching') {
+                      setActiveMode(playerCountMode === 1 ? 'quiz1' : playerCountMode === 3 ? 'duel3' : 'duel2');
+                    }
                     playSound('click');
                   }}
-                  className={`px-2 py-0.5 rounded-lg text-[9px] sm:text-[10px] font-black transition-all cursor-pointer border ${
-                    englishGrade === g.id
-                      ? 'bg-amber-400 text-slate-950 border-white shadow-xs font-black'
-                      : 'bg-white/15 text-white/90 border-white/20 hover:bg-white/25'
+                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
+                    englishGrade === g.id && activeMode !== 'matching'
+                      ? 'bg-amber-400 text-slate-950 border-white shadow-[0_0_10px_rgba(251,191,36,0.7)] font-black scale-105'
+                      : 'bg-white/15 text-white/90 border-white/20 hover:bg-white/25 hover:text-white'
                   }`}
                 >
                   {g.label}
                 </button>
               ))}
+
+              {/* HAFIZA KARTI BUTONU - 4. Sınıf Butonunun Hemen Yanında */}
+              <button
+                onClick={() => {
+                  setActiveMode('matching');
+                  playSound('click');
+                }}
+                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
+                  activeMode === 'matching'
+                    ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 border-white shadow-[0_0_12px_rgba(52,211,153,0.8)] scale-105 font-black'
+                    : 'bg-emerald-800/80 text-emerald-200 border-emerald-500/50 hover:bg-emerald-700/90 hover:text-white'
+                }`}
+              >
+                <span>🧩 Hafıza Kartı</span>
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center justify-start gap-2 flex-wrap flex-1 min-w-0">
+              <button
+                onClick={() => {
+                  setActiveMode(playerCountMode === 1 ? 'quiz1' : playerCountMode === 3 ? 'duel3' : 'duel2');
+                  playSound('click');
+                }}
+                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
+                  activeMode !== 'matching'
+                    ? 'bg-amber-400 text-slate-950 border-white shadow-md font-black scale-105'
+                    : 'bg-white/15 text-white/90 border-white/20 hover:bg-white/25'
+                }`}
+              >
+                <span>🎯 Kelime Kapışması</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveMode('matching');
+                  playSound('click');
+                }}
+                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
+                  activeMode === 'matching'
+                    ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 border-white shadow-[0_0_12px_rgba(52,211,153,0.8)] scale-105 font-black'
+                    : 'bg-emerald-800/80 text-emerald-200 border-emerald-500/50 hover:bg-emerald-700/90 hover:text-white'
+                }`}
+              >
+                <span>🧩 Hafıza Kartı</span>
+              </button>
             </div>
           )}
+
+          {/* RESTART BUTTON (YENİDEN BAŞLAT) */}
+          <button
+            onClick={restartCurrentGame}
+            title="Yeniden Başlat"
+            className="group relative w-8 h-8 sm:w-9 sm:h-9 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0 ml-1"
+          >
+            <img 
+              src="/tekrar.png" 
+              alt="Yeniden Başlat" 
+              className="w-full h-full object-contain pointer-events-none" 
+            />
+          </button>
         </div>
       )}
 
-      {/* 4. MAIN GAME CONTENT AREA OR COMPLETION SCREEN */}
-      <main className="relative z-10 flex-1 flex flex-col p-1.5 sm:p-3 max-w-6xl mx-auto w-full justify-between overflow-y-auto no-scrollbar min-h-0">
-        
-        {/* ========================================================================= */}
-        {/* A. STANDARDIZED COMPLETION SCREEN (KAPIŞMA ŞAMPİYONU / 3 GÖRSEL KÜRSÜSÜ) */}
-        {/* ========================================================================= */}
+      {/* 4. MAIN CONTENT CONTAINER */}
+      <main className="relative z-10 flex-1 flex flex-col p-2 sm:p-3 overflow-hidden min-h-0">
         {showCompletionScreen ? (
-          <div 
-            className="relative flex-1 flex flex-col items-center justify-center overflow-hidden w-full max-w-4xl mx-auto min-h-0 my-auto rounded-2xl bg-cover bg-center bg-no-repeat shadow-2xl border-2 border-amber-500/50 px-2 sm:px-4 py-2"
-            style={{ backgroundImage: `url('/dere3.jpeg')` }}
-          >
-            {/* UNIFIED CONTAINER FOR HEADER & PODIUM (CENTERED IN THE CREAM PARCHMENT AREA OF DERE3.JPEG) */}
-            <div className="relative w-full max-w-[560px] sm:max-w-[660px] md:max-w-[720px] flex flex-col items-center justify-center my-auto select-none px-2 py-1">
-              {/* 1. TOP HEADER SECTION: bb3.png BANNER (INSIDE CREAM REGION) */}
-              <div className="relative z-10 flex flex-col items-center shrink-0 w-full mb-1 sm:mb-2">
-                <div className="relative w-full max-w-[360px] xs:max-w-[420px] sm:max-w-[500px] h-12 xs:h-14 sm:h-16 flex items-center justify-center px-4">
-                  <div 
-                    className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]"
-                    style={{ backgroundImage: `url('/bb3.png')` }}
-                  />
-                  <div className="relative z-10 flex flex-col items-center justify-center -translate-y-0.5 sm:-translate-y-1">
-                    <h2 className="text-[13px] xs:text-[15px] sm:text-lg md:text-xl font-black text-amber-200 uppercase tracking-wider drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)] leading-tight">
-                      {(activeMode === 'duel2' || activeMode === 'duel3')
-                        ? (activeMode === 'duel3' ? '🏆 3 OYUNCU KAPIŞMA ŞAMPİYONU' : '🏆 2 OYUNCU KAPIŞMA ŞAMPİYONU')
-                        : activeMode === 'quiz1'
-                        ? '🏆 TEST TAMAMLANDI!'
-                        : '🧩 HAFIZA ŞAMPİYONU!'}
-                    </h2>
-                    <p className="text-[11px] xs:text-[12.5px] sm:text-sm md:text-base font-black text-yellow-300 uppercase tracking-wide drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)] leading-tight mt-0.5">
-                      {(activeMode === 'duel2' || activeMode === 'duel3')
-                        ? (duelWinnerIndex === 0
-                            ? '1. GRUP (KAPLAN) KAZANDI! 🥇'
-                            : duelWinnerIndex === 1
-                            ? '2. GRUP (EJDERHA) KAZANDI! 🥇'
-                            : '3. GRUP (SAVAŞÇI) KAZANDI! 🥇')
-                        : activeMode === 'quiz1'
-                        ? `${quizScore} Doğru Cevapla Tebrikler! 🎉`
-                        : `${matchMoves} Hamlede Tamamladın! 🎉`}
-                    </p>
+          /* ========================================================================= */
+          /* A. VICTORY / GAME OVER COMPLETION SCREEN                                  */
+          /* ========================================================================= */
+          <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 text-center animate-fadeIn min-h-0 overflow-y-auto no-scrollbar">
+            <div className="relative max-w-md w-full bg-slate-950/80 backdrop-blur-xl border-3 border-amber-400 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col items-center">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-amber-400 border-2 border-white shadow-lg flex items-center justify-center mb-3 animate-bounce">
+                <Trophy size={40} className="text-slate-950" />
+              </div>
+
+              {activeMode === 'matching' && (
+                <>
+                  <h2 className="text-xl sm:text-2xl font-black text-amber-300 uppercase tracking-wide mb-1">
+                    Tebrikler! Hafıza Tamamlandı!
+                  </h2>
+                  <p className="text-white/80 text-xs sm:text-sm font-bold mb-4">
+                    {matchMoves} Hamlede ve {matchTimer} saniyede tüm çiftleri buldun!
+                  </p>
+                </>
+              )}
+
+              {activeMode === 'quiz1' && (
+                <>
+                  <h2 className="text-xl sm:text-2xl font-black text-amber-300 uppercase tracking-wide mb-1">
+                    Oyun Sona Erdi!
+                  </h2>
+                  <p className="text-white/80 text-xs sm:text-sm font-bold mb-4">
+                    Toplam Skorun: <span className="text-amber-400 font-black text-base">{quizScore}</span>
+                  </p>
+                </>
+              )}
+
+              {(activeMode === 'duel2' || activeMode === 'duel3') && duelWinnerIndex !== null && (
+                <>
+                  <div className="text-xs font-black uppercase text-amber-400 tracking-wider mb-1">
+                    Şampiyon Belli Oldu!
                   </div>
-                </div>
-              </div>
+                  <h2 className="text-xl sm:text-3xl font-black text-white uppercase tracking-wide mb-1 drop-shadow-md">
+                    👑 {duelPlayers[duelWinnerIndex]?.name} ({duelPlayers[duelWinnerIndex]?.avatar}) KAZANDI!
+                  </h2>
+                  <p className="text-white/80 text-xs sm:text-sm font-bold mb-4">
+                    {duelPlayers[duelWinnerIndex]?.score} Puan ile zafer senin oldu!
+                  </p>
+                </>
+              )}
 
-              {/* 2. MIDDLE SECTION: 3-IMAGE PODIUM CEREMONY (CENTERED) */}
-              <div className="relative z-10 w-full flex items-end justify-center py-1">
-                <div className="w-full flex items-end justify-center gap-2 xs:gap-3 sm:gap-5 px-1">
-                  {(() => {
-                    const rankedDuelIndices = [0, 1, 2].sort((a, b) => {
-                      const isWinnerA = (activeMode === 'duel2' || activeMode === 'duel3') ? a === duelWinnerIndex : a === 0;
-                      const isWinnerB = (activeMode === 'duel2' || activeMode === 'duel3') ? b === duelWinnerIndex : b === 0;
-                      if (isWinnerA) return -1;
-                      if (isWinnerB) return 1;
-                      const scoreA = duelPlayers[a]?.score ?? (a === 0 ? quizScore : 0);
-                      const scoreB = duelPlayers[b]?.score ?? (b === 0 ? quizScore : 0);
-                      if (scoreB !== scoreA) return scoreB - scoreA;
-                      return a - b;
-                    });
-                    const duelGroupRanks: Record<number, number> = {};
-                    rankedDuelIndices.forEach((gIdx, rankIdx) => {
-                      duelGroupRanks[gIdx] = rankIdx + 1;
-                    });
-
-                    return [
-                      { pIdx: 0, name: "1. GRUP", img: "/kap.png", label: "KAPLAN", headerColor: "bg-blue-600 border-blue-300" },
-                      { pIdx: 1, name: "2. GRUP", img: "/ejd.png", label: "EJDERHA", headerColor: "bg-rose-600 border-rose-300" },
-                      { pIdx: 2, name: "3. GRUP", img: "/balta.png", label: "SAVAŞÇI", headerColor: "bg-emerald-600 border-emerald-300" }
-                    ].map((group) => {
-                      const p = duelPlayers[group.pIdx] || { score: activeMode === 'quiz1' && group.pIdx === 0 ? quizScore : 0 };
-                      const rank = duelGroupRanks[group.pIdx] || 1;
-                      const isWinner = rank === 1;
-
-                      return (
-                        <div
-                          key={group.pIdx}
-                          className={`flex-1 max-w-[85px] xs:max-w-[105px] sm:max-w-[130px] flex flex-col items-center justify-end transition-all duration-500 ${
-                            isWinner ? '-translate-y-1.5 sm:-translate-y-2.5 z-20' : 'translate-y-0 z-10 opacity-95'
-                          }`}
-                        >
-                          {/* SCORE BADGE DIRECTLY ABOVE IMAGE */}
-                          <div className="mb-0.5 flex flex-col items-center shrink-0">
-                            {isWinner && (
-                              <span className="text-xs xs:text-sm sm:text-lg filter drop-shadow-md animate-bounce mb-0.5">👑</span>
-                            )}
-                            <div
-                              className={`px-1.5 xs:px-2 sm:px-2.5 py-0.5 rounded-full font-black text-[7.5px] xs:text-[8.5px] sm:text-[11px] tracking-wider shadow-lg border uppercase whitespace-nowrap ${
-                                isWinner
-                                  ? 'bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 border-white ring-2 ring-yellow-300/80 drop-shadow-[0_2px_8px_rgba(251,191,36,0.9)]'
-                                  : 'bg-slate-900/90 text-amber-300 border-amber-400/50 shadow-md'
-                              }`}
-                            >
-                              {p.score} PUAN
-                            </div>
-                          </div>
-
-                          {/* CHARACTER IMAGE (1 OF 3 VISUALS) */}
-                          <div className={`relative flex items-center justify-center ${isWinner ? 'scale-105 sm:scale-115' : 'scale-90 sm:scale-95'} transition-transform`}>
-                            {isWinner && (
-                              <div className="absolute inset-0 bg-yellow-400/25 rounded-full blur-xl animate-pulse pointer-events-none" />
-                            )}
-                            <img
-                              src={group.img}
-                              alt={group.name}
-                              className={`w-10 h-10 xs:w-12 xs:h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 object-contain filter select-none pointer-events-none transition-all ${
-                                isWinner
-                                  ? 'drop-shadow-[0_0_16px_rgba(251,191,36,0.95)] brightness-110'
-                                  : 'drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]'
-                              }`}
-                            />
-                          </div>
-
-                          {/* GROUP NAME BADGE */}
-                          <div
-                            className={`mt-0.5 px-1.5 xs:px-2 py-0.5 rounded text-[7.5px] xs:text-[8.5px] sm:text-[11px] font-black uppercase text-white tracking-wider shadow-md border whitespace-nowrap ${
-                              isWinner ? 'bg-amber-500 border-yellow-200 text-slate-950 shadow-yellow-500/50' : `${group.headerColor} text-white`
-                            }`}
-                          >
-                            {isWinner ? `🥇 ${group.name}` : rank === 2 ? `🥈 ${group.name}` : `🥉 ${group.name}`}
-                          </div>
-
-                          {/* PODIUM PEDESTAL / KÜRSÜ STAND */}
-                          <div
-                            className={`w-full mt-0.5 rounded-t-lg flex flex-col items-center justify-center border-t-2 border-x-2 shadow-2xl ${
-                              isWinner
-                                ? 'h-6 xs:h-7 sm:h-9 bg-gradient-to-b from-amber-400 via-yellow-400 to-amber-600 border-yellow-200 text-slate-950 font-black'
-                                : 'h-3.5 xs:h-4 sm:h-6 bg-gradient-to-b from-slate-700 via-slate-800 to-slate-950 border-slate-500 text-slate-300 font-bold'
-                            }`}
-                          >
-                            <span className={`text-[7.5px] xs:text-[8.5px] sm:text-[11px] font-black drop-shadow-sm ${isWinner ? 'text-slate-950' : 'text-slate-300'}`}>
-                              {isWinner ? '1. ŞAMPİYON' : `${rank}. SIRA`}
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
-              </div>
-
-              {/* 3. ACTION BUTTONS (INSIDE CREAM REGION, DIRECTLY UNDER PODIUM STANDS) */}
-              <div className="relative z-50 shrink-0 flex items-center justify-center gap-5 sm:gap-7 w-full max-w-xs mt-2.5 sm:mt-3.5">
-                {/* REPLAY ICON BUTTON (tekrar.png) */}
+              <div className="flex items-center gap-2 sm:gap-3 w-full">
                 <button
                   onClick={restartCurrentGame}
-                  title="Yeniden Oyna"
-                  className="group relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)] shrink-0"
+                  className="flex-1 py-2.5 sm:py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg hover:scale-105 active:scale-95 transition-all border-2 border-white cursor-pointer"
                 >
-                  <img 
-                    src="/tekrar.png" 
-                    alt="Yeniden Oyna" 
-                    className="w-full h-full object-contain pointer-events-none" 
-                  />
+                  Yeniden Oyna
                 </button>
-
-                {/* MENU ICON BUTTON (menu.png) */}
                 <button
                   onClick={onClose}
-                  title="Menüye Dön"
-                  className="group relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)] shrink-0"
+                  className="flex-1 py-2.5 sm:py-3 rounded-2xl bg-white/20 text-white font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white/30 active:scale-95 transition-all border border-white/40 cursor-pointer"
                 >
-                  <img 
-                    src="/menu.png" 
-                    alt="Menüye Dön" 
-                    className="w-full h-full object-contain pointer-events-none" 
-                  />
+                  Ana Sayfaya Dön
                 </button>
               </div>
             </div>
           </div>
         ) : (
           /* ========================================================================= */
-          /* B. ACTIVE GAMEPLAY SCREENS (DUELS, 1-PLAYER QUIZ, MATCHING)               */
+          /* B. ACTIVE GAMEPLAY SCREENS                                                 */
           /* ========================================================================= */
           <>
-            {/* MULTIPLAYER DUEL: 2 & 3 PLAYER INDEPENDENT BOARDS */}
+            {/* MULTIPLAYER DUEL: 2 & 3 PLAYERS */}
             {(activeMode === 'duel2' || activeMode === 'duel3') && (
               <div className="flex-1 flex flex-col w-full h-full min-h-0">
-                {/* COMMON TOP BAR: TOPIC & DUEL BADGE */}
-                <div
-                  style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                  className="relative overflow-hidden bg-cover bg-center rounded-2xl px-3 py-1.5 mb-2 shrink-0 flex items-center justify-between gap-2 min-h-[44px]"
-                >
-                  <span className="px-3 py-0.5 bg-amber-400 text-blue-950 font-black text-xs sm:text-sm rounded-xl shadow-md uppercase tracking-wider shrink-0">
+                {/* COMMON TOP BAR: SLEEK GLASS CAPSULES MATCHING MAIN CLASSROOM LAYOUT */}
+                <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
+                  <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
                     ⚔️ {activeMode === 'duel2' ? '2' : '3'} OYUNCU DÜELLO
                   </span>
-                  <div className="flex-1 min-w-0 text-center">
-                    <h2 className="text-xs sm:text-base md:text-lg font-black text-amber-950 uppercase tracking-tight truncate drop-shadow-sm">
-                      {gameTitle} ({gameConcept.toUpperCase()} ANLAM)
-                    </h2>
+                  <div className="flex-1 min-w-0 text-center px-1 sm:px-2">
+                    <div className="inline-block max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-1 sm:py-1.5 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                      <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
+                        {gameTitle} ({gameConcept.toUpperCase()})
+                      </h2>
+                    </div>
                   </div>
-                  <span className="px-2.5 py-0.5 bg-slate-900/80 text-amber-300 border border-amber-400/50 font-black text-xs rounded-xl shadow-sm uppercase shrink-0">
-                    HEDEF: {duelTargetScore} PUAN
+                  <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
+                    🎯 HEDEF: {duelTargetScore} PUAN
                   </span>
                 </div>
 
                 {/* PLAYERS GRID */}
-                <div className={`flex-1 grid grid-cols-1 ${activeMode === 'duel2' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3 w-full min-h-0 overflow-y-auto no-scrollbar`}>
-                  {duelPlayers.map((p, pIdx) => (
-                    <div
-                      key={p.id}
-                      className={`relative flex flex-col justify-between p-2 sm:p-3 rounded-2xl sm:rounded-3xl border-3 ${p.colorTheme.border} bg-gradient-to-b ${p.colorTheme.bg} shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
-                    >
-                      {/* PLAYER HEADER WITH CHARACTER ICON & LIVES */}
-                      <div className={`relative overflow-hidden ${p.colorTheme.headerBg} rounded-xl p-2 flex items-center justify-between shadow-md shrink-0 border border-white/40`}>
-                        <div className="flex items-center gap-1.5 min-w-0">
-                          <img 
-                            src={p.img} 
-                            alt={p.name} 
-                            className="w-7 h-7 sm:w-8 sm:h-8 object-contain filter drop-shadow-md shrink-0"
-                          />
-                          <span className="font-black text-xs sm:text-sm text-white uppercase tracking-wider truncate drop-shadow-md">
-                            {p.name} ({p.avatar})
-                          </span>
+                <div className={`flex-1 grid grid-cols-1 ${activeMode === 'duel2' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
+                  {duelPlayers.map((p, pIdx) => {
+                    const groupTheme = pIdx === 0 
+                      ? {
+                          badgeBg: "from-purple-800 via-purple-900 to-indigo-950",
+                          badgeBorder: "border-purple-300",
+                          badgeShadow: "shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                          buttonDefault: "border-purple-400/90 bg-purple-950/40 hover:bg-purple-900/60 active:bg-purple-800/80 shadow-[0_0_16px_rgba(168,85,247,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                        }
+                      : pIdx === 1
+                      ? {
+                          badgeBg: "from-amber-600 via-amber-800 to-orange-950",
+                          badgeBorder: "border-amber-300",
+                          badgeShadow: "shadow-[0_0_16px_rgba(251,191,36,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                          buttonDefault: "border-amber-400/90 bg-amber-950/40 hover:bg-amber-900/60 active:bg-amber-800/80 shadow-[0_0_16px_rgba(245,158,11,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                        }
+                      : {
+                          badgeBg: "from-emerald-600 via-teal-800 to-slate-950",
+                          badgeBorder: "border-emerald-300",
+                          badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                          buttonDefault: "border-emerald-400/90 bg-emerald-950/40 hover:bg-emerald-900/60 active:bg-emerald-800/80 shadow-[0_0_16px_rgba(16,185,129,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                        };
+
+                    return (
+                      <div
+                        key={p.id}
+                        className="relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl overflow-hidden min-h-0 z-10 transition-all"
+                      >
+                        {/* PLAYER HEADER BAR */}
+                        <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+                          {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
+                          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
+                            {pIdx + 1}
+                          </div>
+
+                          {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
+                          <div className="flex-1 ml-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/30 rounded-xl sm:rounded-2xl px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
+                            <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
+                              {pIdx + 1}. GRUP ({p.avatar})
+                            </span>
+
+                            {/* RIGHT: SCORE & HEARTS */}
+                            <div className="flex items-center gap-2 shrink-0">
+                              <span className="bg-white/15 text-white font-black text-[11px] sm:text-xs px-2 py-0.5 rounded-lg shadow-sm">
+                                {p.score} / {duelTargetScore}
+                              </span>
+                              <div className="flex items-center gap-0.5">
+                                {Array.from({ length: 3 }).map((_, i) => (
+                                  <span key={i} className={`text-xs sm:text-sm transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
+                                    ❤️
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
                         </div>
 
-                        {/* LIVES & SCORE */}
-                        <div className="flex items-center gap-2">
-                          <div className="flex items-center gap-0.5">
-                            {Array.from({ length: 3 }).map((_, li) => (
-                              <Heart
-                                key={li}
-                                size={16}
-                                className={`transition-all duration-300 ${
-                                  li < p.lives
-                                    ? 'text-red-400 fill-red-500 filter drop-shadow-md scale-100'
-                                    : 'text-slate-500 fill-slate-700/50 opacity-40 scale-90'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <div className="bg-black/50 border border-amber-300/80 text-amber-300 px-2 py-0.5 rounded-lg font-black text-xs shadow-inner shrink-0">
-                            {p.score} / {duelTargetScore}
-                          </div>
+                        {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
+                        <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-2 sm:p-3 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[130px] sm:min-h-[155px]">
+                          {/* Top glare effect */}
+                          <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+
+                          {p.isEliminated ? (
+                            <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
+                              <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
+                              <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
+                                ELENDİ!
+                              </div>
+                              <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
+                                Diğer oyuncular yarışıyor...
+                              </div>
+                            </div>
+                          ) : p.currentQuestion ? (
+                            <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-y-auto no-scrollbar">
+                              <div className="text-[10px] sm:text-xs font-black uppercase text-amber-300 tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
+                                {isIng ? 'TÜRKÇE ANLAMI:' : `${gameConcept.toUpperCase()} ANLAMLISI:`}
+                              </div>
+
+                              {/* TARGET WORD DISPLAY */}
+                              <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-sm sm:text-base md:text-lg tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 border-white flex items-center justify-center gap-1.5 max-w-full truncate">
+                                {p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
+                                <span className="truncate">{p.currentQuestion.word}</span>
+                              </div>
+                            </div>
+                          ) : null}
                         </div>
-                      </div>
 
-                      {/* QUESTION CONTAINER - SAME WOODEN BOARD (ark22.png) AS 1-PLAYER */}
-                      <div className="relative flex-1 rounded-2xl p-1 sm:p-2 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[140px] sm:min-h-[160px]">
-                        <div 
-                          className="absolute inset-0 bg-[length:100%_100%] bg-center bg-no-repeat pointer-events-none rounded-xl"
-                          style={{ backgroundImage: `url('/ark22.png')` }}
-                        />
-
-                        {p.isEliminated ? (
-                          <div className="relative z-20 flex flex-col items-center justify-center gap-1.5 p-2">
-                            <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
-                            <div className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
-                              ELENDİ!
-                            </div>
-                            <div className="text-white/90 text-xs sm:text-sm font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
-                              3 Hata Yaptı
-                            </div>
-                          </div>
-                        ) : p.currentQuestion ? (
-                          <div className="absolute top-[8%] bottom-[8%] left-[10%] right-[10%] z-10 flex flex-col items-center justify-center text-center overflow-visible px-1">
-                            <div className="text-[10px] sm:text-xs font-black uppercase text-amber-300/90 tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
-                              {isIng ? 'TÜRKÇE ANLAMI:' : `${gameConcept.toUpperCase()} ANLAMLISI:`}
-                            </div>
-
-                            {/* TARGET WORD DISPLAY */}
-                            <div className="px-3.5 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-base sm:text-lg md:text-xl tracking-wide uppercase shadow-lg border-2 border-white flex items-center gap-1.5 max-w-full truncate">
-                              {p.currentQuestion.emoji && <span className="text-lg">{p.currentQuestion.emoji}</span>}
-                              <span className="truncate">{p.currentQuestion.word}</span>
-                            </div>
-                          </div>
-                        ) : null}
-                      </div>
-
-                      {/* 4 CHOICES GRID UNDER THE QUESTION (MATCHING 1-PLAYER & CLASSROOM DUELS) */}
-                      {!p.isEliminated && p.currentQuestion && (
-                        <div className="grid grid-cols-2 gap-1 sm:gap-1.5 w-full shrink-0 z-10">
-                          {p.currentQuestion.options.map((opt, oIdx) => {
-                            const isSelected = p.selectedOption === opt;
-                            const isCorrectOpt = opt === p.currentQuestion?.correct;
-                            const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], true);
-                            let btnStyle = p.colorTheme.optBg;
-
-                            if (p.feedback !== 'none') {
-                              if (isCorrectOpt) {
-                                btnStyle = 'bg-emerald-500 text-slate-950 border-white shadow-emerald-500/50 scale-102';
-                              } else if (isSelected && !isCorrectOpt) {
-                                btnStyle = 'bg-rose-600 text-white border-rose-300 opacity-90 scale-98';
-                              } else {
-                                btnStyle = 'bg-slate-800/80 text-slate-400 border-slate-700 opacity-50';
+                        {/* 4 CHOICES GRID UNDER THE QUESTION */}
+                        {!p.isEliminated && p.currentQuestion && (
+                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0 z-10">
+                            {p.currentQuestion.options.map((opt, oIdx) => {
+                              const isSelected = p.selectedOption === opt;
+                              const isCorrectOpt = opt === p.currentQuestion?.correct;
+                              const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], activeMode === 'duel3' ? 3 : 2);
+                              
+                              let btnClass = groupTheme.buttonDefault;
+                              if (p.feedback !== 'none') {
+                                if (isCorrectOpt) {
+                                  btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse text-emerald-100";
+                                } else if (isSelected) {
+                                  btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80 text-rose-100";
+                                } else {
+                                  btnClass = "opacity-35 border-slate-700 bg-slate-900/60";
+                                }
                               }
-                            }
 
-                            return (
-                              <button
-                                key={oIdx}
-                                disabled={p.feedback !== 'none' || p.isEliminated}
-                                onClick={() => handleMultiplayerAnswer(pIdx, opt)}
-                                className={`relative px-1.5 xs:px-2 py-2 sm:py-2.5 rounded-xl ${optFontClass} tracking-wide border-2 transition-all transform active:scale-95 flex items-center justify-center text-center cursor-pointer shadow-md overflow-hidden min-h-[38px] sm:min-h-[44px] ${btnStyle}`}
-                              >
-                                <span className="truncate whitespace-nowrap uppercase drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] [text-shadow:0_1px_2px_#000]">{opt}</span>
-                                {p.feedback !== 'none' && isCorrectOpt && (
-                                  <CheckCircle2 size={14} className="ml-1 text-slate-950 shrink-0" />
-                                )}
-                                {p.feedback !== 'none' && isSelected && !isCorrectOpt && (
-                                  <XCircle size={14} className="ml-1 text-white shrink-0" />
-                                )}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+                              const optHeightClasses = activeMode === 'duel3' 
+                                ? "py-2.5 sm:py-3.5 px-1.5 min-h-[50px] sm:min-h-[60px]" 
+                                : "py-3 sm:py-4.5 px-2 min-h-[58px] sm:min-h-[70px]";
+
+                              return (
+                                <button
+                                  key={oIdx}
+                                  disabled={p.feedback !== 'none' || p.isEliminated}
+                                  onClick={() => handleMultiplayerAnswer(pIdx, opt)}
+                                  className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                                >
+                                  {/* Inner top glare */}
+                                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                                  <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                                    {opt}
+                                  </span>
+                                  {p.feedback !== 'none' && isCorrectOpt && (
+                                    <CheckCircle2 size={16} className="absolute right-2 text-emerald-400 shrink-0 filter drop-shadow-md" />
+                                  )}
+                                  {p.feedback !== 'none' && isSelected && !isCorrectOpt && (
+                                    <XCircle size={16} className="absolute right-2 text-rose-400 shrink-0 filter drop-shadow-md" />
+                                  )}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -955,73 +882,77 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             {/* 1-PLAYER TEST QUIZ */}
             {activeMode === 'quiz1' && quizQuestion && (
               <div className="flex-1 flex flex-col items-center justify-between max-w-xl mx-auto w-full py-1">
-                
-                {/* TOP STATS BAR */}
-                <div
-                  style={{ backgroundImage: `url('/basback2.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                  className="relative overflow-hidden bg-cover bg-center rounded-2xl p-2 flex justify-between items-center w-full shrink-0 mb-1.5 min-h-[44px]"
-                >
-                  <div className="flex items-center gap-1 z-10">
-                    {Array.from({ length: 3 }).map((_, i) => (
-                      <Heart
-                        key={i}
-                        size={20}
-                        className={`transition-all duration-300 ${
-                          i < quizLives
-                            ? 'text-red-400 fill-red-500 filter drop-shadow-md scale-100'
-                            : 'text-slate-500 fill-slate-700/50 opacity-40 scale-90'
-                        }`}
-                      />
-                    ))}
-                  </div>
-
-                  <div className="flex items-center gap-2 z-10">
-                    <span className="font-black text-sm text-amber-950 uppercase tracking-wide drop-shadow-xs">
-                      Skor: {quizScore}
-                    </span>
-                    {quizStreak >= 2 && (
-                      <span className="px-2 py-0.5 rounded-full bg-orange-500 text-white font-black text-xs uppercase shadow-sm animate-pulse">
-                        🔥 {quizStreak}x Seri
+                {/* TOP BAR: GLASS CAPSULES MATCHING MAIN CLASSROOM LAYOUT */}
+                <div className="flex items-center justify-between gap-2 mb-2 shrink-0 w-full">
+                  {/* LEFT: GROUP BADGE & TOPIC */}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-sm sm:text-base flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
+                      1
+                    </div>
+                    <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1 sm:py-1.5 flex flex-col min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                      <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
+                        1. GRUP
                       </span>
-                    )}
+                      <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
+                        {gameTitle} ({gameConcept.toUpperCase()})
+                      </span>
+                    </div>
                   </div>
-                </div>
 
-                {/* QUESTION CARD - CRISP WOODEN BOARD (ark22.png) */}
-                <div className="relative flex-1 rounded-2xl p-1 sm:p-2 flex flex-col items-center justify-center text-center my-1 sm:my-1.5 min-h-[180px] sm:min-h-[220px] md:min-h-[260px] w-full max-w-xl mx-auto z-10 overflow-hidden">
-                  <div 
-                    className="absolute inset-0 bg-[length:100%_100%] bg-center bg-no-repeat pointer-events-none rounded-2xl"
-                    style={{ backgroundImage: `url('/ark22.png')` }}
-                  />
-
-                  {/* QUESTION TEXT - INSIDE INNER WOODEN BOARD */}
-                  <div className="absolute top-[10%] bottom-[10%] left-[10%] right-[10%] z-10 flex flex-col items-center justify-center text-center px-2 py-1">
-                    <span className="text-[11px] sm:text-xs md:text-sm font-black text-amber-300 uppercase tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
-                      {isIng ? 'Bu Kelimenin Türkçe Anlamını Seç:' : `Bu Kelimenin ${gameConcept} Anlamlısını Seç:`}
-                    </span>
-
-                    <div className="px-5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xl sm:text-2xl md:text-3xl tracking-wide uppercase shadow-lg border-2 border-white flex items-center gap-2 my-1">
-                      {quizQuestion.emoji && <span className="text-2xl">{quizQuestion.emoji}</span>}
-                      <span>{quizQuestion.word}</span>
+                  {/* RIGHT: SCORE & LIVES */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                      <span className="bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-2.5 py-1 rounded-lg sm:rounded-xl shadow-md uppercase tracking-wider">
+                        PUAN: {quizScore} / 10
+                      </span>
+                      {quizStreak >= 2 && (
+                        <span className="px-2 py-0.5 rounded-lg bg-orange-500 text-white font-black text-xs uppercase shadow-sm animate-pulse hidden sm:inline-block">
+                          🔥 {quizStreak}x
+                        </span>
+                      )}
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <span key={i} className={`text-sm sm:text-base transition-all ${i < quizLives ? 'scale-110 text-rose-500 drop-shadow-[0_0_6px_#f43f5e]' : 'opacity-30 grayscale'}`}>
+                            ❤️
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* 4 CHOICES - DYNAMIC AUTO FONT SIZE (NEVER LINE WRAPS) */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-xl shrink-0 mt-1 sm:mt-2">
+                {/* QUESTION CARD - MODERN GLASSMORPHISM DESIGN MATCHING GRADE ACTIVITIES */}
+                <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-3 sm:p-4 my-1.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[140px] sm:min-h-[175px] w-full max-w-xl mx-auto">
+                  {/* Inner top glare */}
+                  <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                  
+                  <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-lg px-2">
+                    <span className="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-widest mb-1.5 [text-shadow:_0_2px_4px_#000]">
+                      {isIng ? 'BU KELİMENİN TÜRKÇE KARŞILIĞI:' : `BU KELİMENİN ${gameConcept.toUpperCase()} ANLAMLISI:`}
+                    </span>
+                    
+                    <div className="px-5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-2xl sm:text-3xl md:text-4xl tracking-wide uppercase shadow-[0_8px_24px_rgba(245,158,11,0.5)] border-3 border-white flex items-center gap-2.5 my-1 transform hover:scale-105 transition-transform">
+                      {quizQuestion.emoji && <span className="text-2xl sm:text-3xl filter drop-shadow-md">{quizQuestion.emoji}</span>}
+                      <span className="[text-shadow:_0_1px_2px_rgba(255,255,255,0.8)]">{quizQuestion.word}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 4 CHOICES - MODERN RESPONSIVE BUTTON DESIGN */}
+                <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-xl shrink-0 mt-auto">
                   {quizQuestion.options.map((opt, oIdx) => {
                     const isSelected = quizSelectedOption === opt;
                     const isCorrect = opt === quizQuestion.correct;
-                    const optFontClass = getWordOptionFontSize(quizQuestion.options, false);
-                    let btnColor = 'bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 hover:from-indigo-500 hover:to-purple-500 text-white border-indigo-300';
-
+                    const optFontClass = getWordOptionFontSize(quizQuestion.options, 1);
+                    
+                    let btnClass = "border-cyan-400/90 bg-slate-950/45 hover:bg-cyan-950/60 active:bg-cyan-900/80 shadow-[0_0_18px_rgba(6,182,212,0.35),inset_0_1px_2px_rgba(255,255,255,0.3)] hover:scale-[1.02]";
                     if (quizFeedback !== 'none') {
                       if (isCorrect) {
-                        btnColor = 'bg-emerald-500 text-slate-950 border-white shadow-emerald-500/50 scale-102';
-                      } else if (isSelected && !isCorrect) {
-                        btnColor = 'bg-rose-600 text-white border-rose-300 opacity-90 scale-98';
+                        btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)] scale-105 animate-pulse";
+                      } else if (isSelected) {
+                        btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
                       } else {
-                        btnColor = 'bg-slate-800 text-slate-500 border-slate-700 opacity-40';
+                        btnClass = "opacity-35 border-slate-700 bg-slate-900/60";
                       }
                     }
 
@@ -1030,78 +961,84 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                         key={oIdx}
                         disabled={quizFeedback !== 'none'}
                         onClick={() => handleQuizAnswer(opt)}
-                        className={`relative group w-full min-h-[48px] xs:min-h-[54px] sm:min-h-[60px] px-3 py-2 rounded-2xl border-2 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center text-center cursor-pointer overflow-hidden filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] ${btnColor}`}
+                        className={`relative group w-full py-4 sm:py-6 px-2.5 min-h-[72px] sm:min-h-[88px] rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
                       >
-                        <span className={`${optFontClass} uppercase truncate whitespace-nowrap drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.95)]`}>
+                        {/* Inner top glare */}
+                        <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                        <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
                           {opt}
                         </span>
                         {quizFeedback !== 'none' && isCorrect && (
-                          <CheckCircle2 size={18} className="ml-1.5 text-slate-950 shrink-0 filter drop-shadow-md" />
+                          <CheckCircle2 size={20} className="absolute right-3 text-emerald-400 shrink-0 filter drop-shadow-md animate-bounce" />
                         )}
                         {quizFeedback !== 'none' && isSelected && !isCorrect && (
-                          <XCircle size={18} className="ml-1.5 text-white shrink-0 filter drop-shadow-md" />
+                          <XCircle size={20} className="absolute right-3 text-rose-400 shrink-0 filter drop-shadow-md" />
                         )}
                       </button>
                     );
                   })}
                 </div>
-
               </div>
             )}
 
-            {/* MEMORY CARDS MATCHING GAME */}
+            {/* MATCHING / MEMORY CARDS */}
             {activeMode === 'matching' && (
-              <div className="flex-1 flex flex-col items-center justify-between max-w-3xl mx-auto w-full py-1">
-                {/* STATUS BAR */}
-                <div className="w-full flex items-center justify-between px-4 py-2 rounded-2xl bg-black/40 border border-white/20 mb-2 text-xs sm:text-sm font-black text-amber-300">
-                  <div className="flex items-center gap-1.5">
-                    <Clock size={16} className="text-amber-400" />
-                    <span>Süre: {matchTimer} sn</span>
+              <div className="flex-1 flex flex-col items-center justify-between max-w-2xl mx-auto w-full py-1">
+                {/* STATS */}
+                <div className="flex items-center justify-between w-full px-3 py-1.5 rounded-2xl bg-black/50 border border-amber-400/40 text-white shrink-0 mb-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black">
+                    <Sparkles size={14} className="text-amber-400" />
+                    <span>Eşleşen: {matchedPairsCount} / {matchDifficulty}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <Zap size={16} className="text-amber-400" />
+                  <div className="flex items-center gap-1.5 text-xs font-black">
+                    <RotateCcw size={14} className="text-cyan-400" />
                     <span>Hamle: {matchMoves}</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <CheckCircle2 size={16} className="text-emerald-400" />
-                    <span>Eşleşen: {matchedPairsCount} / {matchDifficulty}</span>
+                  <div className="flex items-center gap-1.5 text-xs font-black">
+                    <Clock size={14} className="text-emerald-400" />
+                    <span>Süre: {matchTimer}s</span>
                   </div>
                 </div>
 
-                {/* CARDS GRID (3x4 or 4x3) */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 w-full max-w-2xl flex-1 items-center">
-                  {cards.map(card => (
-                    <button
-                      key={card.id}
-                      onClick={() => handleCardClick(card.id)}
-                      disabled={card.isFlipped || card.isMatched}
-                      className={`aspect-square sm:aspect-[4/3] rounded-2xl p-2 font-black text-xs sm:text-sm md:text-base border-3 flex flex-col items-center justify-center transition-all duration-300 transform active:scale-95 cursor-pointer shadow-lg ${
-                        card.isMatched
-                          ? 'bg-emerald-600/90 text-white border-emerald-300 opacity-90 scale-95'
-                          : card.isFlipped
-                          ? 'bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 text-slate-950 border-white scale-102'
-                          : 'bg-gradient-to-br from-indigo-700 via-purple-800 to-slate-900 text-amber-200 border-indigo-400/60 hover:border-amber-300 hover:scale-102'
-                      }`}
-                    >
-                      {card.isFlipped || card.isMatched ? (
-                        <>
-                          {card.emoji && <span className="text-lg sm:text-xl mb-0.5">{card.emoji}</span>}
-                          <span className="leading-tight uppercase text-center break-words">{card.text}</span>
-                        </>
-                      ) : (
-                        <div className="flex flex-col items-center justify-center text-amber-300/80">
-                          <span className="text-xl sm:text-2xl">❓</span>
-                          <span className="text-[9px] uppercase tracking-wider mt-0.5 text-amber-200/70 font-bold">Aç</span>
-                        </div>
-                      )}
-                    </button>
-                  ))}
+                {/* 3x4 CARDS GRID */}
+                <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full min-h-0 items-center justify-center">
+                  {cards.map(card => {
+                    const isFlipped = card.isFlipped || card.isMatched;
+                    return (
+                      <div
+                        key={card.id}
+                        onClick={() => handleCardClick(card.id)}
+                        className={`relative aspect-[4/3] rounded-2xl border-2 sm:border-3 transition-all transform cursor-pointer flex flex-col items-center justify-center p-1.5 text-center shadow-lg ${
+                          card.isMatched
+                            ? 'bg-emerald-600/90 border-emerald-300 text-white opacity-85 scale-95'
+                            : isFlipped
+                            ? 'bg-gradient-to-br from-amber-400 via-yellow-300 to-amber-500 border-white text-slate-950 scale-102 shadow-amber-400/50'
+                            : 'bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900 border-indigo-400/60 hover:border-amber-300 hover:scale-102 text-white'
+                        }`}
+                      >
+                        {isFlipped ? (
+                          <div className="flex flex-col items-center justify-center gap-0.5">
+                            {card.emoji && <span className="text-base sm:text-lg">{card.emoji}</span>}
+                            <span className="font-black text-xs sm:text-sm uppercase tracking-wide leading-tight">
+                              {card.text}
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center">
+                            <span className="text-xl sm:text-2xl filter drop-shadow-md">❓</span>
+                            <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-indigo-200/70 uppercase mt-0.5">
+                              KART
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </>
         )}
-
       </main>
     </div>
   );

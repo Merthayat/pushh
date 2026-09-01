@@ -44,13 +44,92 @@ function getRastgeleOgrenci(): string {
   return toTitleCaseTR(raw);
 }
 
+// DYNAMIC QUESTION FONT SIZING HELPER (RESPONSIVE & AUTO-ADAPTIVE)
+function getDynamicQuestionFontClass(
+  questionText: string = '',
+  hasHTML: boolean = false,
+  mode: 1 | 2 | 3 = 1
+): string {
+  const cleanText = (questionText || '').replace(/<[^>]*>?/gm, '').trim();
+  const len = cleanText.length;
+
+  if (mode === 1) {
+    if (hasHTML) {
+      if (len > 90) return "text-sm sm:text-base md:text-lg font-bold leading-normal";
+      if (len > 45) return "text-base sm:text-lg md:text-xl font-extrabold leading-snug";
+      return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
+    }
+    if (len <= 15) return "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black tracking-wide leading-tight";
+    if (len <= 35) return "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black tracking-wide leading-tight";
+    if (len <= 70) return "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black leading-snug";
+    if (len <= 110) return "text-base xs:text-lg sm:text-xl md:text-2xl font-extrabold leading-relaxed";
+    return "text-sm xs:text-base sm:text-lg md:text-xl font-bold leading-relaxed";
+  }
+
+  if (mode === 2) {
+    if (hasHTML) {
+      if (len > 70) return "text-xs sm:text-sm md:text-base font-bold leading-tight";
+      if (len > 35) return "text-sm sm:text-base md:text-lg font-extrabold leading-snug";
+      return "text-base sm:text-lg md:text-xl font-black leading-snug";
+    }
+    if (len <= 20) return "text-xl sm:text-2xl md:text-3xl font-black tracking-wide leading-tight";
+    if (len <= 45) return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
+    if (len <= 80) return "text-base sm:text-lg md:text-xl font-extrabold leading-snug";
+    if (len <= 120) return "text-sm sm:text-base md:text-lg font-bold leading-snug";
+    return "text-xs sm:text-sm md:text-base font-bold leading-tight";
+  }
+
+  // mode === 3 (3 Players)
+  if (hasHTML) {
+    if (len > 60) return "text-[11px] sm:text-xs md:text-sm font-bold leading-tight";
+    if (len > 30) return "text-xs sm:text-sm md:text-base font-extrabold leading-snug";
+    return "text-sm sm:text-base md:text-lg font-black leading-snug";
+  }
+  if (len <= 15) return "text-lg sm:text-xl md:text-2xl font-black tracking-wide leading-tight";
+  if (len <= 35) return "text-base sm:text-lg md:text-xl font-black leading-snug";
+  if (len <= 70) return "text-sm sm:text-base md:text-lg font-extrabold leading-snug";
+  if (len <= 110) return "text-xs sm:text-sm md:text-base font-bold leading-snug";
+  return "text-[11px] sm:text-xs md:text-sm font-bold leading-tight";
+}
+
+// UNIFORM OPTION FONT SIZING HELPER (CALCULATED FROM LONGEST OPTION IN SET)
+function getDynamicOptionFontClass(
+  options: (string | number)[] = [],
+  mode: 1 | 2 | 3 = 1
+): string {
+  const maxLen: number = options.reduce<number>((max, opt) => Math.max(max, String(opt ?? '').trim().length), 0);
+
+  if (mode === 1) {
+    if (maxLen <= 2) return "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black";
+    if (maxLen <= 5) return "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black";
+    if (maxLen <= 10) return "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
+    if (maxLen <= 18) return "text-base xs:text-lg sm:text-xl md:text-2xl font-extrabold";
+    return "text-sm xs:text-base sm:text-lg md:text-xl font-bold";
+  }
+
+  if (mode === 2) {
+    if (maxLen <= 2) return "text-xl sm:text-2xl md:text-3xl font-black";
+    if (maxLen <= 5) return "text-lg sm:text-xl md:text-2xl font-black";
+    if (maxLen <= 10) return "text-base sm:text-lg md:text-xl font-black";
+    if (maxLen <= 18) return "text-xs sm:text-sm md:text-base font-extrabold";
+    return "text-[11px] sm:text-xs md:text-sm font-bold";
+  }
+
+  // 3 Players
+  if (maxLen <= 2) return "text-lg sm:text-xl md:text-2xl font-black";
+  if (maxLen <= 5) return "text-base sm:text-lg md:text-xl font-black";
+  if (maxLen <= 10) return "text-xs sm:text-sm md:text-base font-black";
+  if (maxLen <= 18) return "text-[11px] sm:text-xs md:text-sm font-extrabold";
+  return "text-[10px] sm:text-[11px] md:text-xs font-bold";
+}
+
 const CISIM_SVG: Record<string, string> = {
-  kup: '<img src="/geos/kups.png" alt="Küp" class="w-full h-full object-contain filter drop-shadow-md" />',
-  kure: '<img src="/geos/kures.png" alt="Küre" class="w-full h-full object-contain filter drop-shadow-md" />',
-  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="w-full h-full object-contain filter drop-shadow-md" />',
-  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="w-full h-full object-contain filter drop-shadow-md" />',
-  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="w-full h-full object-contain filter drop-shadow-md" />',
-  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="w-full h-full object-contain filter drop-shadow-md" />'
+  kup: '<img src="/geos/kups.png" alt="Küp" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
+  kure: '<img src="/geos/kures.png" alt="Küre" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
+  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
+  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
+  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
+  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />'
 };
 
 const CISIM_OZELLIK: Record<string, { ad: string; yüz: number; ayrıt: number; köşe: number }> = {
@@ -2196,6 +2275,7 @@ export default function App() {
   const [showOtherGamesModal, setShowOtherGamesModal] = useState(false);
   const [showXOXGame, setShowXOXGame] = useState(false);
   const [wordGameType, setWordGameType] = useState<'zit_anlam' | 'es_anlam' | 'ingilizce' | null>(null);
+  const [activityToast, setActivityToast] = useState<string | null>(null);
   const [statsModalTab, setStatsModalTab] = useState<'rozetler' | 'istatistik'>('rozetler');
   const [confirmReset, setConfirmReset] = useState(false);
   const [statsData, setStatsData] = useState<Record<string, StatRecord>>(() => {
@@ -2519,6 +2599,83 @@ export default function App() {
     setQuestionAndPrepareOptions(data);
   };
 
+  const switchPlayerCountMode = (newMode: 1 | 2 | 3) => {
+    setPlayerCountMode(newMode);
+    playMp3('/coin.mp3');
+
+    // If currently in playing mode, dynamically adjust active players
+    if (gameState === 'playing') {
+      const playerConfigs = [
+        {
+          id: 1,
+          name: "1. GRUP",
+          avatar: "🥇 1. GRUP",
+          colorTheme: {
+            bg: "from-blue-950/90 via-indigo-950/90 to-slate-950/90",
+            border: "border-blue-400",
+            text: "text-blue-200",
+            badge: "bg-blue-600 text-white",
+            headerBg: "bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-700"
+          }
+        },
+        {
+          id: 2,
+          name: "2. GRUP",
+          avatar: "🥈 2. GRUP",
+          colorTheme: {
+            bg: "from-rose-950/90 via-red-950/90 to-slate-950/90",
+            border: "border-rose-400",
+            text: "text-rose-200",
+            badge: "bg-rose-600 text-white",
+            headerBg: "bg-gradient-to-r from-rose-600 via-red-600 to-amber-700"
+          }
+        },
+        {
+          id: 3,
+          name: "3. GRUP",
+          avatar: "🥉 3. GRUP",
+          colorTheme: {
+            bg: "from-emerald-950/90 via-teal-950/90 to-slate-950/90",
+            border: "border-emerald-400",
+            text: "text-emerald-200",
+            badge: "bg-emerald-600 text-white",
+            headerBg: "bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700"
+          }
+        }
+      ];
+
+      const initialPlayers: PlayerData[] = [];
+      let cumulativeAsked: string[] = [];
+      for (let i = 0; i < newMode; i++) {
+        const qRes = generateQuestionForPlayer(currentTopic, cumulativeAsked);
+        cumulativeAsked.push(qRes.signature);
+        initialPlayers.push({
+          ...playerConfigs[i],
+          score: 0,
+          lives: 3,
+          streak: 0,
+          currentQuestionData: qRes.data,
+          shuffledOptions: qRes.shuffledOptions,
+          selectedOption: null,
+          feedbackState: 'none',
+          askedQuestions: [qRes.signature]
+        });
+      }
+
+      setPlayers(initialPlayers);
+
+      if (newMode === 1 && initialPlayers[0]?.currentQuestionData) {
+        setCurrentQuestionData(initialPlayers[0].currentQuestionData);
+        setShuffledOptions(initialPlayers[0].shuffledOptions);
+        setScore(0);
+        setLives(3);
+        setStreak(0);
+        setSelectedOption(null);
+        setFeedbackState('none');
+      }
+    }
+  };
+
   const selectTopicAndStart = (topicKey: string) => {
     if (topicKey !== currentTopic) {
       playFarkliLvlSound();
@@ -2662,6 +2819,168 @@ export default function App() {
       setGameState('playing');
       return;
     }
+  };
+
+  // -------------------------------------------------------------
+  // ALL ACTIVITIES REGISTRY & INSTANT FORWARD/BACKWARD NAVIGATION
+  // (1. Sınıftan 6. İngilizce Oyunlara Kadar Tüm Etkinlikler)
+  // -------------------------------------------------------------
+  const allActivitiesList = React.useMemo(() => {
+    const list: Array<{
+      id: string;
+      type: 'grade_topic' | '3d_lab' | 'xox' | 'word_game';
+      grade?: 1 | 2 | 3 | 4;
+      topicKey?: string;
+      wordGameType?: 'zit_anlam' | 'es_anlam' | 'ingilizce';
+      title: string;
+      categoryLabel: string;
+    }> = [];
+
+    // 1. Sınıf Matematik Etkinlikleri
+    Object.entries(topics1stGrade).forEach(([key, val]) => {
+      list.push({
+        id: `g1_${key}`,
+        type: 'grade_topic',
+        grade: 1,
+        topicKey: key,
+        title: val.title,
+        categoryLabel: '1. Sınıf'
+      });
+    });
+
+    // 2. Sınıf Matematik Etkinlikleri
+    Object.entries(topics2ndGrade).forEach(([key, val]) => {
+      list.push({
+        id: `g2_${key}`,
+        type: 'grade_topic',
+        grade: 2,
+        topicKey: key,
+        title: val.title,
+        categoryLabel: '2. Sınıf'
+      });
+    });
+
+    // 3. Sınıf Matematik Etkinlikleri
+    Object.entries(topics3rdGrade).forEach(([key, val]) => {
+      list.push({
+        id: `g3_${key}`,
+        type: 'grade_topic',
+        grade: 3,
+        topicKey: key,
+        title: val.title,
+        categoryLabel: '3. Sınıf'
+      });
+    });
+
+    // 4. Sınıf Matematik Etkinlikleri
+    Object.entries(topics4thGrade).forEach(([key, val]) => {
+      list.push({
+        id: `g4_${key}`,
+        type: 'grade_topic',
+        grade: 4,
+        topicKey: key,
+        title: val.title,
+        categoryLabel: '4. Sınıf'
+      });
+    });
+
+    // 5. Diğer Oyunlar
+    list.push({
+      id: 'other_3dlab',
+      type: '3d_lab',
+      title: '3D Geometri Laboratuvarı',
+      categoryLabel: 'Diğer Oyunlar'
+    });
+    list.push({
+      id: 'other_xox',
+      type: 'xox',
+      title: 'XOX & Zeka Düellosu',
+      categoryLabel: 'Diğer Oyunlar'
+    });
+    list.push({
+      id: 'other_zit_anlam',
+      type: 'word_game',
+      wordGameType: 'zit_anlam',
+      title: 'Zıt Anlamlı Kelimeler',
+      categoryLabel: 'Diğer Oyunlar'
+    });
+    list.push({
+      id: 'other_es_anlam',
+      type: 'word_game',
+      wordGameType: 'es_anlam',
+      title: 'Eş Anlamlı Kelimeler',
+      categoryLabel: 'Diğer Oyunlar'
+    });
+
+    // 6. İngilizce Oyunlar
+    list.push({
+      id: 'other_ingilizce',
+      type: 'word_game',
+      wordGameType: 'ingilizce',
+      title: 'İngilizce Kelime Oyunu',
+      categoryLabel: 'İngilizce Oyunlar'
+    });
+
+    return list;
+  }, []);
+
+  const switchToActivityByIndex = (index: number) => {
+    const entry = allActivitiesList[index];
+    if (!entry) return;
+
+    playFarkliLvlSound();
+
+    setShow3DLab(false);
+    setShowXOXGame(false);
+    setShowOtherGamesModal(false);
+    setShowTopicModal(false);
+    setShowStatsModal(false);
+    setWordGameType(null);
+
+    if (entry.type === 'grade_topic' && entry.grade && entry.topicKey) {
+      setSelectedGrade(entry.grade);
+      setLastSelectedGrade(entry.grade);
+      selectTopicAndStart(entry.topicKey);
+    } else if (entry.type === '3d_lab') {
+      setGameState('welcome');
+      setShow3DLab(true);
+    } else if (entry.type === 'xox') {
+      setGameState('welcome');
+      setShowXOXGame(true);
+    } else if (entry.type === 'word_game' && entry.wordGameType) {
+      setGameState('welcome');
+      setWordGameType(entry.wordGameType);
+    }
+
+    setActivityToast(`[${index + 1}/${allActivitiesList.length}] ${entry.categoryLabel} ➜ ${entry.title}`);
+    setTimeout(() => {
+      setActivityToast(null);
+    }, 2800);
+  };
+
+  const getCurrentActivityIndex = (): number => {
+    if (wordGameType === 'ingilizce') return allActivitiesList.findIndex(a => a.id === 'other_ingilizce');
+    if (wordGameType === 'es_anlam') return allActivitiesList.findIndex(a => a.id === 'other_es_anlam');
+    if (wordGameType === 'zit_anlam') return allActivitiesList.findIndex(a => a.id === 'other_zit_anlam');
+    if (showXOXGame) return allActivitiesList.findIndex(a => a.id === 'other_xox');
+    if (show3DLab) return allActivitiesList.findIndex(a => a.id === 'other_3dlab');
+    if (gameState === 'playing' && selectedGrade) {
+      const idx = allActivitiesList.findIndex(a => a.type === 'grade_topic' && a.grade === selectedGrade && a.topicKey === currentTopic);
+      if (idx !== -1) return idx;
+    }
+    return 0;
+  };
+
+  const handlePrevActivity = () => {
+    const currentIdx = getCurrentActivityIndex();
+    const prevIdx = (currentIdx - 1 + allActivitiesList.length) % allActivitiesList.length;
+    switchToActivityByIndex(prevIdx);
+  };
+
+  const handleNextActivity = () => {
+    const currentIdx = getCurrentActivityIndex();
+    const nextIdx = (currentIdx + 1) % allActivitiesList.length;
+    switchToActivityByIndex(nextIdx);
   };
 
   const kaydetGrupIstatistik = (pIndex: number, topicId: string, dogruMu: boolean) => {
@@ -2993,13 +3312,12 @@ export default function App() {
 
   return (
     <div className="relative h-[100dvh] bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100 flex flex-col font-sans transition-colors duration-200 overflow-hidden select-none">
-      {/* SUBTLE POSITIVE BACKGROUND IMAGE OVERLAY */}
+      {/* ORIGINAL POSITIVE CRISP BACKGROUND IMAGE OVERLAY */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
           src="/intro2.png" 
           alt="Arka Plan Görseli"
           referrerPolicy="no-referrer"
-          style={{ opacity: 1 }}
           className="w-full h-full object-cover object-center scale-105 transition-all duration-300"
         />
       </div>
@@ -3128,7 +3446,103 @@ export default function App() {
             className="w-full h-full object-contain pointer-events-none" 
           />
         </button>
+
+        {/* AYIRICI ÇİZGİ */}
+        <div className="h-7 sm:h-10 w-0.5 bg-yellow-400/40 rounded-full mx-0.5 shrink-0" />
+
+        {/* 6. 1 OYUNCU (1oy.png) */}
+        <button
+          onClick={() => switchPlayerCountMode(1)}
+          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
+            playerCountMode === 1
+              ? 'ring-3 ring-amber-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]'
+              : 'opacity-70 hover:opacity-100'
+          }`}
+          title="1 Oyuncu Modu"
+        >
+          <img 
+            src="/1oy.png" 
+            alt="1 Oyuncu" 
+            className="w-full h-full object-contain pointer-events-none" 
+          />
+          {playerCountMode === 1 && (
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#f59e0b]" />
+          )}
+        </button>
+
+        {/* 7. 2 OYUNCU KAPIŞMA (2oy.png) */}
+        <button
+          onClick={() => switchPlayerCountMode(2)}
+          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
+            playerCountMode === 2
+              ? 'ring-3 ring-rose-500 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(244,63,94,0.8)]'
+              : 'opacity-70 hover:opacity-100'
+          }`}
+          title="2 Oyuncu Kapışma Modu"
+        >
+          <img 
+            src="/2oy.png" 
+            alt="2 Oyuncu Kapışma" 
+            className="w-full h-full object-contain pointer-events-none" 
+          />
+          {playerCountMode === 2 && (
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e]" />
+          )}
+        </button>
+
+        {/* 8. 3 OYUNCU KAPIŞMA (3oy.png) */}
+        <button
+          onClick={() => switchPlayerCountMode(3)}
+          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
+            playerCountMode === 3
+              ? 'ring-3 ring-emerald-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(52,211,153,0.8)]'
+              : 'opacity-70 hover:opacity-100'
+          }`}
+          title="3 Oyuncu Kapışma Modu"
+        >
+          <img 
+            src="/3oy.png" 
+            alt="3 Oyuncu Kapışma" 
+            className="w-full h-full object-contain pointer-events-none" 
+          />
+          {playerCountMode === 3 && (
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+          )}
+        </button>
+
+        {/* AYIRICI ÇİZGİ */}
+        <div className="h-7 sm:h-10 w-0.5 bg-yellow-400/40 rounded-full mx-0.5 shrink-0" />
+
+        {/* GEÇİCİ ETKİNLİKLER ARASI GEÇİŞ BUTONLARI (1. SINIFTAN 6. İNGİLİZCEYE KADAR) */}
+        <div className="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 border-amber-400 shadow-[0_0_18px_rgba(245,158,11,0.35)] shrink-0">
+          <button
+            onClick={handlePrevActivity}
+            title="Önceki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
+            className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
+          >
+            <span className="text-sm sm:text-base">⏮️</span>
+            <span className="hidden sm:inline tracking-wide uppercase">Önceki Etkinlik</span>
+            <span className="sm:hidden tracking-wide uppercase">Önceki</span>
+          </button>
+          <button
+            onClick={handleNextActivity}
+            title="Sonraki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
+            className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
+          >
+            <span className="hidden sm:inline tracking-wide uppercase">Sonraki Etkinlik</span>
+            <span className="sm:hidden tracking-wide uppercase">Sonraki</span>
+            <span className="text-sm sm:text-base">⏭️</span>
+          </button>
+        </div>
       </header>
+      )}
+
+      {/* FLOATING ACTIVITY TOAST NOTIFICATION */}
+      {activityToast && (
+        <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950/95 backdrop-blur-xl text-amber-300 font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl border-2 border-amber-400 shadow-[0_10px_35px_rgba(0,0,0,0.85),0_0_20px_rgba(245,158,11,0.5)] flex items-center gap-2 text-xs sm:text-sm md:text-base animate-bounce">
+          <span className="text-base sm:text-lg">✨</span>
+          <span className="tracking-wide text-white drop-shadow-md">{activityToast}</span>
+        </div>
       )}
 
       {/* SCREEN ORIENTATION TOAST BADGE */}
@@ -3333,7 +3747,7 @@ export default function App() {
             /* CATEGORY CARDS SCREEN */
             <div className="max-w-4xl w-full mx-auto flex flex-col items-center py-0">
               {/* CENTERED GRADE ICON (20% REDUCED SIZE) */}
-              <div className="w-full flex items-center justify-center mb-1 sm:mb-1.5 px-1">
+              <div className="w-full flex items-center justify-center mb-1.5 sm:mb-2 px-1">
                 <div className="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-2xl bg-white/20 backdrop-blur-md p-1 sm:p-1.5 border-2 sm:border-3 border-white/80 shadow-[0_6px_20px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.6)] flex items-center justify-center transform hover:scale-105 transition-transform shrink-0">
                   <img
                     src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'}
@@ -3341,57 +3755,6 @@ export default function App() {
                     className="w-full h-full object-contain filter drop-shadow-md"
                   />
                 </div>
-              </div>
-
-              {/* 1 OYUNCU, 2 OYUNCU DÜELLO, 3 OYUNCU DÜELLO SEÇİM ALANI */}
-              <div className="w-full max-w-2xl mx-auto mb-0.5 sm:mb-1 flex items-center justify-center gap-1 sm:gap-2 z-20">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPlayerCountMode(1);
-                    playMp3('/coin.mp3');
-                  }}
-                  className={`flex-1 py-1 sm:py-1.5 px-1 sm:px-2.5 rounded-lg sm:rounded-xl font-black text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all transform flex items-center justify-center gap-1 cursor-pointer shadow-md border-2 whitespace-nowrap ${
-                    playerCountMode === 1
-                      ? 'bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 border-white shadow-[0_3px_10px_rgba(245,158,11,0.6)] scale-105 ring-2 ring-amber-300'
-                      : 'bg-slate-800/85 text-white/80 border-slate-600 hover:bg-slate-700/90'
-                  }`}
-                >
-                  <span className="text-xs sm:text-sm shrink-0">👤</span>
-                  <span className="whitespace-nowrap">1 OYUNCU</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPlayerCountMode(2);
-                    playMp3('/coin.mp3');
-                  }}
-                  className={`flex-1 py-1 sm:py-1.5 px-1 sm:px-2.5 rounded-lg sm:rounded-xl font-black text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all transform flex items-center justify-center gap-1 cursor-pointer shadow-md border-2 whitespace-nowrap ${
-                    playerCountMode === 2
-                      ? 'bg-gradient-to-r from-rose-500 via-red-500 to-amber-500 text-white border-white shadow-[0_3px_10px_rgba(225,29,72,0.6)] scale-105 ring-2 ring-rose-300'
-                      : 'bg-slate-800/85 text-white/80 border-slate-600 hover:bg-slate-700/90'
-                  }`}
-                >
-                  <span className="text-xs sm:text-sm shrink-0">⚔️</span>
-                  <span className="whitespace-nowrap">2 OYUNCU KAPIŞMA</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPlayerCountMode(3);
-                    playMp3('/coin.mp3');
-                  }}
-                  className={`flex-1 py-1 sm:py-1.5 px-1 sm:px-2.5 rounded-lg sm:rounded-xl font-black text-[9px] xs:text-[10px] sm:text-xs uppercase tracking-wider transition-all transform flex items-center justify-center gap-1 cursor-pointer shadow-md border-2 whitespace-nowrap ${
-                    playerCountMode === 3
-                      ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white border-white shadow-[0_3px_10px_rgba(16,185,129,0.6)] scale-105 ring-2 ring-emerald-300'
-                      : 'bg-slate-800/85 text-white/80 border-slate-600 hover:bg-slate-700/90'
-                  }`}
-                >
-                  <span className="text-xs sm:text-sm shrink-0">⚔️⚔️</span>
-                  <span className="whitespace-nowrap">3 OYUNCU KAPIŞMA</span>
-                </button>
               </div>
 
               {/* 4. SINIF: 4 MAIN THEME CARDS (2x2 GRID) */}
@@ -4414,178 +4777,181 @@ export default function App() {
         </div>
       )}
 
-      {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK) */}
+      {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK - ŞEFFAF GLASSMORPHISM TASARIM) */}
       {gameState === 'playing' && playerCountMode === 1 && (
-        <div className="flex-1 flex flex-col p-2 sm:p-4 max-w-4xl mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full">
-          {/* TOP BAR: BASBACK.PNG */}
-          <div
-            style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-            className="relative overflow-hidden bg-cover bg-center rounded-2xl p-2 sm:p-3 mb-2 shrink-0 flex items-center justify-between gap-2 shadow-lg min-h-[58px]"
-          >
-            {/* LEFT: AVATAR & GROUP */}
+        <div className="flex-1 flex flex-col p-2 sm:p-4 max-w-4xl mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10">
+          {/* TOP BAR: GLASS CAPSULES */}
+          <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
+            {/* LEFT: GROUP BADGE & TOPIC */}
             <div className="flex items-center gap-2 min-w-0">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-yellow-300 shadow-md bg-blue-900/80 flex items-center justify-center overflow-hidden shrink-0">
-                <img src="/icon_1.png" alt="1. GRUP" className="w-full h-full object-cover scale-[1.35]" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
+                1
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="font-black text-xs sm:text-base text-yellow-950 uppercase tracking-tight truncate drop-shadow-sm">
+              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex flex-col min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
                   1. GRUP
                 </span>
-                <span className="text-[10px] sm:text-xs font-bold text-amber-900 truncate">
+                <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
                   {topics[currentTopic]?.title || 'Etkinlik'}
                 </span>
               </div>
             </div>
 
             {/* RIGHT: SCORE & LIVES */}
-            <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-              <div className="bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 px-3 py-1 rounded-xl font-black text-xs sm:text-base shadow-md border border-yellow-200">
-                PUAN: {score} / 10
-              </div>
-              <div className="flex items-center gap-1 bg-black/40 px-2.5 py-1 rounded-xl border border-white/20">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <span key={i} className={`text-base sm:text-xl transition-all ${i < lives ? 'scale-110 drop-shadow-[0_0_6px_#ef4444]' : 'opacity-25 grayscale'}`}>
-                    ❤️
-                  </span>
-                ))}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                <span className="bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-2.5 py-1 rounded-xl shadow-md uppercase tracking-wider">
+                  PUAN: {score} / 10
+                </span>
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <span key={i} className={`text-base sm:text-lg transition-all ${i < lives ? 'scale-110 drop-shadow-[0_0_8px_#ef4444]' : 'opacity-25 grayscale'}`}>
+                      ❤️
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* CENTER: QUESTION CONTAINER WITH BASBACK2.PNG OR ARK22.PNG */}
-          <div
-            style={{ backgroundImage: `url('/ark22.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-            className="relative flex-1 rounded-3xl p-4 sm:p-6 my-2 flex flex-col items-center justify-center text-center shadow-2xl overflow-hidden min-h-[160px] sm:min-h-[220px]"
-          >
-            <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-2 sm:px-6">
+          {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER */}
+          <div className="relative flex-1 rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-3 sm:p-6 my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-[160px] sm:min-h-[220px]">
+            {/* Glossy top-light reflection */}
+            <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-3xl" />
+
+            <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-1 sm:px-4 max-h-full overflow-y-auto no-scrollbar">
               {currentQuestionData?.questionHTML ? (
                 <div 
                   dangerouslySetInnerHTML={{ __html: currentQuestionData.questionHTML }} 
-                  className="drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-black w-full flex flex-col items-center justify-center min-h-0 text-sm sm:text-base md:text-lg" 
+                  className={`question-visual-box drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white w-full flex flex-col items-center justify-center min-h-0 ${getDynamicQuestionFontClass(currentQuestionData.question || '', true, 1)}`} 
                 />
               ) : (
-                <div className={`my-auto font-black text-white leading-snug tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_6px_#000,_0_4px_14px_rgba(0,0,0,0.9)] px-2 py-1 max-w-full text-center ${
-                  (currentQuestionData?.question?.length || 0) < 25
-                    ? "text-lg xs:text-xl sm:text-2xl md:text-3xl"
-                    : (currentQuestionData?.question?.length || 0) < 60
-                    ? "text-base xs:text-lg sm:text-xl md:text-2xl"
-                    : "text-sm xs:text-base sm:text-lg md:text-xl"
-                }`}>
+                <div className={`my-auto text-white tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_6px_#000,_0_4px_14px_rgba(0,0,0,0.9)] px-2 py-1 max-w-full text-center ${getDynamicQuestionFontClass(currentQuestionData?.question || '', false, 1)}`}>
                   {currentQuestionData?.question}
                 </div>
               )}
             </div>
           </div>
 
-          {/* BOTTOM: 2x2 OPTIONS GRID WITH BUT1.PNG (TAHTALI BUTON) */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full shrink-0">
-            {optionsList.map((opt, idx) => {
-              const isCorrect = selectedOption !== null && currentQuestionData && opt === currentQuestionData.correct;
-              const isWrong = selectedOption !== null && currentQuestionData && opt === selectedOption && opt !== currentQuestionData.correct;
+          {/* BOTTOM: 2x2 OPTIONS GRID WITH SLEEK GLASS BUTTONS */}
+          <div className="grid grid-cols-2 gap-2 sm:gap-3.5 w-full shrink-0">
+            {(() => {
+              const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 1);
+              return optionsList.map((opt, idx) => {
+                const isCorrect = selectedOption !== null && currentQuestionData && opt === currentQuestionData.correct;
+                const isWrong = selectedOption !== null && currentQuestionData && opt === selectedOption && opt !== currentQuestionData.correct;
 
-              let feedbackClasses = "";
-              if (isCorrect) {
-                feedbackClasses = "ring-4 ring-emerald-400 scale-105 shadow-[0_0_25px_rgba(16,185,129,0.9)] animate-pulse";
-              } else if (isWrong) {
-                feedbackClasses = "ring-4 ring-rose-500 scale-95 opacity-80 shadow-[0_0_25px_rgba(244,63,94,0.9)]";
-              }
+                let feedbackClasses = "border-cyan-400/90 bg-slate-950/45 hover:bg-cyan-950/60 active:bg-cyan-900/80 shadow-[0_0_18px_rgba(6,182,212,0.35),inset_0_1px_2px_rgba(255,255,255,0.3)]";
+                if (isCorrect) {
+                  feedbackClasses = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)] scale-105 animate-pulse";
+                } else if (isWrong) {
+                  feedbackClasses = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
+                }
 
-              const maxOptLen = Math.max(...optionsList.map(o => String(o).trim().length), 0);
-              let fontSizeClass = "";
-              if (maxOptLen <= 2) {
-                fontSizeClass = "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black";
-              } else if (maxOptLen <= 5) {
-                fontSizeClass = "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
-              } else if (maxOptLen <= 10) {
-                fontSizeClass = "text-base xs:text-lg sm:text-xl md:text-2xl font-black";
-              } else {
-                fontSizeClass = "text-sm sm:text-base md:text-lg font-black";
-              }
-
-              return (
-                <button
-                  key={idx}
-                  onClick={() => handleAnswer(opt)}
-                  disabled={feedbackState !== 'none'}
-                  style={{ backgroundImage: `url('/but1.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                  className={`relative group w-full py-3.5 sm:py-5 px-3 rounded-2xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden drop-shadow-lg active:scale-95 ${feedbackClasses}`}
-                >
-                  <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${fontSizeClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
-                    {opt}
-                  </span>
-                </button>
-              );
-            })}
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleAnswer(opt)}
+                    disabled={feedbackState !== 'none'}
+                    className={`relative group w-full py-5 sm:py-7 px-3 min-h-[78px] sm:min-h-[99px] rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
+                  >
+                    {/* Subtle top glare in button */}
+                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
+                    <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
+                      {opt}
+                    </span>
+                  </button>
+                );
+              });
+            })()}
           </div>
         </div>
       )}
 
-      {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU) */}
+      {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU - ŞEFFAF GLASSMORPHISM) */}
       {gameState === 'playing' && playerCountMode > 1 && (
         <div className="flex-1 flex flex-col p-2 sm:p-3 w-full h-full overflow-hidden min-h-0 relative z-10 max-w-7xl mx-auto">
-          {/* COMMON TOP BAR: TOPIC TITLE & DÜELLO BADGE */}
-          <div
-            style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-            className="relative overflow-hidden bg-cover bg-center rounded-2xl px-3 py-1.5 mb-2 shrink-0 flex items-center justify-between gap-2 min-h-[46px]"
-          >
-            <span className="px-3 py-1 bg-amber-400 text-blue-950 font-black text-xs sm:text-sm rounded-xl shadow-md uppercase tracking-wider shrink-0">
+          {/* COMMON TOP BAR: SLEEK GLASS CAPSULES */}
+          <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
+            <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
               ⚔️ {playerCountMode} OYUNCU DÜELLO
             </span>
-            <div className="flex-1 min-w-0 text-center">
-              <h2 className="text-xs sm:text-base md:text-lg font-black text-amber-950 uppercase tracking-tight truncate drop-shadow-sm">
-                {topics[currentTopic]?.title || ''}
-              </h2>
+            <div className="flex-1 min-w-0 text-center px-2">
+              <div className="inline-block max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-1.5 sm:py-2 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
+                  {topics[currentTopic]?.title || ''}
+                </h2>
+              </div>
             </div>
-            <span className="px-3 py-1 bg-slate-900/80 text-amber-300 border border-amber-400/50 font-black text-xs sm:text-sm rounded-xl shadow-sm uppercase shrink-0">
-              HEDEF: 10 PUAN
+            <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
+              🎯 HEDEF: 10 PUAN
             </span>
           </div>
 
           {/* SPLIT SCREEN GRID FOR 2 OR 3 PLAYERS */}
           <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
             {players.map((p, pIdx) => {
-              const avatarImg = pIdx === 0 ? "/icon_1.png" : pIdx === 1 ? "/icon_2.png" : "/icon_3.png";
+              // Group color schemes based on user reference: 1 = Purple, 2 = Amber/Gold, 3 = Emerald/Green
+              const groupTheme = pIdx === 0 
+                ? {
+                    badgeBg: "from-purple-800 via-purple-900 to-indigo-950",
+                    badgeBorder: "border-purple-300",
+                    badgeShadow: "shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                    buttonDefault: "border-purple-400/90 bg-purple-950/40 hover:bg-purple-900/60 active:bg-purple-800/80 shadow-[0_0_16px_rgba(168,85,247,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                  }
+                : pIdx === 1
+                ? {
+                    badgeBg: "from-amber-600 via-amber-800 to-orange-950",
+                    badgeBorder: "border-amber-300",
+                    badgeShadow: "shadow-[0_0_16px_rgba(251,191,36,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                    buttonDefault: "border-amber-400/90 bg-amber-950/40 hover:bg-amber-900/60 active:bg-amber-800/80 shadow-[0_0_16px_rgba(245,158,11,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                  }
+                : {
+                    badgeBg: "from-emerald-600 via-teal-800 to-slate-950",
+                    badgeBorder: "border-emerald-300",
+                    badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                    buttonDefault: "border-emerald-400/90 bg-emerald-950/40 hover:bg-emerald-900/60 active:bg-emerald-800/80 shadow-[0_0_16px_rgba(16,185,129,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                  };
 
               return (
                 <div
                   key={p.id}
-                  className="relative flex flex-col justify-between p-2.5 sm:p-3.5 rounded-2xl sm:rounded-3xl bg-slate-900/90 border-2 border-yellow-400/60 shadow-2xl overflow-hidden min-h-0 z-10 transition-all"
+                  className="relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl overflow-hidden min-h-0 z-10 transition-all"
                 >
                   {/* PLAYER HEADER BAR */}
-                  <div
-                    style={{ backgroundImage: `url('/basback.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                    className="relative flex items-center justify-between z-10 shrink-0 p-2 rounded-xl border border-yellow-400/30"
-                  >
-                    {/* LEFT: AVATAR & GROUP NAME */}
-                    <div className="flex items-center gap-2 min-w-0">
-                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-yellow-300 shadow-md bg-blue-950 flex items-center justify-center overflow-hidden shrink-0">
-                        <img src={avatarImg} alt={`${pIdx + 1}. GRUP`} className="w-full h-full object-cover scale-[1.35]" />
-                      </div>
-                      <span className="font-black text-xs sm:text-sm text-yellow-950 uppercase tracking-tight truncate drop-shadow-sm">
-                        {pIdx + 1}. GRUP
-                      </span>
+                  <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+                    {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
+                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0`}>
+                      {pIdx + 1}
                     </div>
 
-                    {/* RIGHT: SCORE & HEARTS */}
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="bg-amber-400 text-blue-950 font-black text-xs px-2 py-0.5 rounded-lg shadow-sm">
-                        {p.score} / 10
+                    {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
+                    <div className="flex-1 ml-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/30 rounded-xl sm:rounded-2xl px-3 py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
+                      <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
+                        {pIdx + 1}. GRUP
                       </span>
-                      <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                          <span key={i} className={`text-xs sm:text-sm ${i < p.lives ? 'scale-110' : 'opacity-25 grayscale'}`}>
-                            ❤️
-                          </span>
-                        ))}
+
+                      {/* RIGHT: SCORE & HEARTS */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="bg-white/15 text-white font-black text-[11px] sm:text-xs px-2 py-0.5 rounded-lg shadow-sm">
+                          {p.score} / 10
+                        </span>
+                        <div className="flex items-center gap-0.5">
+                          {Array.from({ length: 3 }).map((_, i) => (
+                            <span key={i} className={`text-xs sm:text-sm transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
+                              ❤️
+                            </span>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* QUESTION AREA FOR THIS PLAYER */}
-                  <div
-                    style={{ backgroundImage: `url('/ark22.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                    className="relative flex-1 rounded-2xl p-2 sm:p-4 my-2 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[140px] sm:min-h-[170px]"
-                  >
+                  {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
+                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-2 sm:p-3.5 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[135px] sm:min-h-[165px]">
+                    {/* Top glare effect */}
+                    <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+
                     {p.lives <= 0 ? (
                       <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
                         <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
@@ -4597,20 +4963,14 @@ export default function App() {
                         </div>
                       </div>
                     ) : (
-                      <div className="relative z-10 flex flex-col items-center justify-center text-center overflow-visible px-2 w-full">
+                      <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-y-auto no-scrollbar">
                         {p.currentQuestionData?.questionHTML ? (
                           <div 
                             dangerouslySetInnerHTML={{ __html: p.currentQuestionData.questionHTML }} 
-                            className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white font-extrabold text-base sm:text-xl md:text-2xl leading-snug w-full flex flex-col items-center justify-center min-h-0 scale-90 xs:scale-95 sm:scale-100 origin-center" 
+                            className={`question-visual-box multi-player-${playerCountMode} drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white w-full flex flex-col items-center justify-center min-h-0 ${getDynamicQuestionFontClass(p.currentQuestionData.question || '', true, playerCountMode)}`} 
                           />
                         ) : (
-                          <div className={`my-auto font-black text-white leading-snug tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-1 py-0.5 max-w-full text-center ${
-                            (p.currentQuestionData?.question?.length || 0) < 25
-                              ? "text-lg sm:text-xl md:text-2xl font-black"
-                              : (p.currentQuestionData?.question?.length || 0) < 60
-                              ? "text-sm sm:text-base md:text-lg font-black"
-                              : "text-xs sm:text-sm md:text-base font-black"
-                          }`}>
+                          <div className={`my-auto text-white tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-1 py-0.5 max-w-full text-center ${getDynamicQuestionFontClass(p.currentQuestionData?.question || '', false, playerCountMode)}`}>
                             {p.currentQuestionData?.question}
                           </div>
                         )}
@@ -4621,41 +4981,39 @@ export default function App() {
                   {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
                   {p.lives > 0 && (
                     <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0 z-10">
-                      {p.shuffledOptions.map((opt, oIdx) => {
-                        const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
-                        const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
+                      {(() => {
+                        const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode);
+                        const optHeightClasses = playerCountMode === 3
+                          ? "py-3 sm:py-4 px-1.5 min-h-[55px] sm:min-h-[67px]"
+                          : "py-3.5 sm:py-5 px-2 min-h-[65px] sm:min-h-[78px]";
 
-                        let btnClass = "";
-                        if (isCorrect) {
-                          btnClass = "ring-4 ring-emerald-400 scale-105 shadow-[0_0_20px_rgba(16,185,129,0.9)] animate-pulse";
-                        } else if (isWrong) {
-                          btnClass = "ring-4 ring-rose-500 scale-95 opacity-80 shadow-[0_0_20px_rgba(244,63,94,0.9)]";
-                        }
+                        return p.shuffledOptions.map((opt, oIdx) => {
+                          const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
+                          const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
 
-                        const maxOptLen = Math.max(...(p.shuffledOptions || []).map(o => String(o).trim().length), 0);
-                        let fontClass = "";
-                        if (maxOptLen <= 2) {
-                          fontClass = playerCountMode === 3 ? "text-base xs:text-lg sm:text-xl md:text-2xl font-black" : "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black";
-                        } else if (maxOptLen <= 5) {
-                          fontClass = playerCountMode === 3 ? "text-sm xs:text-base sm:text-lg md:text-xl font-black" : "text-base xs:text-lg sm:text-xl md:text-2xl font-black";
-                        } else {
-                          fontClass = "text-xs xs:text-sm sm:text-base font-black";
-                        }
+                          let btnClass = groupTheme.buttonDefault;
+                          if (isCorrect) {
+                            btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
+                          } else if (isWrong) {
+                            btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
+                          }
 
-                        return (
-                          <button
-                            key={oIdx}
-                            onClick={() => handlePlayerAnswer(pIdx, opt)}
-                            disabled={p.feedbackState !== 'none'}
-                            style={{ backgroundImage: `url('/but1.png')`, backgroundSize: '100% 100%', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
-                            className={`relative group w-full py-2.5 sm:py-3.5 px-2 rounded-xl sm:rounded-2xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden drop-shadow-md active:scale-95 ${btnClass}`}
-                          >
-                            <span className={`relative z-10 truncate ${fontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                              {opt}
-                            </span>
-                          </button>
-                        );
-                      })}
+                          return (
+                            <button
+                              key={oIdx}
+                              onClick={() => handlePlayerAnswer(pIdx, opt)}
+                              disabled={p.feedbackState !== 'none'}
+                              className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                            >
+                              {/* Inner top glare */}
+                              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                              <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                                {opt}
+                              </span>
+                            </button>
+                          );
+                        });
+                      })()}
                     </div>
                   )}
                 </div>
@@ -5053,13 +5411,13 @@ export default function App() {
       {show3DLab && <Geometry3DLab onClose={() => setShow3DLab(false)} />}
 
       {/* DİĞER OYUNLAR ANA SEÇİM HUB MODAL */}
-      {showOtherGamesModal && !showXOXGame && !wordGameType && (
+      {showOtherGamesModal && !showXOXGame && !wordGameType && !show3DLab && (
         <OtherGamesHub
           onClose={() => setShowOtherGamesModal(false)}
           onOpenXOX={() => setShowXOXGame(true)}
           onOpenZitAnlam={() => setWordGameType('zit_anlam')}
           onOpenEsAnlam={() => setWordGameType('es_anlam')}
-          onOpenIngilizce={() => setWordGameType('ingilizce')}
+          onOpen3DLab={() => setShow3DLab(true)}
           playMp3={playMp3}
         />
       )}
@@ -5067,12 +5425,14 @@ export default function App() {
       {/* XOX GAME MODAL */}
       {showXOXGame && <XOXGame onClose={() => setShowXOXGame(false)} playMp3={playMp3} />}
 
-      {/* ZIT ANLAM & EŞ ANLAM KELİME OYUNU MODAL */}
+      {/* ZIT ANLAM, EŞ ANLAM & İNGİLİZCE KELİME OYUNU MODAL */}
       {wordGameType !== null && (
         <WordGameModal
           gameType={wordGameType}
           onClose={() => setWordGameType(null)}
           playMp3={playMp3}
+          playerCountMode={playerCountMode}
+          onSwitchPlayerCountMode={switchPlayerCountMode}
         />
       )}
 

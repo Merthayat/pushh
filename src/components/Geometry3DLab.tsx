@@ -276,8 +276,8 @@ export const Geometry3DLab: React.FC<{ onClose: () => void }> = ({ onClose }) =>
   };
 
   return (
-    <div className="fixed inset-0 top-[44px] xs:top-[50px] sm:top-[60px] bg-slate-950/90 backdrop-blur-md z-40 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 border-3 border-amber-400/80 rounded-3xl max-w-4xl w-full p-2.5 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-white flex flex-col max-h-[calc(100vh-70px)] sm:max-h-[calc(100vh-80px)] overflow-hidden relative">
+    <div className="fixed inset-0 top-[52px] xs:top-[60px] sm:top-[74px] md:top-[80px] bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 border-3 border-amber-400/80 rounded-3xl max-w-4xl w-full p-2.5 sm:p-4 shadow-[0_20px_50px_rgba(0,0,0,0.8)] text-white flex flex-col max-h-[calc(100vh-90px)] sm:max-h-[calc(100vh-100px)] overflow-hidden relative">
         
         {/* HEADER BAR */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-2.5 mb-2.5 shrink-0">
@@ -297,10 +297,11 @@ export const Geometry3DLab: React.FC<{ onClose: () => void }> = ({ onClose }) =>
 
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-all cursor-pointer border border-slate-700"
+            className="group relative px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white font-black text-xs transition-all transform hover:scale-105 active:scale-95 cursor-pointer border border-white/30 shadow-md flex items-center gap-1"
             title="Kapat"
           >
-            ✕
+            <span>✕</span>
+            <span>Kapat</span>
           </button>
         </div>
 

@@ -131,26 +131,26 @@ function renderSequenceCardsHTML(dizi: (number | string)[], boslukIndex: number,
   const cardsHTML = dizi.map((val, idx) => {
     if (idx === boslukIndex) {
       return `
-        <div class="relative w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-amber-400 border-2 sm:border-3 border-yellow-200 shadow-[0_0_15px_rgba(236,72,153,0.9),0_4px_10px_rgba(0,0,0,0.6)] flex items-center justify-center transform scale-105 animate-pulse shrink-0">
-          <span class="text-white font-black text-xl xs:text-2xl sm:text-3xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] inline-flex items-center justify-center leading-none">?</span>
+        <div class="relative w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-amber-400 border-2 border-yellow-200 shadow-[0_0_12px_rgba(236,72,153,0.8)] flex items-center justify-center transform scale-105 animate-pulse shrink-0">
+          <span class="text-white font-black text-xs xs:text-sm sm:text-base md:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] inline-flex items-center justify-center leading-none">?</span>
         </div>
       `;
     } else {
       const grad = boxGradients[idx % boxGradients.length];
       return `
-        <div class="w-10 h-10 xs:w-11 xs:h-11 sm:w-13 sm:h-13 rounded-lg sm:rounded-xl bg-gradient-to-b ${grad} border-2 border-white/80 shadow-[0_3px_8px_rgba(0,0,0,0.5)] flex items-center justify-center shrink-0">
-          <span class="text-white font-black text-base xs:text-lg sm:text-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] inline-flex items-center justify-center leading-none">${val}</span>
+        <div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-md sm:rounded-lg bg-gradient-to-b ${grad} border border-white/80 shadow-[0_2px_6px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0">
+          <span class="text-white font-black text-[11px] xs:text-xs sm:text-sm md:text-base drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] inline-flex items-center justify-center leading-none">${val}</span>
         </div>
       `;
     }
-  }).join('<span class="text-amber-300 font-black text-xs xs:text-sm sm:text-lg shrink-0 inline-flex items-center justify-center leading-none">➔</span>');
+  }).join('');
 
   return `
-    <div class="w-full flex flex-col items-center justify-center gap-2 sm:gap-3 my-auto px-1 max-w-lg mx-auto text-center">
-      <div class="flex items-center justify-center flex-nowrap gap-1.5 sm:gap-2.5 my-1 w-full overflow-x-auto no-scrollbar py-1">
+    <div class="w-full flex flex-col items-center justify-center gap-1 sm:gap-2 my-auto px-0.5 max-w-full text-center">
+      <div class="flex items-center justify-center flex-nowrap gap-1 xs:gap-1.5 sm:gap-2 my-0.5 w-full max-w-full overflow-hidden py-0.5">
         ${cardsHTML}
       </div>
-      <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]">
+      <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-1">
         ${instruction}
       </div>
     </div>
@@ -293,7 +293,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
           <div class="text-4xl xs:text-5xl sm:text-6xl md:text-7xl filter drop-shadow-lg">${s.emoji}</div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-relaxed drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             ${s.soru}
           </div>
         </div>
@@ -325,11 +325,11 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const yanlislar = secilen.secenekler.filter(x => x !== dogru);
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-3 sm:gap-4 text-center my-auto">
-          <div class="w-18 h-18 sm:w-24 sm:h-24 rounded-2xl bg-white/20 border-3 border-amber-300 flex items-center justify-center text-5xl sm:text-6xl shadow-xl animate-bounce">
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
+          <div class="w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/20 border-2 sm:border-3 border-amber-300 flex items-center justify-center text-4xl xs:text-5xl sm:text-6xl shadow-xl filter drop-shadow-md">
             ${secilen.icon}
           </div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             Yukarıdaki <b>${secilen.ad}</b> nesnesinin <b>EŞİ</b> olan şekil hangisidir?
           </div>
         </div>
@@ -354,15 +354,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         { nesne: "Zar", cisim: "Küp", emoji: "🎲", yanlis: ["Küre", "Daire", "Üçgen"] },
         { nesne: "Konserve Kutusu", cisim: "Silindir", emoji: "🥫", yanlis: ["Küp", "Küre", "Dikdörtgen"] },
         { nesne: "Trafik Konisi", cisim: "Koni", emoji: "🪅", yanlis: ["Küp", "Küre", "Silindir"] },
-        { nesne: "Tekerlek / Madeni Para", cisim: "Daire / Çember", emoji: "🪙", yanlis: ["Kare", "Üçgen", "Dikdörtgen"] },
+        { nesne: "1 TL Madeni Para", cisim: "Daire / Çember", img: "/paralar/1_tl_madeni_para.png", yanlis: ["Kare", "Üçgen", "Dikdörtgen"] },
         { nesne: "Kibrit Kutusu", cisim: "Dikdörtgenler Prizması", emoji: "📦", yanlis: ["Küre", "Daire", "Silindir"] }
       ];
       const m = modeller[Math.floor(Math.random() * modeller.length)];
 
+      const visualHTML = (m as any).img
+        ? `<div class="p-1.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0 flex items-center justify-center">
+             <img src="${(m as any).img}" alt="${m.nesne}" class="h-16 w-16 xs:h-20 xs:w-20 sm:h-24 sm:w-24 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+           </div>`
+        : `<div class="text-5xl xs:text-6xl sm:text-7xl filter drop-shadow-xl">${m.emoji}</div>`;
+
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="text-5xl xs:text-6xl sm:text-7xl filter drop-shadow-xl">${m.emoji}</div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          ${visualHTML}
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             <b>"${m.nesne}"</b> hangi geometrik şekle veya cisme benzer?
           </div>
         </div>
@@ -389,15 +395,15 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
       let gridHTML = '';
       for (let i = 0; i < adet; i++) {
-        gridHTML += `<span class="inline-flex items-center justify-center text-3xl xs:text-4xl sm:text-5xl filter drop-shadow-md transform hover:scale-125 transition-transform select-none">${secilenEmoji}</span>`;
+        gridHTML += `<span class="inline-flex items-center justify-center text-2xl xs:text-3xl sm:text-4xl filter drop-shadow-md select-none transform transition-transform hover:scale-110">${secilenEmoji}</span>`;
       }
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-2 text-center my-auto max-w-lg mx-auto w-full">
-          <div class="p-2 sm:p-3 rounded-2xl bg-slate-900/70 border-2 sm:border-3 border-amber-300 shadow-inner flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 max-h-[130px] sm:max-h-[155px] overflow-y-auto no-scrollbar">
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 text-center my-auto max-w-md mx-auto w-full px-1">
+          <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 py-1 max-w-full">
             ${gridHTML}
           </div>
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-1">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-1 leading-snug">
             Görselde toplam kaç tane <span class="text-amber-300 font-black">${secilenEmoji}</span> vardır?
           </div>
         </div>
@@ -429,19 +435,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const secilenHayvan = hayvanlar[secilenIndex];
 
       const siraGosterim = hayvanlar.map((h, i) => `
-        <div class="flex flex-col items-center gap-0.5">
-          <span class="text-3xl xs:text-4xl sm:text-5xl">${h.emoji}</span>
-          <span class="text-xs sm:text-sm font-black text-amber-300">${i + 1}.</span>
+        <div class="flex flex-col items-center gap-0.5 shrink-0">
+          <span class="text-xl xs:text-2xl sm:text-3xl md:text-4xl">${h.emoji}</span>
+          <span class="text-[10px] xs:text-xs sm:text-sm font-black text-amber-300 leading-none">${i + 1}.</span>
         </div>
-      `).join('<span class="text-amber-200 text-sm sm:text-base font-black">➔</span>');
+      `).join('');
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="flex items-center justify-center gap-1.5 sm:gap-2.5 p-2 sm:p-2.5 rounded-2xl bg-slate-900/70 border border-amber-400">
-            <span class="text-xs sm:text-sm font-black text-emerald-400 mr-1.5">BAŞLANGIÇ</span>
-            ${siraGosterim}
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-0.5">
+          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-slate-900/80 border border-amber-400/80 max-w-full overflow-hidden">
+            <span class="text-[9px] xs:text-[11px] sm:text-xs font-black text-emerald-400 mr-0.5 uppercase tracking-wider shrink-0">🏁 BAŞLANGIÇ</span>
+            <div class="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-nowrap">
+              ${siraGosterim}
+            </div>
           </div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             Yarışta <b>${secilenHayvan.ad} ${secilenHayvan.emoji}</b> kaçıncı sıradadır?
           </div>
         </div>
@@ -499,7 +507,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
               <div class="text-xs sm:text-sm font-bold text-white mt-0.5">(${sagSayi} Elma)</div>
             </div>
           </div>
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             ${soruMetni}
           </div>
         </div>
@@ -551,17 +559,17 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
         const cardsHTML = dizi.map((val, idx) => {
           if (idx === boslukIndex) {
-            return `<div class="w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 rounded-xl bg-pink-600/80 border-2 border-yellow-300 text-yellow-200 font-black flex items-center justify-center text-2xl animate-pulse">?</div>`;
+            return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg bg-pink-600/80 border-2 border-yellow-300 text-yellow-200 font-black flex items-center justify-center text-sm xs:text-base sm:text-xl animate-pulse shrink-0">?</div>`;
           }
-          return `<div class="w-10 h-10 xs:w-12 xs:h-12 sm:w-14 sm:h-14 rounded-xl bg-blue-900/80 border border-blue-400 flex items-center justify-center text-2xl sm:text-3xl">${val}</div>`;
-        }).join('<span class="text-amber-300 text-sm sm:text-base font-black">➔</span>');
+          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg bg-blue-900/80 border border-blue-400 flex items-center justify-center text-sm xs:text-base sm:text-xl shrink-0">${val}</div>`;
+        }).join('');
 
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3 text-center my-auto">
-            <div class="flex items-center justify-center gap-1.5 sm:gap-2">
+          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto px-0.5 w-full">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden py-0.5">
               ${cardsHTML}
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               Şekil örüntüsünde <span class="text-yellow-300 font-black">?</span> yerine hangisi gelmelidir?
             </div>
           </div>
@@ -612,7 +620,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
           <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow-xl">${s.emoji}</div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             ${s.soru}
           </div>
         </div>
@@ -642,13 +650,17 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const agirSoruluyor = Math.random() < 0.5;
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="flex items-center justify-center gap-4 sm:gap-6 text-3xl xs:text-4xl sm:text-5xl p-2.5 sm:p-3.5 bg-slate-900/70 rounded-2xl border-2 border-amber-400">
-            <span>${secilen.agir}</span>
-            <span class="text-amber-300 text-2xl sm:text-3xl font-black">⚖️</span>
-            <span>${secilen.hafif}</span>
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto px-1 w-full">
+          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden text-center py-0.5">
+            <span class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-slate-900/90 border border-slate-700 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl shrink-0 whitespace-nowrap">
+              ${secilen.agir}
+            </span>
+            <span class="text-sm xs:text-base sm:text-xl text-amber-300 font-black shrink-0">⚖️</span>
+            <span class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-slate-900/90 border border-slate-700 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl shrink-0 whitespace-nowrap">
+              ${secilen.hafif}
+            </span>
           </div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             Yukarıdaki iki varlıktan hangisi daha <b>${agirSoruluyor ? 'AĞIRDIR' : 'HAFİFTİR'}</b>?
           </div>
         </div>
@@ -660,7 +672,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         correct: agirSoruluyor ? secilen.agir : secilen.hafif,
         wrong: [
           agirSoruluyor ? secilen.hafif : secilen.agir,
-          "İkisi de Eşit Ağırlıktadır",
+          "İkisi Eşit",
           "Tartılamaz"
         ],
         isLong: true
@@ -694,11 +706,11 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const isCoin = p.img.includes('madeni');
         const questionText = "Görseldeki paranın değeri nedir?";
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
-            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
-              <img src="${p.img}" alt="${p.name}" class="${isCoin ? 'h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24' : 'h-14 sm:h-18 md:h-22 max-w-[200px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
+            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0">
+              <img src="${p.img}" alt="${p.name}" class="${isCoin ? 'h-14 sm:h-18 md:h-20 w-14 sm:w-18 md:w-20' : 'h-12 sm:h-16 md:h-18 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
             </div>
-            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${questionText}
             </div>
           </div>
@@ -758,13 +770,13 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         ];
         const s = toplamSorulari[Math.floor(Math.random() * toplamSorulari.length)];
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
-            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
+            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
               ${s.images.map(img => `
-                <img src="${img}" class="${s.isCoin ? 'h-12 sm:h-16 md:h-18 w-12 sm:w-16 md:w-18' : 'h-11 sm:h-15 md:h-16 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                <img src="${img}" class="${s.isCoin ? 'h-10 sm:h-14 md:h-16 w-10 sm:w-14 md:w-16' : 'h-10 sm:h-14 md:h-16 max-w-[130px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
               `).join('')}
             </div>
-            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>
@@ -812,13 +824,13 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         ];
         const s = karisikSorular[Math.floor(Math.random() * karisikSorular.length)];
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
-            <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
+            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
               ${s.images.map(img => `
-                <img src="${img}" class="${img.includes('madeni') ? 'h-12 sm:h-15 w-12 sm:w-15' : 'h-11 sm:h-15 max-w-[150px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
+                <img src="${img}" class="${img.includes('madeni') ? 'h-10 sm:h-14 w-10 sm:w-14' : 'h-10 sm:h-14 max-w-[130px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
               `).join('')}
             </div>
-            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>
@@ -861,11 +873,11 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const s = genelSorular[Math.floor(Math.random() * genelSorular.length)];
         const isCoin = s.img.includes('madeni');
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
-            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg">
-              <img src="${s.img}" class="${isCoin ? 'h-16 sm:h-20 md:h-24 w-16 sm:w-20 md:w-24' : 'h-14 sm:h-18 md:h-22 max-w-[200px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]" />
+          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
+            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0">
+              <img src="${s.img}" class="${isCoin ? 'h-14 sm:h-18 md:h-20 w-14 sm:w-18 md:w-20' : 'h-12 sm:h-16 md:h-18 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]" />
             </div>
-            <div class="text-base sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>
@@ -1186,7 +1198,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
                 <div>🍌 Muz: ${"🟨".repeat(muz)} (${muz})</div>
                 <div>🍓 Çilek: ${"🟩".repeat(cilek)} (${cilek})</div>
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-0.5">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-0.5">
                 Grafiğe göre en çok sevilen meyve hangisidir?
               </div>
             </div>
@@ -1212,7 +1224,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
               <div>🍌 Muz: ${"🟨".repeat(muz)} (${muz})</div>
               <div>🍓 Çilek: ${"🟩".repeat(cilek)} (${cilek})</div>
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-0.5">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-0.5">
               ${soru}
             </div>
           </div>
@@ -1288,7 +1300,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
           <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
             ${sayilar.map(s => `<span class="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-600 text-white font-black text-lg xs:text-xl sm:text-2xl border-2 border-white shadow-md">🎈 ${s}</span>`).join('')}
           </div>
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] mt-1">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-1">
             Yukarıdaki balonlardan hangisinde <b>${enBuyukMu ? 'EN BÜYÜK' : 'EN KÜÇÜK'}</b> sayı yazmaktadır?
           </div>
         </div>
@@ -1371,7 +1383,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       sira[2] = "?" as any;
 
       return {
-        question: `🌀 ${adim}'şer ritmik sayarak labirentte ilerliyoruz:\n\n${sira.join("  ➔  ")}\n\nSoru işareti (?) yerine hangi adım gelmelidir?`,
+        question: `🌀 ${adim}'şer ritmik sayarak labirentte ilerliyoruz:\n\n[ ${sira.join("  -  ")} ]\n\nSoru işareti (?) yerine hangi adım gelmelidir?`,
         correct: eksik,
         wrong: benzersizYanlislar(eksik, [eksik + adim, eksik - adim, eksik + 1], 1),
         isLong: true
@@ -1393,7 +1405,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
           <div class="text-5xl xs:text-6xl sm:text-7xl filter drop-shadow-xl animate-pulse">${secilen.emoji}</div>
-          <div class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             <b>${secilen.sekil}</b> hangisidir?
           </div>
         </div>

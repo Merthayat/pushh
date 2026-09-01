@@ -30,37 +30,101 @@
   scrollbar-width: none;
 }
 
-/* HIGH-READABILITY MOBILE & DESKTOP FONT OVERRIDES */
+/* HIGH-READABILITY MOBILE & DESKTOP FONT OVERRIDES & AUTO-SCALING VISUALS */
 .q-caption {
   font-size: 1.1rem !important;
   line-height: 1.35 !important;
   font-weight: 800 !important;
-  margin-top: 6px !important;
+  margin-top: 4px !important;
 }
 @media (min-width: 640px) {
   .q-caption {
-    font-size: 1.4rem !important;
+    font-size: 1.35rem !important;
   }
 }
 
 .mini-table-title {
-  font-size: 1.15rem !important;
+  font-size: 1rem !important;
   font-weight: 900 !important;
-  margin-bottom: 6px !important;
+  margin-bottom: 4px !important;
 }
 @media (min-width: 640px) {
   .mini-table-title {
-    font-size: 1.45rem !important;
+    font-size: 1.25rem !important;
   }
 }
 
 .mini-table {
-  font-size: 1rem !important;
+  font-size: 0.9rem !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 @media (min-width: 640px) {
   .mini-table {
-    font-size: 1.25rem !important;
+    font-size: 1.15rem !important;
   }
+}
+
+/* AUTOMATIC RESPONSIVE IMAGE & SVG SIZING IN QUESTIONS */
+.question-visual-box img,
+.question-visual-box svg {
+  max-height: clamp(55px, 14vh, 120px) !important;
+  max-width: 90% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: inline-block !important;
+}
+
+.question-visual-box.multi-player-2 img,
+.question-visual-box.multi-player-2 svg {
+  max-height: clamp(40px, 9vh, 75px) !important;
+  max-width: 88% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: inline-block !important;
+}
+
+/* 3-PLAYER DEDICATED HIGH-COMPACT VISUAL SIZING TO PREVENT ANY OVERFLOW */
+.question-visual-box.multi-player-3 img,
+.question-visual-box.multi-player-3 svg {
+  max-height: clamp(32px, 7vh, 58px) !important;
+  max-width: 82% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: inline-block !important;
+}
+
+.question-visual-box table {
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-collapse: collapse !important;
+}
+
+.question-visual-box.multi-player-3 table {
+  font-size: 0.72rem !important;
+  max-width: 95% !important;
+}
+
+.question-visual-box.multi-player-3 table td,
+.question-visual-box.multi-player-3 table th {
+  padding: 1px 3px !important;
+  font-size: 0.72rem !important;
+}
+
+.question-visual-box.multi-player-3 .scale-wrapper {
+  transform: scale(0.85);
+  transform-origin: center center;
 }
 
 /* 3D CLAY & PLASTIC TOY ICON STYLES WITH SHADOW & HIGHLIGHT (MATCHING REFERENCE IMAGE) */

@@ -1273,16 +1273,16 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
 
         const patternHTML = oruntu.map((item, idx) => {
           if (idx === boslukIndex) {
-            return `<div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-md animate-pulse text-sm xs:text-base sm:text-xl ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>`;
+            return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-lg ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>`;
           }
-          return `<div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-blue-900/80 border border-blue-400/60 flex items-center justify-center text-sm xs:text-base sm:text-xl shadow-md shrink-0">${item}</div>`;
-        }).join('<span class="text-amber-300 font-extrabold text-[10px] xs:text-xs sm:text-sm md:text-base mx-0.5 shrink-0">-</span>');
+          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-blue-900/80 border border-blue-400/60 flex items-center justify-center text-xs xs:text-sm sm:text-lg shadow-md shrink-0">${item}</div>`;
+        }).join('');
 
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5">
-          <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1.5 leading-snug sm:leading-normal">
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5">
+          <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1 leading-snug">
             Aşağıdaki geometrik örüntüde <span class="text-amber-300 underline decoration-amber-400 font-extrabold">${secilenKare.ad}</span> yerine hangi şekil gelmelidir?
           </div>
-          <div class="flex items-center justify-center gap-0.5 xs:gap-1 sm:gap-1.5 flex-nowrap max-w-full overflow-hidden px-0.5">
+          <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden px-0.5 my-0.5">
             ${patternHTML}
           </div>
         </div>`;
@@ -1776,14 +1776,14 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const correct = sayi * adet;
         const secilenKare = RITMIK_KARE_RENKLERI[Math.floor(Math.random() * RITMIK_KARE_RENKLERI.length)];
 
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1">
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] px-1.5 leading-snug">
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5">
+          <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1 leading-snug">
             İşlemde <span class="text-amber-300 underline decoration-amber-400 font-extrabold">${secilenKare.ad}</span> yerine hangi sayı gelmelidir?
           </div>
-          <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 text-base xs:text-lg sm:text-2xl md:text-3xl font-black text-white flex-nowrap max-w-full overflow-hidden px-1 drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)] [text-shadow:0_2px_4px_#000]">
-            ${dizi.map(n => `<span class="px-2 py-1 rounded-xl bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0">${n}</span>`).join('<span class="text-amber-400 mx-0.5 shrink-0">+</span>')}
-            <span class="text-amber-400 mx-0.5 shrink-0">=</span>
-            <div class="w-8 h-8 xs:w-9 xs:h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-lg animate-pulse text-base xs:text-lg sm:text-2xl ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>
+          <div class="flex items-center justify-center gap-0.5 xs:gap-1 sm:gap-1.5 text-xs xs:text-sm sm:text-base md:text-lg font-black text-white flex-nowrap max-w-full overflow-hidden px-0.5 my-0.5">
+            ${dizi.map(n => `<span class="px-1.5 py-0.5 xs:px-2 xs:py-1 rounded-md sm:rounded-lg bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0 text-center min-w-[20px] xs:min-w-[24px]">${n}</span>`).join('<span class="text-amber-400 shrink-0 text-xs sm:text-sm">+</span>')}
+            <span class="text-amber-400 shrink-0 text-xs sm:text-sm">=</span>
+            <div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-lg animate-pulse text-xs xs:text-sm sm:text-base ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>
           </div>
         </div>`;
 
@@ -1806,16 +1806,16 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const correct = c1 * c2;
         const secilenKare = RITMIK_KARE_RENKLERI[Math.floor(Math.random() * RITMIK_KARE_RENKLERI.length)];
 
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1">
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_3px_6px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] px-1.5 leading-snug">
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5">
+          <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1 leading-snug">
             İşlemde <span class="text-amber-300 underline decoration-amber-400 font-extrabold">${secilenKare.ad}</span> yerine hangi sayı gelmelidir?
           </div>
-          <div class="flex items-center justify-center gap-1.5 sm:gap-2 text-base xs:text-lg sm:text-2xl md:text-3xl font-black text-white flex-nowrap max-w-full overflow-hidden px-1 drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)] [text-shadow:0_2px_4px_#000]">
-            <span class="px-2.5 py-1 rounded-xl bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0">${c1}</span>
-            <span class="text-amber-400 shrink-0">x</span>
-            <span class="px-2.5 py-1 rounded-xl bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0">${c2}</span>
-            <span class="text-amber-400 shrink-0">=</span>
-            <div class="w-8 h-8 xs:w-9 xs:h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-lg animate-pulse text-base xs:text-lg sm:text-2xl ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>
+          <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 text-xs xs:text-sm sm:text-base md:text-lg font-black text-white flex-nowrap max-w-full overflow-hidden px-0.5 my-0.5">
+            <span class="px-2 py-0.5 xs:px-2.5 xs:py-1 rounded-md sm:rounded-lg bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0">${c1}</span>
+            <span class="text-amber-400 shrink-0 text-xs sm:text-sm">x</span>
+            <span class="px-2 py-0.5 xs:px-2.5 xs:py-1 rounded-md sm:rounded-lg bg-blue-900/90 border border-blue-400/60 shadow-md shrink-0">${c2}</span>
+            <span class="text-amber-400 shrink-0 text-xs sm:text-sm">=</span>
+            <div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 rounded-md sm:rounded-lg bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-lg animate-pulse text-xs xs:text-sm sm:text-base ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>
           </div>
         </div>`;
 
@@ -2269,13 +2269,13 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
 
         const renderMoneyQuestionHTML = (images: string[], questionText: string) => {
           return `
-            <div class="flex flex-col items-center justify-center w-full gap-2 sm:gap-3 my-auto max-h-full">
-              <div class="flex items-center justify-center gap-2 sm:gap-3 flex-wrap my-0.5 max-w-full">
+            <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto max-h-full px-1">
+              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap my-0.5 max-w-full overflow-hidden">
                 ${images.map(imgSrc => `
-                  <img src="${imgSrc}" class="${imgSrc.includes('madeni') ? 'h-12 sm:h-16 md:h-18 w-12 sm:w-16 md:w-18' : 'h-12 sm:h-16 md:h-20 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+                  <img src="${imgSrc}" class="${imgSrc.includes('madeni') ? 'h-10 sm:h-14 md:h-16 w-10 sm:w-14 md:w-16' : 'h-10 sm:h-14 md:h-16 max-w-[130px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] shrink-0" />
                 `).join('')}
               </div>
-              <div class="text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-2">
+              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1">
                 ${questionText}
               </div>
             </div>
@@ -2847,14 +2847,27 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
       generate: () => {
         const t = Math.floor(Math.random() * 3);
         if (t === 0) {
+          const questionText = "Kütle (ağırlık) ölçüm birimi aşağıdakilerden hangisidir?";
           return {
-            question: "Kütle (ağırlık) ölçüm birimi aşağıdakilerden hangisidir?",
+            question: questionText,
+            questionHTML: `
+              <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
+                <div class="flex items-center justify-center gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+                  <div class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-900/90 border-2 border-amber-400 text-amber-300 font-black text-xs xs:text-sm sm:text-lg shadow-md shrink-0 whitespace-nowrap">
+                    ⚖️ Kütle (Ağırlık) Birimi = ❓
+                  </div>
+                </div>
+                <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1">
+                  ${questionText}
+                </div>
+              </div>
+            `,
             correct: "Kilogram (kg)",
             wrong: ["Litre (L)", "Metre (m)", "Saat"],
             isLong: true
           };
         } else if (t === 1) {
-          const meyveler = ["elma", "karpuz", "portakal", "çilek", "muz", "şeftali", "kavun", "üzüm", "limon", "ananas", "mandalina", "armut", "erik"];
+          const meyveler = ["elma 🍎", "karpuz 🍉", "portakal 🍊", "çilek 🍓", "muz 🍌", "şeftali 🍑", "kavun 🍈", "üzüm 🍇", "limon 🍋", "ananas 🍍"];
           const m1 = meyveler[Math.floor(Math.random() * meyveler.length)];
           let m2 = meyveler[Math.floor(Math.random() * meyveler.length)];
           while (m2 === m1) m2 = meyveler[Math.floor(Math.random() * meyveler.length)];
@@ -2862,22 +2875,50 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           const k1 = Math.floor(Math.random() * 5) + 2;
           const k2 = Math.floor(Math.random() * 5) + 2;
           const toplam = k1 + k2;
+          const questionText = `${k1} kg ${m1} ile ${k2} kg ${m2} toplam kaç kg eder?`;
           return {
-            question: `${k1} kg ${m1} ile ${k2} kg ${m2} toplam kaç kg eder?`,
+            question: questionText,
+            questionHTML: `
+              <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
+                <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2.5 flex-nowrap max-w-full overflow-hidden my-0.5">
+                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">${k1} kg ${m1}</span>
+                  <span class="text-amber-300 font-black text-xs xs:text-sm sm:text-base shrink-0">+</span>
+                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">${k2} kg ${m2}</span>
+                  <span class="text-amber-300 font-black text-xs xs:text-sm sm:text-base shrink-0">=</span>
+                  <span class="px-2 py-1 rounded-lg bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">❓ kg</span>
+                </div>
+                <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1">
+                  ${questionText}
+                </div>
+              </div>
+            `,
             correct: toplam,
             wrong: benzersizYanlislar(toplam, [toplam + 2, toplam - 1, k1 * k2, toplam + 5], 1),
             isLong: false
           };
         } else {
-          const meyveler = ["elma", "çilek", "muz", "portakal", "şeftali", "karpuz", "kavun", "üzüm", "mandalina"];
+          const meyveler = ["elma 🍎", "çilek 🍓", "muz 🍌", "portakal 🍊", "şeftali 🍑", "karpuz 🍉", "kavun 🍈", "üzüm 🍇"];
           const m = meyveler[Math.floor(Math.random() * meyveler.length)];
           const ogrenci = getRastgeleOgrenci();
           const k1 = Math.floor(Math.random() * 6) + 5;
           const k2 = Math.floor(Math.random() * 4) + 1;
           const kalan = k1 - k2;
-          const mAyrilma = getNesneAyrilma(m);
+          const mAyrilma = getNesneAyrilma(m.split(' ')[0]);
+          const questionText = `${ogrenci} pazardan ${k1} kg ${m} aldı. Ailesi ile birlikte ${k2} kg ${mAyrilma} yedi. Geride kaç kg ${m} kaldı?`;
           return {
-            question: `${ogrenci} pazardan ${k1} kg ${m} aldı. Ailesi ile birlikte ${k2} kg ${mAyrilma} yedi. Geride kaç kg ${m} kaldı?`,
+            question: questionText,
+            questionHTML: `
+              <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
+                <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2.5 flex-nowrap max-w-full overflow-hidden my-0.5">
+                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">🛒 ${k1} kg ${m}</span>
+                  <span class="text-rose-400 font-black text-xs xs:text-sm sm:text-base shrink-0">➔ -${k2} kg</span>
+                  <span class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">Kalan: ❓ kg</span>
+                </div>
+                <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1">
+                  ${questionText}
+                </div>
+              </div>
+            `,
             correct: kalan,
             wrong: benzersizYanlislar(kalan, [k1 + k2, kalan + 2, kalan - 1, k2], 1),
             isLong: true

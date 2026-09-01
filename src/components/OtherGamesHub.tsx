@@ -6,7 +6,7 @@ interface OtherGamesHubProps {
   onOpenXOX: () => void;
   onOpenZitAnlam: () => void;
   onOpenEsAnlam: () => void;
-  onOpenIngilizce?: () => void;
+  onOpen3DLab?: () => void;
   playMp3?: (src: string, onEnded?: () => void) => void;
 }
 
@@ -15,7 +15,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
   onOpenXOX,
   onOpenZitAnlam,
   onOpenEsAnlam,
-  onOpenIngilizce,
+  onOpen3DLab,
   playMp3
 }) => {
   const triggerSound = (src: string) => {
@@ -41,25 +41,10 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
       features: ['Kolay/Orta/Zor Bot', 'Matematik Sorulu Hamle', 'Puan & Seri Takibi']
     },
     {
-      id: 'ingilizce',
-      title: 'İngilizce Oyunlar',
-      subtitle: '2., 3. ve 4. Sınıflar İçin Kelime Yarışması',
-      desc: 'Renkler, Hayvanlar, Vücudumuz, Meslekler ve Günlük Eylemler! 2 ve 3 Kişilik Kapışma, Test ve Hafıza kartları.',
-      badge: '🇬🇧 2., 3. & 4. SINIF',
-      badgeColor: 'bg-sky-500/30 text-sky-200 border-sky-400/40',
-      gradient: 'from-sky-500 via-blue-600 to-indigo-700',
-      borderColor: 'border-sky-300',
-      iconEmoji: '🌍',
-      iconBg: 'from-sky-400 to-blue-600',
-      sound: '/coin.mp3',
-      action: onOpenIngilizce || onOpenZitAnlam,
-      features: ['İngilizce - Türkçe Eşleme', '2 & 3 Kişilik Yarış', 'Hafıza Kartları']
-    },
-    {
       id: 'zit_anlam',
       title: 'Zıt Anlamlı Kelimeler',
       subtitle: '4 Şıklı & 2-3 Kişilik Yarış Modu',
-      desc: 'Sıcak-Soğuk, Büyük-Küçük gibi zıt anlamlı kelimeleri eğlenerek öğren! ⚔️ 2 ve 3 Kişilik Yarış, 🎯 4 Şıklı Test ve 🧩 Hafıza kartları.',
+      desc: 'Sıcak-Soğuk, Büyük-Küçük gibi zıt anlamlı kelimeleri eğlenerek öğren! ⚔️ 1, 2 ve 3 Kişilik Yarış, 🎯 Test ve 🧩 Hafıza kartları.',
       badge: '👑 1, 2 & 3 OYUNCU MODU',
       badgeColor: 'bg-amber-500/30 text-amber-200 border-amber-400/40',
       gradient: 'from-amber-500 via-orange-600 to-red-600',
@@ -68,7 +53,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
       iconBg: 'from-amber-400 to-orange-600',
       sound: '/farklilvl.mp3',
       action: onOpenZitAnlam,
-      features: ['2 & 3 Kişilik Farklı Sorular', '3 Hata Yapan Elenir', 'Hafıza Kartı Eşleştirme']
+      features: ['1, 2 & 3 Kişilik Farklı Sorular', '3 Hata Yapan Elenir', 'Hafıza Kartı Eşleştirme']
     },
     {
       id: 'es_anlam',
@@ -83,12 +68,29 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
       iconBg: 'from-emerald-400 to-teal-600',
       sound: '/para.mp3',
       action: onOpenEsAnlam,
-      features: ['2 & 3 Kişilik Canlı Yarış', '3 Hata Yapan Elenir', '4 Şıklı Kelime Testi']
+      features: ['1, 2 & 3 Kişilik Canlı Yarış', '3 Hata Yapan Elenir', 'Hafıza Kartı Eşleştirme']
+    },
+    {
+      id: 'lab3d',
+      title: '3D Geometri & Şekil Laboratuvarı',
+      subtitle: '3 Boyutlu Cisimler, Döndürme & Yüzey Keşfi',
+      desc: 'Küp, dikdörtgen prizma, silindir, koni ve küre gibi geometrik cisimleri 360° döndürerek köşe, ayrıt ve yüzey özelliklerini keşfet!',
+      badge: '🔬 3D İNTERAKTİF LAB',
+      badgeColor: 'bg-cyan-500/30 text-cyan-200 border-cyan-400/40',
+      gradient: 'from-cyan-600 via-teal-600 to-blue-700',
+      borderColor: 'border-cyan-300',
+      iconEmoji: '🧊',
+      iconBg: 'from-cyan-400 to-blue-600',
+      sound: '/coin.mp3',
+      action: () => {
+        if (onOpen3DLab) onOpen3DLab();
+      },
+      features: ['360° 3D Model Döndürme', 'Köşe & Ayrıt Analizi', 'İnteraktif Geometri']
     }
   ];
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col font-sans select-none overflow-hidden bg-slate-900 text-white">
+    <div className="fixed inset-0 z-50 flex flex-col font-sans select-none overflow-hidden bg-slate-900 text-white">
       {/* 1. SAME BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES (/intro2.png) */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
