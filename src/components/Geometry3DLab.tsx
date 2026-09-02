@@ -286,9 +286,16 @@ export const Geometry3DLab: React.FC<{ onClose: () => void }> = ({ onClose }) =>
               🧊
             </div>
             <div>
-              <h2 className="text-lg sm:text-xl font-black text-amber-300 tracking-wide">
-                3D Geometri Keşif Labı
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-black text-amber-300 tracking-wide">
+                  3D Geometri Keşif Labı
+                </h2>
+                <img 
+                  src="/icon_2.png" 
+                  alt="2. Sınıf" 
+                  className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-sm" 
+                />
+              </div>
               <p className="text-xs text-slate-400 font-medium">
                 Geometrik cisimleri seçin, dokunarak döndürün, yüzey-ayrıt-köşelerini keşfedin!
               </p>

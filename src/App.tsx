@@ -9,6 +9,7 @@ import { QuestionData, StatRecord, PlayerData, GroupStatsRecord } from './types'
 import { BADGES, BadgeItem, getBadgeRepeatCount } from './badges';
 import { AslanSVG } from './components/Mascot';
 import { Geometry3DLab } from './components/Geometry3DLab';
+import { GeoboardActivity } from './components/GeoboardActivity';
 import { XOXGame } from './components/XOXGame';
 import { OtherGamesHub } from './components/OtherGamesHub';
 import { WordGameModal } from './components/WordGameModal';
@@ -19,6 +20,101 @@ import { topics1stGrade } from './data/topics1stGrade';
 import { topics2ndGrade } from './data/topics2ndGrade';
 import { topics3rdGrade } from './data/topics3rdGrade';
 import { topics4thGrade } from './data/topics4thGrade';
+import { ZIT_ANLAM_DATA, ES_ANLAM_DATA, INGILIZCE_DATA } from './data/wordPairsData';
+
+// --- TOPICS FOR OTHER WORD GAMES (STANDARDIZED WITH ALL OTHER ACTIVITIES) ---
+const topicsWordGames: Record<string, { title: string; desc: string; generate: () => QuestionData }> = {
+  other_zit_anlam: {
+    title: "Zıt Anlamlı Kelimeler",
+    desc: "Verilen kelimenin zıt (karşıt) anlamlısını bulma.",
+    generate: () => {
+      const secilen = ZIT_ANLAM_DATA[Math.floor(Math.random() * ZIT_ANLAM_DATA.length)];
+      const yanlislar = ZIT_ANLAM_DATA
+        .filter(d => d.word !== secilen.word && d.match !== secilen.match)
+        .map(d => d.match)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+      const soru = `"${secilen.word}" kelimesinin ZIT (KARŞIT) anlamlısı hangisidir?`;
+      const soruHTML = `
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 my-auto">
+          <div class="px-5 py-1.5 sm:py-2 rounded-2xl bg-amber-400 text-slate-950 font-black text-2xl xs:text-3xl sm:text-4xl border-2 border-white shadow-lg drop-shadow-md">
+            ${secilen.emoji ? `${secilen.emoji} ` : ''}${secilen.word}
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2 mt-1">
+            kelimesinin <b>ZIT (KARŞIT)</b> anlamlısı hangisidir?
+          </div>
+        </div>
+      `;
+      return {
+        question: soru,
+        questionHTML: soruHTML,
+        correct: secilen.match,
+        wrong: yanlislar,
+        isLong: false
+      };
+    }
+  },
+  other_es_anlam: {
+    title: "Eş Anlamlı Kelimeler",
+    desc: "Verilen kelimenin eş (anlamdaş) anlamlısını bulma.",
+    generate: () => {
+      const secilen = ES_ANLAM_DATA[Math.floor(Math.random() * ES_ANLAM_DATA.length)];
+      const yanlislar = ES_ANLAM_DATA
+        .filter(d => d.word !== secilen.word && d.match !== secilen.match)
+        .map(d => d.match)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+      const soru = `"${secilen.word}" kelimesinin EŞ (ANLAMDAŞ) anlamlısı hangisidir?`;
+      const soruHTML = `
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 my-auto">
+          <div class="px-5 py-1.5 sm:py-2 rounded-2xl bg-emerald-400 text-slate-950 font-black text-2xl xs:text-3xl sm:text-4xl border-2 border-white shadow-lg drop-shadow-md">
+            ${secilen.emoji ? `${secilen.emoji} ` : ''}${secilen.word}
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2 mt-1">
+            kelimesinin <b>EŞ (ANLAMDAŞ)</b> anlamlısı hangisidir?
+          </div>
+        </div>
+      `;
+      return {
+        question: soru,
+        questionHTML: soruHTML,
+        correct: secilen.match,
+        wrong: yanlislar,
+        isLong: false
+      };
+    }
+  },
+  other_ingilizce: {
+    title: "İngilizce Kelime Oyunu",
+    desc: "İngilizce kelimelerin Türkçe karşılıklarını bulma.",
+    generate: () => {
+      const secilen = INGILIZCE_DATA[Math.floor(Math.random() * INGILIZCE_DATA.length)];
+      const yanlislar = INGILIZCE_DATA
+        .filter(d => d.word !== secilen.word && d.match !== secilen.match)
+        .map(d => d.match)
+        .sort(() => Math.random() - 0.5)
+        .slice(0, 3);
+      const soru = `"${secilen.word}" kelimesinin TÜRKÇE karşılığı hangisidir?`;
+      const soruHTML = `
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 my-auto">
+          <div class="px-5 py-1.5 sm:py-2 rounded-2xl bg-cyan-400 text-slate-950 font-black text-2xl xs:text-3xl sm:text-4xl border-2 border-white shadow-lg drop-shadow-md">
+            🇬🇧 ${secilen.word}
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2 mt-1">
+            kelimesinin <b>TÜRKÇE</b> karşılığı hangisidir?
+          </div>
+        </div>
+      `;
+      return {
+        question: soru,
+        questionHTML: soruHTML,
+        correct: secilen.match,
+        wrong: yanlislar,
+        isLong: false
+      };
+    }
+  }
+};
 
 // --- SVG & IMAGE DATA & HELPERS ---
 const SINIF_OGRENCILERI = [
@@ -55,41 +151,31 @@ function getDynamicQuestionFontClass(
 
   if (mode === 1) {
     if (hasHTML) {
-      if (len > 90) return "text-sm sm:text-base md:text-lg font-bold leading-normal";
-      if (len > 45) return "text-base sm:text-lg md:text-xl font-extrabold leading-snug";
-      return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
+      return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
     }
-    if (len <= 15) return "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black tracking-wide leading-tight";
-    if (len <= 35) return "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black tracking-wide leading-tight";
-    if (len <= 70) return "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black leading-snug";
-    if (len <= 110) return "text-base xs:text-lg sm:text-xl md:text-2xl font-extrabold leading-relaxed";
-    return "text-sm xs:text-base sm:text-lg md:text-xl font-bold leading-relaxed";
+    if (len <= 25) return "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black tracking-wide leading-tight";
+    if (len <= 65) return "text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black tracking-wide leading-tight";
+    if (len <= 125) return "text-lg xs:text-xl sm:text-2xl md:text-3xl font-black leading-snug";
+    return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
   }
 
   if (mode === 2) {
     if (hasHTML) {
-      if (len > 70) return "text-xs sm:text-sm md:text-base font-bold leading-tight";
-      if (len > 35) return "text-sm sm:text-base md:text-lg font-extrabold leading-snug";
-      return "text-base sm:text-lg md:text-xl font-black leading-snug";
+      return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
     }
-    if (len <= 20) return "text-xl sm:text-2xl md:text-3xl font-black tracking-wide leading-tight";
-    if (len <= 45) return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
-    if (len <= 80) return "text-base sm:text-lg md:text-xl font-extrabold leading-snug";
-    if (len <= 120) return "text-sm sm:text-base md:text-lg font-bold leading-snug";
-    return "text-xs sm:text-sm md:text-base font-bold leading-tight";
+    if (len <= 35) return "text-xl sm:text-2xl md:text-3xl font-black tracking-wide leading-tight";
+    if (len <= 85) return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
+    return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
   }
 
   // mode === 3 (3 Players)
   if (hasHTML) {
-    if (len > 60) return "text-[11px] sm:text-xs md:text-sm font-bold leading-tight";
-    if (len > 30) return "text-xs sm:text-sm md:text-base font-extrabold leading-snug";
-    return "text-sm sm:text-base md:text-lg font-black leading-snug";
+    return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
   }
-  if (len <= 15) return "text-lg sm:text-xl md:text-2xl font-black tracking-wide leading-tight";
-  if (len <= 35) return "text-base sm:text-lg md:text-xl font-black leading-snug";
-  if (len <= 70) return "text-sm sm:text-base md:text-lg font-extrabold leading-snug";
-  if (len <= 110) return "text-xs sm:text-sm md:text-base font-bold leading-snug";
-  return "text-[11px] sm:text-xs md:text-sm font-bold leading-tight";
+  if (len <= 35) return "text-xl sm:text-2xl md:text-3xl font-black tracking-wide leading-tight";
+  if (len <= 85) return "text-lg sm:text-xl md:text-2xl font-black leading-snug";
+  // Problem soruları ve her türlü soru metni için görsel sorularla birebir aynı büyük, net font boyutu:
+  return "text-base xs:text-lg sm:text-xl md:text-2xl font-black leading-snug";
 }
 
 // UNIFORM OPTION FONT SIZING HELPER (CALCULATED FROM LONGEST OPTION IN SET)
@@ -124,12 +210,12 @@ function getDynamicOptionFontClass(
 }
 
 const CISIM_SVG: Record<string, string> = {
-  kup: '<img src="/geos/kups.png" alt="Küp" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
-  kure: '<img src="/geos/kures.png" alt="Küre" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
-  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
-  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
-  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />',
-  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="max-h-[90px] max-w-[90px] w-auto h-auto object-contain filter drop-shadow-md mx-auto inline-block" />'
+  kup: '<img src="/geos/kups.png" alt="Küp" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kure: '<img src="/geos/kures.png" alt="Küre" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />'
 };
 
 const CISIM_OZELLIK: Record<string, { ad: string; yüz: number; ayrıt: number; köşe: number }> = {
@@ -1361,7 +1447,7 @@ const CATEGORY_MAP = [
     name: "1. Nesnelerin Geometrisi",
     shortName: "Geometri",
     icon: "/iconn/s21.png",
-    keys: ["uzamsal_iliskiler", "es_nesneler", "geometrik_sekil_cisim", "yuz_ayrit_kose", "geometrik_oruntu", "uzamsal_iliskiler_simetri", "sivi_olcme", "tartma_olcme"]
+    keys: ["uzamsal_iliskiler", "es_nesneler", "geometrik_sekil_cisim", "geometri_tahtasi", "yuz_ayrit_kose", "geometrik_oruntu", "uzamsal_iliskiler_simetri", "sivi_olcme", "tartma_olcme"]
   },
   {
     id: 'sayilar',
@@ -1594,11 +1680,34 @@ const getCategoryIdForTopic = (topicKey: string): string => {
   return 'geometri';
 };
 
+const getGradeIconForTopic = (topicKey: string, currentGrade: number | null): string => {
+  if (topicKey.startsWith('ing_') || topicKey === 'other_ingilizce') return '/icon_6.png';
+  if (
+    topicKey.startsWith('other_') ||
+    topicKey === 'balon_patlatma_mat' ||
+    topicKey === 'matematik_hafiza' ||
+    topicKey === 'hizli_islem_carki' ||
+    topicKey === 'sayi_dedektifi' ||
+    topicKey === 'ritim_labirent' ||
+    topicKey === 'geometri_eslestirme' ||
+    topicKey.startsWith('sureli_')
+  ) {
+    return '/icon_5.png';
+  }
+  if (topicKey.startsWith('g4_')) return '/icon_4.png';
+  if (topicKey.startsWith('g3_')) return '/icon_3.png';
+  if (currentGrade === 1) return '/icon_1.png';
+  if (currentGrade === 3) return '/icon_3.png';
+  if (currentGrade === 4) return '/icon_4.png';
+  return '/icon_2.png';
+};
+
 const TOPIC_3D_ICONS: Record<string, string> = {
   // 1. Nesnelerin Geometrisi
   uzamsal_iliskiler: '/iconn/s3.png',
   es_nesneler: '/iconn/s2.png',
   geometrik_sekil_cisim: '/iconn/s10.png',
+  geometri_tahtasi: '/iconn/s21.png',
   yuz_ayrit_kose: '/iconn/s1.png',
   geometrik_oruntu: '/iconn/s2.png',
   uzamsal_iliskiler_simetri: '/iconn/s3.png',
@@ -1805,30 +1914,48 @@ const TopicButtonReferenceStyle: React.FC<{
   return (
     <button
       onClick={onClick}
-      className="group relative w-full bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 dark:from-sky-700 dark:via-blue-800 dark:to-indigo-900 border-3 border-white dark:border-amber-300 ring-2 ring-amber-300/60 rounded-full p-2 pr-3.5 sm:pr-5 flex items-center gap-2.5 sm:gap-3.5 shadow-[0_5px_0_#1e3a8a,0_8px_16px_rgba(0,0,0,0.25)] hover:shadow-[0_7px_0_#1e3a8a,0_12px_20px_rgba(0,0,0,0.3)] hover:-translate-y-1 active:translate-y-0.5 active:shadow-[0_2px_0_#1e3a8a] transition-all cursor-pointer overflow-hidden"
+      className={`group relative w-full bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 dark:from-sky-700 dark:via-blue-800 dark:to-indigo-900 border-3 sm:border-3.5 md:border-4 border-white dark:border-amber-300 ring-2 ring-amber-300/80 rounded-2xl sm:rounded-3xl md:rounded-full ${
+        compact 
+          ? 'p-2 sm:p-2.5 md:p-3 pr-3.5 sm:pr-5 md:pr-6 min-h-[58px] sm:min-h-[66px] md:min-h-[72px]' 
+          : 'p-2.5 sm:p-3 md:p-3.5 pr-4 sm:pr-6 md:pr-7 min-h-[66px] sm:min-h-[74px] md:min-h-[82px]'
+      } flex items-center gap-2.5 sm:gap-3.5 md:gap-4 shadow-[0_5px_0_#1e3a8a,0_8px_18px_rgba(0,0,0,0.3)] hover:shadow-[0_7px_0_#1e3a8a,0_12px_24px_rgba(0,0,0,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_#1e3a8a] transition-all cursor-pointer overflow-hidden`}
     >
       {/* Top Gloss/Shine Highlight Overlay */}
-      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none rounded-t-full" />
+      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl md:rounded-t-full" />
 
       {/* Left Circular 3D Icon Badge */}
       <div className="relative shrink-0 z-10">
-        <div className={`w-11 h-11 sm:w-13 sm:h-13 rounded-full bg-gradient-to-br ${badgeGradient} text-white ring-3 ring-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-1 sm:p-1.5 transition-transform group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
+        <div className={`${
+          compact ? 'w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14' : 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
+        } rounded-xl sm:rounded-2xl bg-gradient-to-br ${badgeGradient} text-white ring-2 sm:ring-3 ring-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.35)] flex items-center justify-center p-1 sm:p-1.5 transition-transform group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
           <img src={iconUrl} alt={title} className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
         </div>
       </div>
 
       {/* Center Text Body */}
       <div className="flex-1 text-left min-w-0 py-0.5 z-10">
-        <h4 className="font-black text-xs sm:text-sm md:text-base uppercase tracking-wider text-white group-hover:text-yellow-300 transition-colors leading-tight line-clamp-1 drop-shadow-md">
+        <h4 className={`font-black ${
+          compact 
+            ? 'text-xs sm:text-sm md:text-base lg:text-lg' 
+            : 'text-sm sm:text-base md:text-lg lg:text-xl'
+        } text-white group-hover:text-yellow-300 transition-colors leading-snug line-clamp-1 drop-shadow-md uppercase tracking-wide`}>
           {title}
         </h4>
-        <p className="text-[10px] sm:text-xs text-yellow-300 font-extrabold truncate mt-0.5 uppercase tracking-wide drop-shadow-xs">
-          Alıştırma Etkinliği
+        <p className={`${
+          compact 
+            ? 'text-[10px] sm:text-xs' 
+            : 'text-[11px] sm:text-xs md:text-sm'
+        } text-yellow-300 font-extrabold truncate mt-0.5 uppercase tracking-wider drop-shadow-xs`}>
+          🎯 Alıştırma & Oyun Etkinliği
         </p>
       </div>
 
       {/* Right 3D Green PLAY Action Image */}
-      <div className="z-10 shrink-0 relative w-[42px] h-[33px] sm:w-[48px] sm:h-[37px] group-hover:scale-110 transition-transform filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)]">
+      <div className={`z-10 shrink-0 relative ${
+        compact 
+          ? 'w-[52px] h-[34px] sm:w-[64px] sm:h-[42px] md:w-[74px] md:h-[48px]' 
+          : 'w-[58px] h-[38px] sm:w-[72px] sm:h-[46px] md:w-[84px] md:h-[54px]'
+      } group-hover:scale-110 transition-transform filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] flex items-center justify-center`}>
         <div 
           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
           style={{ backgroundImage: `url('/ply.png')` }}
@@ -2247,10 +2374,19 @@ export default function App() {
   const [shuffledOptions, setShuffledOptions] = useState<(string | number)[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
   const [feedbackState, setFeedbackState] = useState<'none' | 'correct' | 'wrong'>('none');
+  const [isTimedMode, setIsTimedMode] = useState<boolean>(false);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(10);
 
   const isTimedTopic = (topicKey: string) => {
-    return topicKey === 'sureli_toplama_cikarma' || topicKey === 'sureli_carpma_bolme';
+    if (isTimedMode) return true;
+    if (!topicKey) return false;
+    return (
+      topicKey.startsWith('sureli_') ||
+      topicKey.includes('sureli') ||
+      topicKey === 'sureli_toplama_cikarma' ||
+      topicKey === 'sureli_carpma_bolme' ||
+      topicKey === 'sureli_on_tamamlama'
+    );
   };
 
   // End Game Info
@@ -2272,6 +2408,7 @@ export default function App() {
   });
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [show3DLab, setShow3DLab] = useState(false);
+  const [showGeoboard, setShowGeoboard] = useState(false);
   const [showOtherGamesModal, setShowOtherGamesModal] = useState(false);
   const [showXOXGame, setShowXOXGame] = useState(false);
   const [wordGameType, setWordGameType] = useState<'zit_anlam' | 'es_anlam' | 'ingilizce' | null>(null);
@@ -2393,7 +2530,8 @@ export default function App() {
 
   // 10-Second Countdown Timer for Timed Challenge Activities (Single Player & Multi-Player)
   useEffect(() => {
-    if (gameState !== 'playing' || !isTimedTopic(currentTopic) || feedbackState !== 'none' || !currentQuestionData) {
+    const isTimerActive = isTimedMode || isTimedTopic(currentTopic);
+    if (gameState !== 'playing' || !isTimerActive || feedbackState !== 'none' || !currentQuestionData) {
       return;
     }
 
@@ -2403,21 +2541,45 @@ export default function App() {
       kaydetIstatistik(currentTopic, false);
       setStreak(0);
 
-      setLives(prev => {
-        const nextLives = prev - 1;
-        if (nextLives <= 0) {
-          setTimeout(() => {
-            setGameResult({ reason: 'can', score, livesLeft: 0 });
-            setGameState('gameover');
-          }, 800);
-        } else {
-          setTimeout(() => {
-            nextQuestion(currentTopic);
-          }, 900);
-        }
-        return nextLives;
-      });
+      if (playerCountMode === 1) {
+        setLives(prev => {
+          const nextLives = prev - 1;
+          if (nextLives <= 0) {
+            setTimeout(() => {
+              setGameResult({ reason: 'can', score, livesLeft: 0 });
+              setGameState('gameover');
+            }, 800);
+          } else {
+            setTimeout(() => {
+              nextQuestion(currentTopic);
+            }, 900);
+          }
+          return nextLives;
+        });
+      } else {
+        // Multi-player timed expiry
+        setPlayers(prev => prev.map(p => {
+          if (p.feedbackState === 'none' && p.lives > 0) {
+            const nextLives = p.lives - 1;
+            return {
+              ...p,
+              lives: nextLives,
+              feedbackState: 'wrong'
+            };
+          }
+          return p;
+        }));
+
+        setTimeout(() => {
+          nextQuestion(currentTopic);
+        }, 1000);
+      }
       return;
+    }
+
+    // Play audible warning on last 3 seconds (3, 2, 1)
+    if (questionTimeLeft <= 3 && questionTimeLeft >= 1) {
+      playCountdownWarningSound(questionTimeLeft);
     }
 
     const timer = setInterval(() => {
@@ -2425,7 +2587,7 @@ export default function App() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameState, currentTopic, feedbackState, questionTimeLeft, currentQuestionData, score]);
+  }, [gameState, currentTopic, isTimedMode, feedbackState, questionTimeLeft, currentQuestionData, score, soundEnabled, playerCountMode]);
 
   // Audio Context Ref
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -2502,8 +2664,27 @@ export default function App() {
     playMp3('/farklilvl.mp3');
   };
 
-  // Topics configuration (1., 2., 3. ve 4. Sınıf Seviyeleri)
+  const playCountdownWarningSound = (secondsLeft: number) => {
+    if (!soundEnabled) return;
+    try {
+      if (secondsLeft === 3) {
+        playTone(587.33, 0.16, 'sine', 0, 0.4);
+        playMp3('/tek.mp3');
+      } else if (secondsLeft === 2) {
+        playTone(659.25, 0.18, 'sine', 0, 0.45);
+        playMp3('/tek.mp3');
+      } else if (secondsLeft === 1) {
+        playTone(880.00, 0.25, 'triangle', 0, 0.6);
+        playMp3('/dtt.mp3');
+      }
+    } catch {
+      // Audio error fallback
+    }
+  };
+
+  // Topics configuration (1., 2., 3., 4. Sınıf Seviyeleri ve Diğer Oyunlar)
   const topics: Record<string, { title: string; desc: string; generate: () => QuestionData }> = {
+    ...topicsWordGames,
     ...topics4thGrade,
     ...topics3rdGrade,
     ...topics2ndGrade,
@@ -2527,16 +2708,30 @@ export default function App() {
     }
   };
 
-  const generateUniqueQuestion = (targetTopicKey?: string): QuestionData => {
+  // Helper to get topic configuration based on active grade
+  const getCurrentTopicInfo = (topicKey: string, grade?: number | null) => {
+    const effectiveGrade = grade !== undefined && grade !== null ? grade : selectedGrade;
+    if (topicsWordGames[topicKey]) return topicsWordGames[topicKey];
+    if (effectiveGrade === 1 && topics1stGrade[topicKey]) return topics1stGrade[topicKey];
+    if (effectiveGrade === 3 && topics3rdGrade[topicKey]) return topics3rdGrade[topicKey];
+    if (effectiveGrade === 4 && topics4thGrade[topicKey]) return topics4thGrade[topicKey];
+    if (effectiveGrade === 2 && topics2ndGrade[topicKey]) return topics2ndGrade[topicKey];
+    if (topics2ndGrade[topicKey]) return topics2ndGrade[topicKey];
+    if (topics1stGrade[topicKey]) return topics1stGrade[topicKey];
+    return topics[topicKey] || { title: 'Etkinlik', desc: '', generate: () => ({ question: '', correct: 0, wrong: [] }) };
+  };
+
+  const generateUniqueQuestion = (targetTopicKey?: string, gradeOverride?: 1 | 2 | 3 | 4): QuestionData => {
     const topicToUse = targetTopicKey || currentTopic;
-    const currentGradeTopics = selectedGrade === 1 
+    const effectiveGrade = gradeOverride !== undefined ? gradeOverride : selectedGrade;
+    const currentGradeTopics = effectiveGrade === 1 
       ? topics1stGrade 
-      : selectedGrade === 3 
+      : effectiveGrade === 3 
       ? topics3rdGrade 
-      : selectedGrade === 4
+      : effectiveGrade === 4
       ? topics4thGrade
       : topics2ndGrade;
-    const topicConfig = (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
+    const topicConfig = topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
     let data: QuestionData;
     let imza: string;
     let deneme = 0;
@@ -2550,16 +2745,17 @@ export default function App() {
     return data;
   };
 
-  const generateQuestionForPlayer = (targetTopicKey: string, askedList: string[]) => {
+  const generateQuestionForPlayer = (targetTopicKey: string, askedList: string[], gradeOverride?: 1 | 2 | 3 | 4) => {
     const topicToUse = targetTopicKey || currentTopic;
-    const currentGradeTopics = selectedGrade === 1 
+    const effectiveGrade = gradeOverride !== undefined ? gradeOverride : selectedGrade;
+    const currentGradeTopics = effectiveGrade === 1 
       ? topics1stGrade 
-      : selectedGrade === 3 
+      : effectiveGrade === 3 
       ? topics3rdGrade 
-      : selectedGrade === 4
+      : effectiveGrade === 4
       ? topics4thGrade
       : topics2ndGrade;
-    const topicConfig = (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
+    const topicConfig = topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
     let data: QuestionData;
     let imza: string;
     let deneme = 0;
@@ -2676,9 +2872,18 @@ export default function App() {
     }
   };
 
-  const selectTopicAndStart = (topicKey: string) => {
+  const selectTopicAndStart = (topicKey: string, gradeOverride?: 1 | 2 | 3 | 4) => {
+    if (gradeOverride !== undefined) {
+      setSelectedGrade(gradeOverride);
+      setLastSelectedGrade(gradeOverride);
+    }
     if (topicKey !== currentTopic) {
       playFarkliLvlSound();
+    }
+    if (topicKey === 'geometri_tahtasi') {
+      setCurrentTopic('geometri_tahtasi');
+      setShowGeoboard(true);
+      return;
     }
     setCurrentTopic(topicKey);
     setQuestionTimeLeft(10);
@@ -2743,7 +2948,7 @@ export default function App() {
 
     let cumulativeAsked: string[] = [];
     for (let i = 0; i < playerCountMode; i++) {
-      const qRes = generateQuestionForPlayer(topicKey, cumulativeAsked);
+      const qRes = generateQuestionForPlayer(topicKey, cumulativeAsked, gradeOverride);
       cumulativeAsked.push(qRes.signature);
       initialPlayers.push({
         ...playerConfigs[i],
@@ -2807,7 +3012,7 @@ export default function App() {
     }
 
     // 4. If in category view and topic modal not open
-    if (!showTopicModal && !show3DLab && !showOtherGamesModal && !showXOXGame && wordGameType === null) {
+    if (!showTopicModal && !show3DLab && !showGeoboard && !showOtherGamesModal && !showXOXGame && wordGameType === null) {
       setShowTopicModal(true);
       return;
     }
@@ -2931,16 +3136,20 @@ export default function App() {
     playFarkliLvlSound();
 
     setShow3DLab(false);
+    setShowGeoboard(false);
     setShowXOXGame(false);
     setShowOtherGamesModal(false);
     setShowTopicModal(false);
     setShowStatsModal(false);
     setWordGameType(null);
 
-    if (entry.type === 'grade_topic' && entry.grade && entry.topicKey) {
-      setSelectedGrade(entry.grade);
-      setLastSelectedGrade(entry.grade);
-      selectTopicAndStart(entry.topicKey);
+    if (entry.type === 'grade_topic' && entry.topicKey) {
+      if (entry.grade) {
+        setSelectedGrade(entry.grade);
+        setLastSelectedGrade(entry.grade);
+        setSelectedCategoryId(getCategoryIdForTopic(entry.topicKey));
+      }
+      selectTopicAndStart(entry.topicKey, entry.grade);
     } else if (entry.type === '3d_lab') {
       setGameState('welcome');
       setShow3DLab(true);
@@ -2959,14 +3168,33 @@ export default function App() {
   };
 
   const getCurrentActivityIndex = (): number => {
-    if (wordGameType === 'ingilizce') return allActivitiesList.findIndex(a => a.id === 'other_ingilizce');
-    if (wordGameType === 'es_anlam') return allActivitiesList.findIndex(a => a.id === 'other_es_anlam');
-    if (wordGameType === 'zit_anlam') return allActivitiesList.findIndex(a => a.id === 'other_zit_anlam');
+    if (wordGameType === 'ingilizce') return allActivitiesList.findIndex(a => a.wordGameType === 'ingilizce' || a.id === 'other_ingilizce');
+    if (wordGameType === 'es_anlam') return allActivitiesList.findIndex(a => a.wordGameType === 'es_anlam' || a.id === 'other_es_anlam');
+    if (wordGameType === 'zit_anlam') return allActivitiesList.findIndex(a => a.wordGameType === 'zit_anlam' || a.id === 'other_zit_anlam');
     if (showXOXGame) return allActivitiesList.findIndex(a => a.id === 'other_xox');
     if (show3DLab) return allActivitiesList.findIndex(a => a.id === 'other_3dlab');
-    if (gameState === 'playing' && selectedGrade) {
-      const idx = allActivitiesList.findIndex(a => a.type === 'grade_topic' && a.grade === selectedGrade && a.topicKey === currentTopic);
-      if (idx !== -1) return idx;
+    if (showGeoboard) {
+      if (selectedGrade === 1) return allActivitiesList.findIndex(a => a.id === 'g1_geometri_tahtasi');
+      return allActivitiesList.findIndex(a => a.id === 'g2_geometri_tahtasi');
+    }
+    if (gameState === 'playing') {
+      // 1. Exact match with both topicKey and selectedGrade
+      if (selectedGrade !== null) {
+        const exactIdx = allActivitiesList.findIndex(
+          a => a.type === 'grade_topic' && a.topicKey === currentTopic && a.grade === selectedGrade
+        );
+        if (exactIdx !== -1) return exactIdx;
+      }
+      // 2. Match by topicKey or id
+      const topicIdx = allActivitiesList.findIndex(
+        a => a.topicKey === currentTopic || a.id === currentTopic
+      );
+      if (topicIdx !== -1) return topicIdx;
+    }
+    // 3. Fallback when on welcome or category screens: find first activity of the selected grade
+    if (selectedGrade !== null) {
+      const gradeStartIdx = allActivitiesList.findIndex(a => a.grade === selectedGrade);
+      if (gradeStartIdx !== -1) return gradeStartIdx;
     }
     return 0;
   };
@@ -3333,6 +3561,7 @@ export default function App() {
             setShowTopicModal(false);
             setShowStatsModal(false);
             setShow3DLab(false);
+            setShowGeoboard(false);
             setShowOtherGamesModal(false);
             setShowXOXGame(false);
             setWordGameType(null);
@@ -3365,6 +3594,10 @@ export default function App() {
             }
             if (show3DLab) {
               setShow3DLab(false);
+              return;
+            }
+            if (showGeoboard) {
+              setShowGeoboard(false);
               return;
             }
             if (showStatsModal) {
@@ -3510,6 +3743,40 @@ export default function App() {
           )}
         </button>
 
+        {/* 9. SÜRELİ OYUN MODU (10s GERİ SAYIM + SESLİ UYARI) */}
+        <button
+          onClick={() => {
+            setIsTimedMode(prev => {
+              const next = !prev;
+              if (next) {
+                playMp3('/farklilvl.mp3');
+              } else {
+                playMp3('/coin.mp3');
+              }
+              return next;
+            });
+          }}
+          className={`relative group h-11 xs:h-13 sm:h-16 px-2.5 sm:px-3.5 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 border-2 ${
+            isTimedMode
+              ? 'bg-rose-950/90 border-rose-500 text-rose-200 ring-3 ring-rose-400/80 shadow-[0_0_18px_rgba(244,63,94,0.7)]'
+              : 'bg-slate-950/70 border-cyan-400/40 text-cyan-200 hover:border-cyan-300'
+          }`}
+          title="10 Saniyelik Süreli Oyun Modu (Son 3 Saniye Sesli Uyarı)"
+        >
+          <span className={`text-base sm:text-xl ${isTimedMode ? 'animate-bounce' : ''}`}>⏱️</span>
+          <div className="flex flex-col text-left leading-tight hidden xs:flex">
+            <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
+              SÜRELİ
+            </span>
+            <span className={`text-[8px] sm:text-[10px] font-extrabold ${isTimedMode ? 'text-rose-300' : 'text-slate-300'}`}>
+              {isTimedMode ? 'AÇIK (10s)' : 'KAPALI'}
+            </span>
+          </div>
+          {isTimedMode && (
+            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e] animate-ping" />
+          )}
+        </button>
+
         {/* AYIRICI ÇİZGİ */}
         <div className="h-7 sm:h-10 w-0.5 bg-yellow-400/40 rounded-full mx-0.5 shrink-0" />
 
@@ -3559,12 +3826,16 @@ export default function App() {
           {selectedGrade === null ? (
             /* GRADE / CLASS SELECTION SCREEN (1. SINIF, 2. SINIF, 3. SINIF, 4. SINIF) */
             <div className="max-w-4xl xl:max-w-5xl w-full mx-auto flex flex-col items-center justify-center my-auto py-1">
-              {/* COMPACT CLEAN TITLE BADGE */}
-              <div className="w-full flex items-center justify-center mb-1.5 sm:mb-2 px-2 shrink-0">
-                <div className="inline-flex items-center gap-2 px-4 sm:px-6 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-blue-950 font-black text-xs sm:text-sm md:text-base tracking-wider uppercase shadow-md border-2 border-white drop-shadow-sm">
-                  <Sparkles size={14} className="text-blue-950 shrink-0" />
-                  <span>Sınıfını Seç ve Başla</span>
-                  <Sparkles size={14} className="text-blue-950 shrink-0" />
+              {/* VIBRANT PROFESSIONAL COLORFUL TITLE FRAME */}
+              <div className="w-full flex items-center justify-center mb-2 sm:mb-3 px-2 shrink-0">
+                <div className="relative group p-0.5 sm:p-1 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-400 via-rose-500 to-cyan-400 shadow-[0_4px_20px_rgba(245,158,11,0.35),0_0_15px_rgba(6,182,212,0.25)]">
+                  <div className="flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-1.5 sm:py-2.5 rounded-[14px] sm:rounded-[22px] bg-slate-950/85 backdrop-blur-xl border border-white/25 shadow-inner">
+                    <Sparkles size={16} className="text-amber-400 shrink-0 animate-pulse" />
+                    <h2 className="font-black text-xs sm:text-base md:text-lg bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent uppercase tracking-wider drop-shadow-sm">
+                      Sınıfını Seç ve Başla
+                    </h2>
+                    <Sparkles size={16} className="text-cyan-400 shrink-0 animate-pulse" />
+                  </div>
                 </div>
               </div>
 
@@ -3745,10 +4016,10 @@ export default function App() {
             </div>
           ) : selectedCategoryId === null ? (
             /* CATEGORY CARDS SCREEN */
-            <div className="max-w-4xl w-full mx-auto flex flex-col items-center py-0">
-              {/* CENTERED GRADE ICON (20% REDUCED SIZE) */}
-              <div className="w-full flex items-center justify-center mb-1.5 sm:mb-2 px-1">
-                <div className="w-18 h-18 sm:w-22 sm:h-22 md:w-26 md:h-26 rounded-2xl bg-white/20 backdrop-blur-md p-1 sm:p-1.5 border-2 sm:border-3 border-white/80 shadow-[0_6px_20px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.6)] flex items-center justify-center transform hover:scale-105 transition-transform shrink-0">
+            <div className="max-w-6xl w-full mx-auto flex flex-col items-center py-1 sm:py-1.5">
+              {/* CENTERED GRADE ICON */}
+              <div className="w-full flex items-center justify-center mb-2 sm:mb-3 px-1 shrink-0">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-md p-1.5 sm:p-2 border-2 sm:border-3 border-white/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),inset_0_2px_4px_rgba(255,255,255,0.6)] flex items-center justify-center transform hover:scale-105 transition-transform shrink-0">
                   <img
                     src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'}
                     alt={`${selectedGrade}. Sınıf`}
@@ -3759,30 +4030,30 @@ export default function App() {
 
               {/* 4. SINIF: 4 MAIN THEME CARDS (2x2 GRID) */}
               {selectedGrade === 4 ? (
-                <div className="w-full max-w-3xl mx-auto flex flex-col gap-1 sm:gap-1.5">
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full">
+                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2.5 sm:gap-3.5">
+                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 md:gap-4 w-full">
                     {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
                     <button
                       onClick={() => setSelectedCategoryId('g4_tema1')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s19.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           1. Sayılar ve Nicelikler (1)
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           4-6 Basamaklı Sayılar, Çözümleme & Yuvarlama
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3790,25 +4061,25 @@ export default function App() {
                     {/* TEMA 2: SAYILAR VE NİCELİKLER 2 */}
                     <button
                       onClick={() => setSelectedCategoryId('g4_tema2')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s15.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           2. Sayılar ve Nicelikler (2)
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Kesirler, Birim Kesirler & Ölçme Birimleri
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3816,25 +4087,25 @@ export default function App() {
                     {/* TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                     <button
                       onClick={() => setSelectedCategoryId('g4_tema3')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s6.png" alt="İşlemler ve Cebir" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           3. İşlemlerden Cebirsel Düşünmeye
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Eldeli Toplama, Çarpma, Bölme & Cebir
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3842,55 +4113,55 @@ export default function App() {
                     {/* TEMA 4: GEOMETRİ, VERİ VE OLASILIK */}
                     <button
                       onClick={() => setSelectedCategoryId('g4_tema4')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s21.png" alt="Geometri, Veri ve Olasılık" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           4. Geometri, Veri ve Olasılık
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Açılar, Çevre, Alan, Grafikler & Olasılık
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
                 </div>
               ) : selectedGrade === 3 ? (
-                <div className="w-full max-w-3xl mx-auto flex flex-col gap-1 sm:gap-1.5">
-                  <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full">
+                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2.5 sm:gap-3.5">
+                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 md:gap-4 w-full">
                     {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
                     <button
                       onClick={() => setSelectedCategoryId('g3_tema1')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s19.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           1. Sayılar ve Nicelikler (1)
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           1000'e Kadar Sayılar, Çözümleme & Ritmik
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3898,25 +4169,25 @@ export default function App() {
                     {/* TEMA 2: SAYILAR VE NİCELİKLER 2 */}
                     <button
                       onClick={() => setSelectedCategoryId('g3_tema2')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s15.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           2. Sayılar ve Nicelikler (2)
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Kesirler, Zaman, Ölçme & Paralarımız
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3924,25 +4195,25 @@ export default function App() {
                     {/* TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                     <button
                       onClick={() => setSelectedCategoryId('g3_tema3')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s6.png" alt="İşlemler ve Cebir" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           3. İşlemlerden Cebirsel Düşünmeye
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Zihinden İşlem, Çarpma, Bölme & Cebir
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -3950,61 +4221,61 @@ export default function App() {
                     {/* TEMA 4: NESNELERİN GEOMETRİSİ VE ÖLÇME */}
                     <button
                       onClick={() => setSelectedCategoryId('g3_tema4')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-[14px] sm:rounded-[18px] p-2 sm:p-2.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[96px] xs:min-h-[106px] sm:min-h-[120px]"
+                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-11 sm:h-11 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s21.png" alt="Geometri ve Ölçme" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           4. Nesnelerin Geometrisi ve Ölçme
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Cisimler, Açılar & Çevre Hesabı
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[52px] h-[21px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
                 </div>
               ) : (
-                /* MAIN CATEGORY CARDS - 1. & 2. SINIF (6 CARDS IN 3 ROWS OF 2) */
-                <div className="w-full max-w-3xl mx-auto flex flex-col gap-1 sm:gap-1.5">
+                /* MAIN CATEGORY CARDS - 1. & 2. SINIF (5 OR 6 CARDS IN 2-COLUMN GRID + BOTTOM ROW) */
+                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2 sm:gap-2.5">
                   {/* ROWS 1 & 2: 2x2 GRID FOR FIRST 4 MAIN CATEGORIES */}
-                  <div className="grid grid-cols-2 gap-1 sm:gap-1.5 w-full">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
                     {/* CARD 1: GEOMETRİ */}
                     <button
                       onClick={() => setSelectedCategoryId('geometri')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-[14px] sm:rounded-[18px] p-1.5 sm:p-2 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[92px] xs:min-h-[100px] sm:min-h-[114px]"
+                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
                     >
                       {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                       {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s21.png" alt="Geometri" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
                       {/* Center Text Column */}
                       <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-[11px] sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           1. Nesnelerin Geometrisi
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Şekiller, Cisimler & Örüntüler
                         </p>
                       </div>
 
                       {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                           style={{ backgroundImage: `url('/ply.png')` }}
@@ -4015,29 +4286,29 @@ export default function App() {
                     {/* CARD 2: SAYILAR */}
                     <button
                       onClick={() => setSelectedCategoryId('sayilar')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-[14px] sm:rounded-[18px] p-1.5 sm:p-2 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[92px] xs:min-h-[100px] sm:min-h-[114px]"
+                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
                     >
                       {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                       {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s19.png" alt="Sayılar" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
                       {/* Center Text Column */}
                       <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-[11px] sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           2. Sayılar ve Nicelikler
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Ritmik Sayma & Basamak Değeri
                         </p>
                       </div>
 
                       {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                           style={{ backgroundImage: `url('/ply.png')` }}
@@ -4048,29 +4319,29 @@ export default function App() {
                     {/* CARD 3: İŞLEMLER */}
                     <button
                       onClick={() => setSelectedCategoryId('islemler')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-[14px] sm:rounded-[18px] p-1.5 sm:p-2 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[92px] xs:min-h-[100px] sm:min-h-[114px]"
+                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
                     >
                       {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                       {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s6.png" alt="İşlemler" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
                       {/* Center Text Column */}
                       <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-[11px] sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           3. İşlemler ve Cebir
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Toplama, Çıkarma, Çarpma, Bölme
                         </p>
                       </div>
 
                       {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                           style={{ backgroundImage: `url('/ply.png')` }}
@@ -4081,29 +4352,29 @@ export default function App() {
                     {/* CARD 4: VERİ İŞLEME */}
                     <button
                       onClick={() => setSelectedCategoryId('olcme')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-[14px] sm:rounded-[18px] p-1.5 sm:p-2 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_14px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[92px] xs:min-h-[100px] sm:min-h-[114px]"
+                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
                     >
                       {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-36 h-36 sm:w-48 sm:h-48 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-[18px]" />
+                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                       {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_3px_8px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
+                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
                         <img src="/iconn/s15.png" alt="Veri İşleme" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
                       </div>
 
                       {/* Center Text Column */}
                       <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-[10px] xs:text-[11px] sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
                           4. Veri İşleme
                         </h3>
-                        <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
                           Sütun Grafikleri & Tablolar
                         </p>
                       </div>
 
                       {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[50px] h-[20px] sm:w-[68px] sm:h-[26px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div 
                           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                           style={{ backgroundImage: `url('/ply.png')` }}
@@ -4112,33 +4383,33 @@ export default function App() {
                     </button>
                   </div>
 
-                  {/* ROW 3: 2-COLUMN FOR 2. SINIF (5 & 6) OR SINGLE ITEM FOR 1. SINIF */}
+                  {/* ROW 3: 2-COLUMN FOR 2. SINIF (5 & 6) OR SINGLE ENLARGED 5TH ITEM FOR 1. SINIF */}
                   {selectedGrade === 2 ? (
-                    <div className="grid grid-cols-2 gap-1 sm:gap-1.5 w-full">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
                       {/* CARD 5: 5. DİĞER OYUNLAR */}
                       <button
                         onClick={() => setSelectedCategoryId('diger_oyunlar')}
-                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-[12px] sm:rounded-[16px] px-2 sm:px-2.5 py-1 sm:py-1.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_16px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-1.5 sm:gap-2 overflow-hidden cursor-pointer min-h-[48px] xs:min-h-[54px] sm:min-h-[62px]"
+                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(124,58,237,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(124,58,237,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
                       >
-                        <div className="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
+                        <div className="absolute -left-6 -top-6 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
                         {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-sm flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
                           <img src="/iconn/s1.png" alt="Diğer Oyunlar" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
                         </div>
 
                         {/* Center Text */}
                         <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-[10px] xs:text-[11px] sm:text-xs text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
                             5. Diğer Oyunlar
                           </h3>
-                          <p className="text-[7px] xs:text-[8px] sm:text-[9.5px] font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
                             Balon, Hafıza & Zeka
                           </p>
                         </div>
 
                         {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[42px] h-[17px] sm:w-[54px] sm:h-[21px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="z-10 shrink-0 relative w-[55px] h-[22px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                             style={{ backgroundImage: `url('/ply.png')` }}
@@ -4149,27 +4420,27 @@ export default function App() {
                       {/* CARD 6: 6. 3D GEOMETRİ LABI */}
                       <button
                         onClick={() => setShow3DLab(true)}
-                        className="group relative w-full bg-gradient-to-r from-amber-400 via-orange-500 to-pink-600 dark:from-amber-500 dark:via-orange-600 dark:to-pink-700 text-white rounded-[12px] sm:rounded-[16px] px-2 sm:px-2.5 py-1 sm:py-1.5 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(249,115,22,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_16px_rgba(249,115,22,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-1.5 sm:gap-2 overflow-hidden cursor-pointer min-h-[48px] xs:min-h-[54px] sm:min-h-[62px]"
+                        className="group relative w-full bg-gradient-to-r from-amber-400 via-orange-500 to-pink-600 dark:from-amber-500 dark:via-orange-600 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(249,115,22,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
                       >
-                        <div className="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
+                        <div className="absolute -left-6 -top-6 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
                         {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-sm flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
                           <img src="/iconn/s10.png" alt="3D Geometri" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
                         </div>
 
                         {/* Center Text */}
                         <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-[10px] xs:text-[11px] sm:text-xs text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
                             6. 3D Geometri Labı
                           </h3>
-                          <p className="text-[7px] xs:text-[8px] sm:text-[9.5px] font-extrabold text-amber-100/90 drop-shadow-xs truncate w-full text-center">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-amber-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
                             Küp, Silindir, Prizma 3D
                           </p>
                         </div>
 
                         {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[42px] h-[17px] sm:w-[54px] sm:h-[21px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="z-10 shrink-0 relative w-[55px] h-[22px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                             style={{ backgroundImage: `url('/ply.png')` }}
@@ -4178,32 +4449,32 @@ export default function App() {
                       </button>
                     </div>
                   ) : (
-                    /* ROW 3: SINGLE 5TH ITEM (5. DİĞER OYUNLAR) FOR 1. SINIF */
+                    /* ROW 3: SINGLE 5TH ITEM (5. DİĞER OYUNLAR) FOR 1. SINIF (FULL WIDTH EXPANSIVE) */
                     <div className="w-full">
                       {/* CARD 5: 5. DİĞER OYUNLAR */}
                       <button
                         onClick={() => setSelectedCategoryId('diger_oyunlar')}
-                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-[12px] sm:rounded-[16px] px-2.5 sm:px-3 py-1.5 sm:py-2 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_6px_16px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-2.5 overflow-hidden cursor-pointer min-h-[48px] xs:min-h-[54px] sm:min-h-[62px]"
+                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-2xl sm:rounded-3xl px-4 sm:px-6 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(124,58,237,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(124,58,237,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-3 sm:gap-4 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
                       >
-                        <div className="absolute -left-6 -top-6 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
+                        <div className="absolute -left-6 -top-6 w-40 h-40 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
                         {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-7 h-7 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-white/20 backdrop-blur-md border-2 border-white/80 shadow-sm flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
+                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
                           <img src="/iconn/s1.png" alt="Diğer Oyunlar" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
                         </div>
 
                         {/* Center Text */}
                         <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-[11px] xs:text-xs sm:text-sm text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
                             5. Diğer Oyunlar
                           </h3>
-                          <p className="text-[7.5px] xs:text-[8.5px] sm:text-[10px] font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
                             Balon, Hafıza & Zeka Oyunları
                           </p>
                         </div>
 
                         {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[46px] h-[18px] sm:w-[58px] sm:h-[23px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                           <div 
                             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
                             style={{ backgroundImage: `url('/ply.png')` }}
@@ -4217,11 +4488,11 @@ export default function App() {
             </div>
           ) : (
             /* SUB-TOPIC BUTTON CARDS SCREEN FOR SELECTED CATEGORY (3-COLUMN SQUARE CARDS) */
-            <div className="max-w-5xl w-full mx-auto flex flex-col items-center py-1 sm:py-2">
+            <div className="max-w-6xl w-full mx-auto flex flex-col items-center py-1 sm:py-2">
               
               {/* CENTERED TITLE HEADER LOGO (mattt.gif) & CATEGORY TITLE BADGE */}
               {/* COMPACT CATEGORY HEADER BADGE */}
-              <div className="flex flex-col items-center justify-center mb-3 sm:mb-4 max-w-5xl w-full mx-auto shrink-0 py-1">
+              <div className="flex flex-col items-center justify-center mb-4 sm:mb-6 max-w-6xl w-full mx-auto shrink-0 py-1">
                 {(() => {
                   const cat = CATEGORY_MAP.find(c => c.id === selectedCategoryId);
                   if (!cat) return null;
@@ -4235,6 +4506,11 @@ export default function App() {
                         )}
                       </span>
                       <span className="drop-shadow-xs truncate">{cat.name}</span>
+                      <img 
+                        src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                        alt="Sınıf" 
+                        className="h-6 sm:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" 
+                      />
                     </div>
                   );
                 })()}
@@ -4248,8 +4524,8 @@ export default function App() {
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       {(selectedGrade === 1
-                        ? ['uzamsal_iliskiler', 'es_nesneler', 'geometrik_sekil_cisim']
-                        : ['geometrik_sekil_cisim', 'yuz_ayrit_kose', 'geometrik_oruntu', 'uzamsal_iliskiler_simetri', 'sivi_olcme', 'tartma_olcme']
+                        ? ['uzamsal_iliskiler', 'es_nesneler', 'geometrik_sekil_cisim', 'geometri_tahtasi']
+                        : ['geometrik_sekil_cisim', 'geometri_tahtasi', 'yuz_ayrit_kose', 'geometrik_oruntu', 'uzamsal_iliskiler_simetri', 'sivi_olcme', 'tartma_olcme']
                       ).map(key => {
                         const t = topics[key];
                         if (!t) return null;
@@ -4292,9 +4568,16 @@ export default function App() {
 
                     {/* Ritmik Saymalar Group Section */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center gap-2 mb-3">
-                        <img src="/iconn/s17.png" alt="Ritmik" className="w-7 h-7 object-contain filter drop-shadow-sm" />
-                        <span>Ritmik Saymalar {selectedGrade === 1 ? "(1'er, 2'şer, 5'er, 10'ar)" : ""}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src="/iconn/s17.png" alt="Ritmik" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
+                          <span className="truncate">Ritmik Saymalar {selectedGrade === 1 ? "(1'er, 2'şer, 5'er, 10'ar)" : ""}</span>
+                        </div>
+                        <img 
+                          src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                          alt="Sınıf" 
+                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                        />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {(selectedGrade === 1
@@ -4319,9 +4602,16 @@ export default function App() {
                     {/* Saati Okuma Group Section (Sadece 2. Sınıf) */}
                     {selectedGrade === 2 && (
                       <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                        <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center gap-2 mb-3">
-                          <img src="/iconn/s24.png" alt="Saati Okuma" className="w-7 h-7 object-contain filter drop-shadow-sm" />
-                          <span>Saati Okuma (Tam, Yarım, Çeyrek)</span>
+                        <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <img src="/iconn/s24.png" alt="Saati Okuma" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
+                            <span className="truncate">Saati Okuma (Tam, Yarım, Çeyrek)</span>
+                          </div>
+                          <img 
+                            src="/icon_2.png" 
+                            alt="2. Sınıf" 
+                            className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                          />
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                           {['saat_tam', 'saat_yarim', 'saat_ceyrek_gece', 'saat_ceyrek_kala'].map(key => {
@@ -4366,9 +4656,16 @@ export default function App() {
                   <div className="space-y-5">
                     {/* Toplama İşlemi Group */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center gap-2 mb-3">
-                        <img src="/iconn/s28.png" alt="Toplama" className="w-7 h-7 object-contain filter drop-shadow-sm" />
-                        <span>{selectedGrade === 1 ? "Toplama İşlemleri (20 İçinde & Onluklar)" : "Toplama İşlemi"}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src="/iconn/s28.png" alt="Toplama" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
+                          <span className="truncate">{selectedGrade === 1 ? "Toplama İşlemleri (20 İçinde & Onluklar)" : "Toplama İşlemi"}</span>
+                        </div>
+                        <img 
+                          src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                          alt="Sınıf" 
+                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                        />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {(selectedGrade === 1
@@ -4392,9 +4689,16 @@ export default function App() {
 
                     {/* Çıkarma İşlemi Group */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center gap-2 mb-3">
-                        <img src="/iconn/s33.png" alt="Çıkarma" className="w-7 h-7 object-contain filter drop-shadow-sm" />
-                        <span>{selectedGrade === 1 ? "Çıkarma İşlemleri (20 İçinde & Onluklar)" : "Çıkarma İşlemi"}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src="/iconn/s33.png" alt="Çıkarma" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
+                          <span className="truncate">{selectedGrade === 1 ? "Çıkarma İşlemleri (20 İçinde & Onluklar)" : "Çıkarma İşlemi"}</span>
+                        </div>
+                        <img 
+                          src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                          alt="Sınıf" 
+                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                        />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {(selectedGrade === 1
@@ -4542,9 +4846,16 @@ export default function App() {
 
                     {/* Ritmik Saymalar Alt Başlığı & Konuları */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center gap-2 mb-3">
-                        <img src="/iconn/s17.png" alt="Ritmik Saymalar" className="w-7 h-7 object-contain filter drop-shadow-sm" />
-                        <span>Ritmik Saymalar (6, 7, 8, 9, 10 ve 100'er)</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <img src="/iconn/s17.png" alt="Ritmik Saymalar" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
+                          <span className="truncate">Ritmik Saymalar (6, 7, 8, 9, 10 ve 100'er)</span>
+                        </div>
+                        <img 
+                          src="/icon_3.png" 
+                          alt="3. Sınıf" 
+                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                        />
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         {[
@@ -4787,15 +5098,39 @@ export default function App() {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
                 1
               </div>
-              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex flex-col min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
-                <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
-                  1. GRUP
-                </span>
-                <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
-                  {topics[currentTopic]?.title || 'Etkinlik'}
-                </span>
+              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between gap-2.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                <div className="flex flex-col min-w-0">
+                  <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
+                    1. GRUP
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
+                    {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || 'Etkinlik'}
+                  </span>
+                </div>
+                <img 
+                  src={getGradeIconForTopic(currentTopic, selectedGrade)} 
+                  alt="Sınıf" 
+                  className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0 filter drop-shadow-md ml-1" 
+                />
               </div>
             </div>
+
+            {/* CENTER: COUNTDOWN TIMER BADGE IF TIMED MODE OR TIMED TOPIC */}
+            {(isTimedMode || isTimedTopic(currentTopic)) && (
+              <div className={`backdrop-blur-xl border-2 sm:border-3 rounded-2xl px-3 sm:px-4.5 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 font-black text-xs sm:text-base transition-all shrink-0 ${
+                questionTimeLeft <= 3 
+                  ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-4 ring-rose-500/60 scale-105 shadow-[0_0_22px_rgba(244,63,94,0.9)] animate-pulse' 
+                  : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+              }`}>
+                <span className={`text-base sm:text-xl ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
+                <span className="font-mono text-sm sm:text-lg font-black tracking-wider">
+                  {questionTimeLeft}s
+                </span>
+                {questionTimeLeft <= 3 && (
+                  <span className="text-[10px] sm:text-xs font-black uppercase text-rose-300 animate-ping">⚠️</span>
+                )}
+              </div>
+            )}
 
             {/* RIGHT: SCORE & LIVES */}
             <div className="flex items-center gap-2 shrink-0">
@@ -4833,19 +5168,43 @@ export default function App() {
             </div>
           </div>
 
-          {/* BOTTOM: 2x2 OPTIONS GRID WITH SLEEK GLASS BUTTONS */}
+          {/* BOTTOM: 2x2 OPTIONS GRID WITH VIBRANT GLOSSY CANDY BUTTONS */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3.5 w-full shrink-0">
             {(() => {
               const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 1);
+              const OPTION_COLOR_THEMES = [
+                {
+                  border: 'border-cyan-400',
+                  bg: 'bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800',
+                  shadow: 'shadow-[0_4px_16px_rgba(37,99,235,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                },
+                {
+                  border: 'border-pink-400',
+                  bg: 'bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800',
+                  shadow: 'shadow-[0_4px_16px_rgba(225,29,72,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                },
+                {
+                  border: 'border-emerald-400',
+                  bg: 'bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800',
+                  shadow: 'shadow-[0_4px_16px_rgba(16,185,129,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                },
+                {
+                  border: 'border-amber-300',
+                  bg: 'bg-gradient-to-b from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 active:from-amber-700 active:to-amber-800',
+                  shadow: 'shadow-[0_4px_16px_rgba(245,158,11,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                }
+              ];
+
               return optionsList.map((opt, idx) => {
                 const isCorrect = selectedOption !== null && currentQuestionData && opt === currentQuestionData.correct;
                 const isWrong = selectedOption !== null && currentQuestionData && opt === selectedOption && opt !== currentQuestionData.correct;
+                const theme = OPTION_COLOR_THEMES[idx % OPTION_COLOR_THEMES.length];
 
-                let feedbackClasses = "border-cyan-400/90 bg-slate-950/45 hover:bg-cyan-950/60 active:bg-cyan-900/80 shadow-[0_0_18px_rgba(6,182,212,0.35),inset_0_1px_2px_rgba(255,255,255,0.3)]";
+                let feedbackClasses = `${theme.border} ${theme.bg} ${theme.shadow}`;
                 if (isCorrect) {
-                  feedbackClasses = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)] scale-105 animate-pulse";
+                  feedbackClasses = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-700 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.7)] scale-105 animate-pulse";
                 } else if (isWrong) {
-                  feedbackClasses = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
+                  feedbackClasses = "ring-4 ring-rose-500 border-rose-400 bg-rose-900/90 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
                 }
 
                 return (
@@ -4856,8 +5215,8 @@ export default function App() {
                     className={`relative group w-full py-5 sm:py-7 px-3 min-h-[78px] sm:min-h-[99px] rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
                   >
                     {/* Subtle top glare in button */}
-                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
-                    <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
+                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
+                    <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
                       {opt}
                     </span>
                   </button>
@@ -4876,12 +5235,31 @@ export default function App() {
             <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
               ⚔️ {playerCountMode} OYUNCU DÜELLO
             </span>
-            <div className="flex-1 min-w-0 text-center px-2">
-              <div className="inline-block max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-1.5 sm:py-2 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+            <div className="flex-1 min-w-0 text-center px-2 flex items-center justify-center gap-2">
+              <div className="inline-flex items-center justify-center gap-2 max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-1.5 sm:py-2 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
                 <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
-                  {topics[currentTopic]?.title || ''}
+                  {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || ''}
                 </h2>
+                <img 
+                  src={getGradeIconForTopic(currentTopic, selectedGrade)} 
+                  alt="Sınıf" 
+                  className="h-5 sm:h-6 md:h-7 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
+                />
               </div>
+
+              {/* MULTI-PLAYER TIMER BADGE */}
+              {(isTimedMode || isTimedTopic(currentTopic)) && (
+                <div className={`backdrop-blur-xl border-2 rounded-xl sm:rounded-2xl px-2.5 sm:px-4 py-1.5 flex items-center gap-1.5 font-black text-xs sm:text-base transition-all shrink-0 ${
+                  questionTimeLeft <= 3 
+                    ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-3 ring-rose-500/60 scale-105 shadow-[0_0_20px_rgba(244,63,94,0.9)] animate-pulse' 
+                    : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                }`}>
+                  <span className={`text-sm sm:text-lg ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
+                  <span className="font-mono text-xs sm:text-base font-black tracking-wider">
+                    {questionTimeLeft}s
+                  </span>
+                </div>
+              )}
             </div>
             <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
               🎯 HEDEF: 10 PUAN
@@ -4891,32 +5269,35 @@ export default function App() {
           {/* SPLIT SCREEN GRID FOR 2 OR 3 PLAYERS */}
           <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
             {players.map((p, pIdx) => {
-              // Group color schemes based on user reference: 1 = Purple, 2 = Amber/Gold, 3 = Emerald/Green
+              // Group color schemes based on user reference: 1 = Blue/Cyan, 2 = Pink/Magenta, 3 = Emerald/Green
               const groupTheme = pIdx === 0 
                 ? {
-                    badgeBg: "from-purple-800 via-purple-900 to-indigo-950",
-                    badgeBorder: "border-purple-300",
-                    badgeShadow: "shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                    buttonDefault: "border-purple-400/90 bg-purple-950/40 hover:bg-purple-900/60 active:bg-purple-800/80 shadow-[0_0_16px_rgba(168,85,247,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                    badgeBg: "from-blue-700 via-indigo-800 to-blue-950",
+                    badgeBorder: "border-cyan-300",
+                    badgeShadow: "shadow-[0_0_16px_rgba(6,182,212,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                    containerBorder: "border-cyan-400",
+                    buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800 text-white shadow-[0_4px_14px_rgba(37,99,235,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                   }
                 : pIdx === 1
                 ? {
-                    badgeBg: "from-amber-600 via-amber-800 to-orange-950",
-                    badgeBorder: "border-amber-300",
-                    badgeShadow: "shadow-[0_0_16px_rgba(251,191,36,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                    buttonDefault: "border-amber-400/90 bg-amber-950/40 hover:bg-amber-900/60 active:bg-amber-800/80 shadow-[0_0_16px_rgba(245,158,11,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                    badgeBg: "from-rose-700 via-pink-800 to-rose-950",
+                    badgeBorder: "border-pink-300",
+                    badgeShadow: "shadow-[0_0_16px_rgba(244,63,94,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                    containerBorder: "border-pink-400",
+                    buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800 text-white shadow-[0_4px_14px_rgba(225,29,72,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                   }
                 : {
-                    badgeBg: "from-emerald-600 via-teal-800 to-slate-950",
+                    badgeBg: "from-emerald-700 via-teal-800 to-emerald-950",
                     badgeBorder: "border-emerald-300",
                     badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                    buttonDefault: "border-emerald-400/90 bg-emerald-950/40 hover:bg-emerald-900/60 active:bg-emerald-800/80 shadow-[0_0_16px_rgba(16,185,129,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                    containerBorder: "border-emerald-400",
+                    buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                   };
 
               return (
                 <div
                   key={p.id}
-                  className="relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl overflow-hidden min-h-0 z-10 transition-all"
+                  className={`relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
                 >
                   {/* PLAYER HEADER BAR */}
                   <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
@@ -4926,7 +5307,7 @@ export default function App() {
                     </div>
 
                     {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
-                    <div className="flex-1 ml-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/30 rounded-xl sm:rounded-2xl px-3 py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
+                    <div className="flex-1 ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl sm:rounded-2xl px-3 py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
                       <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
                         {pIdx + 1}. GRUP
                       </span>
@@ -4948,7 +5329,7 @@ export default function App() {
                   </div>
 
                   {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
-                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-2 sm:p-3.5 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[135px] sm:min-h-[165px]">
+                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-2 sm:p-3.5 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[135px] sm:min-h-[165px]">
                     {/* Top glare effect */}
                     <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
@@ -5410,14 +5791,33 @@ export default function App() {
       {/* 3D GEOMETRY INTERACTIVE LAB MODAL */}
       {show3DLab && <Geometry3DLab onClose={() => setShow3DLab(false)} />}
 
+      {/* GEOBOARD ACTIVITY MODAL */}
+      {showGeoboard && (
+        <GeoboardActivity
+          grade={selectedGrade === 1 ? 1 : 2}
+          onClose={() => setShowGeoboard(false)}
+          playMp3={playMp3}
+        />
+      )}
+
       {/* DİĞER OYUNLAR ANA SEÇİM HUB MODAL */}
-      {showOtherGamesModal && !showXOXGame && !wordGameType && !show3DLab && (
+      {showOtherGamesModal && !showXOXGame && !wordGameType && !show3DLab && !showGeoboard && (
         <OtherGamesHub
           onClose={() => setShowOtherGamesModal(false)}
           onOpenXOX={() => setShowXOXGame(true)}
-          onOpenZitAnlam={() => setWordGameType('zit_anlam')}
-          onOpenEsAnlam={() => setWordGameType('es_anlam')}
+          onOpenZitAnlam={() => {
+            setShowOtherGamesModal(false);
+            setWordGameType('zit_anlam');
+          }}
+          onOpenEsAnlam={() => {
+            setShowOtherGamesModal(false);
+            setWordGameType('es_anlam');
+          }}
           onOpen3DLab={() => setShow3DLab(true)}
+          onOpenGeoboard={() => {
+            setShowOtherGamesModal(false);
+            setShowGeoboard(true);
+          }}
           playMp3={playMp3}
         />
       )}

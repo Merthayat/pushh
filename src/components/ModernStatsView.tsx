@@ -93,6 +93,7 @@ export const ModernStatsView: React.FC<ModernStatsViewProps> = ({
 
   const STAT_TOPIC_ICONS: Record<string, string> = {
     geometrik_sekil_cisim: '/iconn/s10.png',
+    geometri_tahtasi: '/iconn/s21.png',
     yuz_ayrit_kose: '/iconn/s1.png',
     geometrik_oruntu: '/iconn/s2.png',
     uzamsal_iliskiler_simetri: '/iconn/s3.png',

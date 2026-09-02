@@ -7,6 +7,7 @@ interface OtherGamesHubProps {
   onOpenZitAnlam: () => void;
   onOpenEsAnlam: () => void;
   onOpen3DLab?: () => void;
+  onOpenGeoboard?: () => void;
   playMp3?: (src: string, onEnded?: () => void) => void;
 }
 
@@ -16,6 +17,7 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
   onOpenZitAnlam,
   onOpenEsAnlam,
   onOpen3DLab,
+  onOpenGeoboard,
   playMp3
 }) => {
   const triggerSound = (src: string) => {
@@ -86,6 +88,23 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
         if (onOpen3DLab) onOpen3DLab();
       },
       features: ['360° 3D Model Döndürme', 'Köşe & Ayrıt Analizi', 'İnteraktif Geometri']
+    },
+    {
+      id: 'geoboard',
+      title: 'Geometri Tahtası',
+      subtitle: 'Parmakla Çizim & Geometrik Şekiller',
+      desc: 'Noktalı geometri tahtasında parmağınla kare, üçgen, dikdörtgen ve geometrik şekilleri bağlayarak çiz ve keşfet!',
+      badge: '📐 PARMAKLA ÇİZİM',
+      badgeColor: 'bg-pink-500/30 text-pink-200 border-pink-400/40',
+      gradient: 'from-pink-600 via-rose-600 to-amber-600',
+      borderColor: 'border-pink-300',
+      iconEmoji: '📐',
+      iconBg: 'from-pink-500 to-rose-600',
+      sound: '/coin.mp3',
+      action: () => {
+        if (onOpenGeoboard) onOpenGeoboard();
+      },
+      features: ['5x5 Noktalı Tahta', 'Dokunarak Şekil Çizme', 'Kare, Üçgen, Dikdörtgen']
     }
   ];
 

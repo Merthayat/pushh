@@ -894,7 +894,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">6'şar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -974,7 +974,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">7'şer ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -993,7 +993,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `7'den başlayıp 7'şer ileriye doğru sayarken ${adimNo}. sırada hangi sayıyı söyleriz?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-cyan-800 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
+              <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-purple-800 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
                 🔢 7'şer Ritmik Sayma
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
@@ -1054,7 +1054,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">8'er ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1134,7 +1134,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${maxLimit} içinde <span class="text-amber-300 font-black">9'ar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1213,7 +1213,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 1000 içinde <span class="text-amber-300 font-black">10'ar ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1302,7 +1302,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   </span>
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 1000 içinde <span class="text-amber-300 font-black">100'er ${isGeri ? 'geriye' : 'ileriye'}</span> ritmik sayarken <span class="text-cyan-300 underline decoration-cyan-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
               </div>
             </div>
@@ -1374,7 +1374,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                 </span>
               `).join('')}
             </div>
-            <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
               ${adim}'şar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada <span class="text-amber-300 underline decoration-amber-400 font-black">soru işareti (❓)</span> yerine ne gelmelidir?
             </div>
           </div>
@@ -1405,11 +1405,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${s1} + ${s2} işleminin sonucu TEK sayı mıdır yoksa ÇİFT sayı mıdır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-3 py-1 text-center">
-              <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-indigo-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+              <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl sm:rounded-3xl bg-indigo-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
                 ${s1} + ${s2} = ?
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu toplama işleminin sonucu <span class="text-amber-300 underline decoration-amber-400 font-black">TEK sayı</span> mıdır yoksa <span class="text-cyan-300 underline decoration-cyan-400 font-black">ÇİFT sayı</span> mıdır?
               </div>
             </div>
@@ -1431,11 +1431,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${eksilen} - ${cikan} işleminin sonucu TEK sayı mıdır yoksa ÇİFT sayı mıdır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-3 py-1 text-center">
-              <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-rose-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+              <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl sm:rounded-3xl bg-rose-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
                 ${eksilen} - ${cikan} = ?
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu çıkarma işleminin sonucu <span class="text-amber-300 underline decoration-amber-400 font-black">TEK sayı</span> mıdır yoksa <span class="text-cyan-300 underline decoration-cyan-400 font-black">ÇİFT sayı</span> mıdır?
               </div>
             </div>
@@ -1549,7 +1549,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
               ${dizi.map(n => `<span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-blue-900 text-white font-black text-xs xs:text-sm sm:text-base border border-blue-400 shadow-md shrink-0">${n}</span>`).join('')}
               <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base border-2 border-white shadow-md animate-pulse shrink-0">?</span>
             </div>
-            <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
               Kuralı keşfederek <span class="text-amber-300 underline decoration-amber-400 font-black">soru işareti (?)</span> yerine gelecek sayıyı bulunuz:
             </div>
             <div class="text-[10px] xs:text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
@@ -1935,7 +1935,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                 </div>
                 <img src="/paralar/50_kurus_madeni_para.png" class="h-7 sm:h-10 w-7 sm:w-10 object-contain drop-shadow-md shrink-0" />
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu miktar kaç TL ve kaç kuruşa <span class="text-amber-300 underline decoration-amber-400 font-black">eşittir?</span>
               </div>
               <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
@@ -1969,7 +1969,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                 <span class="px-2.5 py-1 bg-rose-600 text-white font-black text-[11px] xs:text-xs sm:text-sm rounded-lg sm:rounded-xl border border-white shadow-md shrink-0 whitespace-nowrap">Ürün: ${fiyat} TL</span>
                 <img src="${secilenVerilen.img}" class="h-10 sm:h-14 md:h-16 max-w-[140px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${ogrenci} satıcıya görseldeki <span class="text-amber-300 font-black">${verilen} TL</span>'yi verirse kaç TL <span class="text-emerald-300 underline font-black">para üstü</span> alır?
               </div>
             </div>
@@ -2015,7 +2015,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
                   <img src="${img}" class="${img.includes('madeni') ? 'h-9 sm:h-13 w-9 sm:w-13' : 'h-9 sm:h-13 max-w-[120px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
                 `).join('')}
               </div>
-              <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 ${k.text}
               </div>
             </div>
@@ -2050,11 +2050,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `${s1} + ${s2} işleminin sonucunu sayıları en yakın onluğa yuvarlayarak tahmin ediniz.`,
         questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-            <div class="px-5 py-2 rounded-2xl bg-indigo-800 text-white font-black text-xl sm:text-2xl md:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+            <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl sm:rounded-3xl bg-indigo-800 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
               ${s1} + ${s2} ≈ ?
             </div>
-            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
               Sayıları <span class="text-amber-300 underline decoration-amber-400 font-black">en yakın onluğa</span> yuvarlayarak tahmini sonucu bulunuz.
             </div>
           </div>
@@ -2309,10 +2309,12 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${secilen.ad} cisminin kaç tane KÖŞESİ vardır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2">
-                <img src="${secilen.img}" alt="${secilen.ad}" class="w-14 h-14 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" />
-                <span class="px-3.5 py-1.5 rounded-xl bg-amber-400 text-slate-950 font-black text-sm sm:text-base uppercase border border-white shadow-md">${secilen.ad}</span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-3">
+                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                </div>
+                <span class="px-4 py-2 rounded-2xl bg-amber-400 text-slate-950 font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">KÖŞESİ</span> vardır?
@@ -2330,10 +2332,12 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${secilen.ad} cisminin kaç tane AYRITI vardır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2">
-                <img src="${secilen.img}" alt="${secilen.ad}" class="w-14 h-14 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" />
-                <span class="px-3.5 py-1.5 rounded-xl bg-indigo-600 text-white font-black text-sm sm:text-base uppercase border border-white shadow-md">${secilen.ad}</span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-3">
+                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                </div>
+                <span class="px-4 py-2 rounded-2xl bg-indigo-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">AYRITI (Kenarı)</span> vardır?
@@ -2351,10 +2355,12 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${secilen.ad} cisminin kaç tane YÜZÜ vardır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2">
-                <img src="${secilen.img}" alt="${secilen.ad}" class="w-14 h-14 sm:w-18 sm:h-18 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.5)]" />
-                <span class="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-sm sm:text-base uppercase border border-white shadow-md">${secilen.ad}</span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+              <div class="flex items-center justify-center gap-3">
+                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                </div>
+                <span class="px-4 py-2 rounded-2xl bg-emerald-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">YÜZÜ</span> vardır?

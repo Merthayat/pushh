@@ -66,10 +66,38 @@
   }
 }
 
-/* AUTOMATIC RESPONSIVE IMAGE & SVG SIZING IN QUESTIONS */
+/* AUTOMATIC RESPONSIVE IMAGE & SVG SIZING IN QUESTIONS (GUARANTEED NO OVERFLOW) */
+.question-visual-box {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 .question-visual-box img,
 .question-visual-box svg {
-  max-height: clamp(55px, 14vh, 120px) !important;
+  max-height: clamp(80px, 22vh, 180px) !important;
+  max-width: 95% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: inline-block !important;
+  flex-shrink: 1 !important;
+}
+
+.question-visual-box .geo-cisim-img {
+  max-height: clamp(140px, 38vh, 320px) !important;
+  min-height: 120px;
+  max-width: 95% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+}
+
+.question-visual-box.multi-player-2 img,
+.question-visual-box.multi-player-2 svg {
+  max-height: clamp(65px, 16vh, 130px) !important;
   max-width: 90% !important;
   width: auto !important;
   height: auto !important;
@@ -77,31 +105,29 @@
   margin-left: auto !important;
   margin-right: auto !important;
   display: inline-block !important;
+  flex-shrink: 1 !important;
 }
 
-.question-visual-box.multi-player-2 img,
-.question-visual-box.multi-player-2 svg {
-  max-height: clamp(40px, 9vh, 75px) !important;
-  max-width: 88% !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: inline-block !important;
+.question-visual-box.multi-player-2 .geo-cisim-img {
+  max-height: clamp(75px, 18vh, 150px) !important;
 }
 
 /* 3-PLAYER DEDICATED HIGH-COMPACT VISUAL SIZING TO PREVENT ANY OVERFLOW */
 .question-visual-box.multi-player-3 img,
 .question-visual-box.multi-player-3 svg {
-  max-height: clamp(32px, 7vh, 58px) !important;
-  max-width: 82% !important;
+  max-height: clamp(48px, 12vh, 95px) !important;
+  max-width: 85% !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
   margin-left: auto !important;
   margin-right: auto !important;
   display: inline-block !important;
+  flex-shrink: 1 !important;
+}
+
+.question-visual-box.multi-player-3 .geo-cisim-img {
+  max-height: clamp(55px, 14vh, 110px) !important;
 }
 
 .question-visual-box table {

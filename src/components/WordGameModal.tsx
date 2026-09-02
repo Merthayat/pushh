@@ -107,29 +107,27 @@ function generateWordQuestion(data: WordPair[], excludeWord?: string) {
   };
 }
 
-// Helper function for automatic max font size that never line-wraps
+// Helper function for automatic max font size that matches standard activity design
 const getWordOptionFontSize = (options: string[], mode: 1 | 2 | 3 = 1) => {
   const maxOptLen = Math.max(...options.map(o => String(o || '').trim().length), 0);
   if (mode === 3) {
-    if (maxOptLen <= 4) return 'text-xs xs:text-sm sm:text-base font-black';
-    if (maxOptLen <= 7) return 'text-[11px] xs:text-xs sm:text-sm font-black';
-    if (maxOptLen <= 11) return 'text-[10px] xs:text-[11px] sm:text-xs font-black';
-    if (maxOptLen <= 15) return 'text-[9px] xs:text-[10px] sm:text-[11px] font-black';
-    return 'text-[8px] xs:text-[9px] sm:text-[10px] font-black';
+    if (maxOptLen <= 4) return 'text-base xs:text-lg sm:text-xl font-black';
+    if (maxOptLen <= 7) return 'text-sm xs:text-base sm:text-lg font-black';
+    if (maxOptLen <= 11) return 'text-xs xs:text-sm sm:text-base font-black';
+    return 'text-[11px] xs:text-xs sm:text-sm font-black';
   }
   if (mode === 2) {
-    if (maxOptLen <= 4) return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
-    if (maxOptLen <= 7) return 'text-xs xs:text-sm sm:text-base md:text-lg font-black';
-    if (maxOptLen <= 11) return 'text-[11px] xs:text-xs sm:text-sm md:text-base font-black';
-    if (maxOptLen <= 15) return 'text-[10px] xs:text-[11px] sm:text-xs md:text-sm font-black';
-    return 'text-[9px] xs:text-[10px] sm:text-[11px] md:text-xs font-black';
+    if (maxOptLen <= 4) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
+    if (maxOptLen <= 7) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
+    if (maxOptLen <= 11) return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
+    return 'text-xs xs:text-sm sm:text-base md:text-lg font-black';
   }
   // 1-Player Quiz
-  if (maxOptLen <= 4) return 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black';
-  if (maxOptLen <= 7) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
-  if (maxOptLen <= 11) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
-  if (maxOptLen <= 15) return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
-  return 'text-xs xs:text-sm sm:text-base md:text-lg font-black';
+  if (maxOptLen <= 4) return 'text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black';
+  if (maxOptLen <= 7) return 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black';
+  if (maxOptLen <= 11) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
+  if (maxOptLen <= 15) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
+  return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
 };
 
 export const WordGameModal: React.FC<WordGameModalProps> = ({
@@ -554,12 +552,12 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
-      {/* 2. SUB-HEADER: GRADE SELECTION & CONTROLS (SPACED NICELY BELOW GLOBAL HEADER) */}
+      {/* 2. SUB-HEADER: GRADE SELECTION & CONTROLS (CENTERED ON SCREEN) */}
       {!showCompletionScreen && (
-        <div className="relative z-20 px-2 sm:px-4 py-2 sm:py-2.5 bg-slate-950/65 backdrop-blur-md border-b-2 border-amber-400/50 flex items-center justify-between gap-2 shrink-0 shadow-lg">
+        <div className="relative z-20 px-3 sm:px-12 py-2 sm:py-2.5 bg-slate-950/65 backdrop-blur-md border-b-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-lg">
           {isIng ? (
-            <div className="flex items-center justify-start gap-1 sm:gap-2 flex-wrap flex-1 min-w-0">
-              <span className="text-[11px] sm:text-xs font-black text-amber-300 mr-1 uppercase drop-shadow-sm whitespace-nowrap">
+            <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 flex-wrap text-center">
+              <span className="text-[11px] sm:text-xs font-black text-amber-300 mr-0.5 sm:mr-1 uppercase drop-shadow-sm whitespace-nowrap">
                 Sınıf Seç:
               </span>
               {[
@@ -577,7 +575,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     }
                     playSound('click');
                   }}
-                  className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
+                  className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
                     englishGrade === g.id && activeMode !== 'matching'
                       ? 'bg-amber-400 text-slate-950 border-white shadow-[0_0_10px_rgba(251,191,36,0.7)] font-black scale-105'
                       : 'bg-white/15 text-white/90 border-white/20 hover:bg-white/25 hover:text-white'
@@ -593,7 +591,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   setActiveMode('matching');
                   playSound('click');
                 }}
-                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
                   activeMode === 'matching'
                     ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 border-white shadow-[0_0_12px_rgba(52,211,153,0.8)] scale-105 font-black'
                     : 'bg-emerald-800/80 text-emerald-200 border-emerald-500/50 hover:bg-emerald-700/90 hover:text-white'
@@ -603,13 +601,13 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-start gap-2 flex-wrap flex-1 min-w-0">
+            <div className="flex items-center justify-center gap-2 flex-wrap text-center">
               <button
                 onClick={() => {
                   setActiveMode(playerCountMode === 1 ? 'quiz1' : playerCountMode === 3 ? 'duel3' : 'duel2');
                   playSound('click');
                 }}
-                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
+                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border whitespace-nowrap ${
                   activeMode !== 'matching'
                     ? 'bg-amber-400 text-slate-950 border-white shadow-md font-black scale-105'
                     : 'bg-white/15 text-white/90 border-white/20 hover:bg-white/25'
@@ -623,7 +621,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   setActiveMode('matching');
                   playSound('click');
                 }}
-                className={`px-3 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
+                className={`px-3 sm:px-4 py-1 sm:py-1.5 rounded-xl text-[10px] sm:text-xs font-black transition-all cursor-pointer border flex items-center gap-1.5 whitespace-nowrap ${
                   activeMode === 'matching'
                     ? 'bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 border-white shadow-[0_0_12px_rgba(52,211,153,0.8)] scale-105 font-black'
                     : 'bg-emerald-800/80 text-emerald-200 border-emerald-500/50 hover:bg-emerald-700/90 hover:text-white'
@@ -634,18 +632,20 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             </div>
           )}
 
-          {/* RESTART BUTTON (YENİDEN BAŞLAT) */}
-          <button
-            onClick={restartCurrentGame}
-            title="Yeniden Başlat"
-            className="group relative w-8 h-8 sm:w-9 sm:h-9 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0 ml-1"
-          >
-            <img 
-              src="/tekrar.png" 
-              alt="Yeniden Başlat" 
-              className="w-full h-full object-contain pointer-events-none" 
-            />
-          </button>
+          {/* ABSOLUTE RIGHT: RESTART BUTTON (YENİDEN BAŞLAT) */}
+          <div className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 flex items-center">
+            <button
+              onClick={restartCurrentGame}
+              title="Yeniden Başlat"
+              className="group relative w-8 h-8 sm:w-9 sm:h-9 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0"
+            >
+              <img 
+                src="/tekrar.png" 
+                alt="Yeniden Başlat" 
+                className="w-full h-full object-contain pointer-events-none" 
+              />
+            </button>
+          </div>
         </div>
       )}
 
@@ -727,10 +727,15 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     ⚔️ {activeMode === 'duel2' ? '2' : '3'} OYUNCU DÜELLO
                   </span>
                   <div className="flex-1 min-w-0 text-center px-1 sm:px-2">
-                    <div className="inline-block max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-1 sm:py-1.5 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
+                    <div className="inline-flex items-center justify-center gap-2 max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-1 sm:py-1.5 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
                       <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
                         {gameTitle} ({gameConcept.toUpperCase()})
                       </h2>
+                      <img 
+                        src={isIng ? '/icon_6.png' : '/icon_5.png'} 
+                        alt="Oyun İkonu" 
+                        className="h-5 sm:h-6 md:h-7 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
+                      />
                     </div>
                   </div>
                   <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
@@ -743,29 +748,32 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   {duelPlayers.map((p, pIdx) => {
                     const groupTheme = pIdx === 0 
                       ? {
-                          badgeBg: "from-purple-800 via-purple-900 to-indigo-950",
-                          badgeBorder: "border-purple-300",
-                          badgeShadow: "shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          buttonDefault: "border-purple-400/90 bg-purple-950/40 hover:bg-purple-900/60 active:bg-purple-800/80 shadow-[0_0_16px_rgba(168,85,247,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                          badgeBg: "from-blue-700 via-indigo-800 to-blue-950",
+                          badgeBorder: "border-cyan-300",
+                          badgeShadow: "shadow-[0_0_16px_rgba(6,182,212,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                          containerBorder: "border-cyan-400",
+                          buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800 text-white shadow-[0_4px_14px_rgba(37,99,235,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                         }
                       : pIdx === 1
                       ? {
-                          badgeBg: "from-amber-600 via-amber-800 to-orange-950",
-                          badgeBorder: "border-amber-300",
-                          badgeShadow: "shadow-[0_0_16px_rgba(251,191,36,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          buttonDefault: "border-amber-400/90 bg-amber-950/40 hover:bg-amber-900/60 active:bg-amber-800/80 shadow-[0_0_16px_rgba(245,158,11,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                          badgeBg: "from-rose-700 via-pink-800 to-rose-950",
+                          badgeBorder: "border-pink-300",
+                          badgeShadow: "shadow-[0_0_16px_rgba(244,63,94,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+                          containerBorder: "border-pink-400",
+                          buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800 text-white shadow-[0_4px_14px_rgba(225,29,72,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                         }
                       : {
-                          badgeBg: "from-emerald-600 via-teal-800 to-slate-950",
+                          badgeBg: "from-emerald-700 via-teal-800 to-emerald-950",
                           badgeBorder: "border-emerald-300",
                           badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          buttonDefault: "border-emerald-400/90 bg-emerald-950/40 hover:bg-emerald-900/60 active:bg-emerald-800/80 shadow-[0_0_16px_rgba(16,185,129,0.35),inset_0_1px_2px_rgba(255,255,255,0.25)]",
+                          containerBorder: "border-emerald-400",
+                          buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                         };
 
                     return (
                       <div
                         key={p.id}
-                        className="relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl overflow-hidden min-h-0 z-10 transition-all"
+                        className={`relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
                       >
                         {/* PLAYER HEADER BAR */}
                         <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
@@ -775,7 +783,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                           </div>
 
                           {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
-                          <div className="flex-1 ml-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/30 rounded-xl sm:rounded-2xl px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.4)]">
+                          <div className="flex-1 ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl sm:rounded-2xl px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
                             <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
                               {pIdx + 1}. GRUP ({p.avatar})
                             </span>
@@ -797,7 +805,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                         </div>
 
                         {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
-                        <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-2 sm:p-3 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[130px] sm:min-h-[155px]">
+                        <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-2 sm:p-3 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[130px] sm:min-h-[155px]">
                           {/* Top glare effect */}
                           <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
@@ -889,13 +897,20 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-sm sm:text-base flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
                       1
                     </div>
-                    <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1 sm:py-1.5 flex flex-col min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
-                      <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
-                        1. GRUP
-                      </span>
-                      <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
-                        {gameTitle} ({gameConcept.toUpperCase()})
-                      </span>
+                    <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1 sm:py-1.5 flex items-center justify-between gap-2.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
+                          1. GRUP
+                        </span>
+                        <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
+                          {gameTitle} ({gameConcept.toUpperCase()})
+                        </span>
+                      </div>
+                      <img 
+                        src={isIng ? '/icon_6.png' : '/icon_5.png'} 
+                        alt="Oyun İkonu" 
+                        className="h-6 w-6 sm:h-7 sm:w-7 object-contain shrink-0 filter drop-shadow-md ml-1" 
+                      />
                     </div>
                   </div>
 
@@ -940,43 +955,69 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
                 {/* 4 CHOICES - MODERN RESPONSIVE BUTTON DESIGN */}
                 <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-xl shrink-0 mt-auto">
-                  {quizQuestion.options.map((opt, oIdx) => {
-                    const isSelected = quizSelectedOption === opt;
-                    const isCorrect = opt === quizQuestion.correct;
-                    const optFontClass = getWordOptionFontSize(quizQuestion.options, 1);
-                    
-                    let btnClass = "border-cyan-400/90 bg-slate-950/45 hover:bg-cyan-950/60 active:bg-cyan-900/80 shadow-[0_0_18px_rgba(6,182,212,0.35),inset_0_1px_2px_rgba(255,255,255,0.3)] hover:scale-[1.02]";
-                    if (quizFeedback !== 'none') {
-                      if (isCorrect) {
-                        btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.5)] scale-105 animate-pulse";
-                      } else if (isSelected) {
-                        btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
-                      } else {
-                        btnClass = "opacity-35 border-slate-700 bg-slate-900/60";
+                  {(() => {
+                    const OPTION_COLOR_THEMES = [
+                      {
+                        border: 'border-cyan-400',
+                        bg: 'bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800',
+                        shadow: 'shadow-[0_4px_16px_rgba(37,99,235,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                      },
+                      {
+                        border: 'border-pink-400',
+                        bg: 'bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800',
+                        shadow: 'shadow-[0_4px_16px_rgba(225,29,72,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                      },
+                      {
+                        border: 'border-emerald-400',
+                        bg: 'bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800',
+                        shadow: 'shadow-[0_4px_16px_rgba(16,185,129,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                      },
+                      {
+                        border: 'border-amber-300',
+                        bg: 'bg-gradient-to-b from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 active:from-amber-700 active:to-amber-800',
+                        shadow: 'shadow-[0_4px_16px_rgba(245,158,11,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
                       }
-                    }
+                    ];
 
-                    return (
-                      <button
-                        key={oIdx}
-                        disabled={quizFeedback !== 'none'}
-                        onClick={() => handleQuizAnswer(opt)}
-                        className={`relative group w-full py-4 sm:py-6 px-2.5 min-h-[72px] sm:min-h-[88px] rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
-                      >
-                        {/* Inner top glare */}
-                        <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                        <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                          {opt}
-                        </span>
-                        {quizFeedback !== 'none' && isCorrect && (
-                          <CheckCircle2 size={20} className="absolute right-3 text-emerald-400 shrink-0 filter drop-shadow-md animate-bounce" />
-                        )}
-                        {quizFeedback !== 'none' && isSelected && !isCorrect && (
-                          <XCircle size={20} className="absolute right-3 text-rose-400 shrink-0 filter drop-shadow-md" />
-                        )}
-                      </button>
-                    );
-                  })}
+                    return quizQuestion.options.map((opt, oIdx) => {
+                      const isSelected = quizSelectedOption === opt;
+                      const isCorrect = opt === quizQuestion.correct;
+                      const optFontClass = getWordOptionFontSize(quizQuestion.options, 1);
+                      const theme = OPTION_COLOR_THEMES[oIdx % OPTION_COLOR_THEMES.length];
+                      
+                      let btnClass = `${theme.border} ${theme.bg} ${theme.shadow} text-white hover:scale-[1.02]`;
+                      if (quizFeedback !== 'none') {
+                        if (isCorrect) {
+                          btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-700 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.7)] scale-105 animate-pulse text-white";
+                        } else if (isSelected) {
+                          btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-900/90 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85 text-rose-100";
+                        } else {
+                          btnClass = "opacity-35 border-slate-700 bg-slate-900/60 text-slate-300";
+                        }
+                      }
+
+                      return (
+                        <button
+                          key={oIdx}
+                          disabled={quizFeedback !== 'none'}
+                          onClick={() => handleQuizAnswer(opt)}
+                          className={`relative group w-full py-4 sm:py-6 px-2.5 min-h-[72px] sm:min-h-[88px] rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                        >
+                          {/* Inner top glare */}
+                          <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                          <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                            {opt}
+                          </span>
+                          {quizFeedback !== 'none' && isCorrect && (
+                            <CheckCircle2 size={20} className="absolute right-3 text-emerald-400 shrink-0 filter drop-shadow-md animate-bounce" />
+                          )}
+                          {quizFeedback !== 'none' && isSelected && !isCorrect && (
+                            <XCircle size={20} className="absolute right-3 text-rose-400 shrink-0 filter drop-shadow-md" />
+                          )}
+                        </button>
+                      );
+                    });
+                  })()}
                 </div>
               </div>
             )}

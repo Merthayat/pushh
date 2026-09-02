@@ -52,6 +52,22 @@ function getIsimTamlayan(isim: string): string {
   return `${clean}'${suffix}`;
 }
 
+function getNesneIyelik(nesne: string): string {
+  const n = nesne.trim().toLowerCase();
+  if (n === 'kalem') return 'kalemi';
+  if (n === 'balon') return 'balonu';
+  if (n === 'bilye') return 'bilyesi';
+  if (n === 'çıkartma') return 'çıkartması';
+  if (n === 'elma') return 'elması';
+  if (n === 'ceviz') return 'cevizi';
+  if (n === 'fındık') return 'fındığı';
+  if (n === 'çilek') return 'çileği';
+  if (n === 'muz') return 'muzu';
+  if (n === 'portakal') return 'portakalı';
+  if (n === 'şeftali') return 'şeftalisi';
+  return `${nesne}si`;
+}
+
 function benzersizYanlislar(correct: number, adaylar: number[], minVal = 0): number[] {
   const sonuc: number[] = [];
   const gorulen = new Set<number>([correct]);
@@ -360,10 +376,10 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const m = modeller[Math.floor(Math.random() * modeller.length)];
 
       const visualHTML = (m as any).img
-        ? `<div class="p-1.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0 flex items-center justify-center">
-             <img src="${(m as any).img}" alt="${m.nesne}" class="h-16 w-16 xs:h-20 xs:w-20 sm:h-24 sm:w-24 object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+        ? `<div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.5)] shrink-0 flex items-center justify-center">
+             <img src="${(m as any).img}" alt="${m.nesne}" class="geo-cisim-img h-36 w-36 xs:h-44 xs:w-44 sm:h-56 sm:w-56 md:h-64 md:w-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
            </div>`
-        : `<div class="text-5xl xs:text-6xl sm:text-7xl filter drop-shadow-xl">${m.emoji}</div>`;
+        : `<div class="text-7xl xs:text-8xl sm:text-9xl md:text-[10rem] filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${m.emoji}</div>`;
 
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
@@ -380,6 +396,26 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         correct: m.cisim,
         wrong: m.yanlis,
         isLong: true
+      };
+    }
+  },
+
+  geometri_tahtasi: {
+    title: "Geometri Tahtası",
+    desc: "Geometri tahtasında noktaları parmağınla birleştirerek kare, üçgen, dikdörtgen ve şekiller çiz.",
+    generate: () => {
+      const sekiller = [
+        { ad: "Kare", ipucu: "4 eşit kenarı ve 4 dik açısı vardır.", yanlis: ["Üçgen", "Daire", "Beşgen"] },
+        { ad: "Üçgen", ipucu: "3 kenarı ve 3 köşesi vardır.", yanlis: ["Kare", "Dikdörtgen", "Çember"] },
+        { ad: "Dikdörtgen", ipucu: "Karşılıklı kenarları eşit 4 kenarlı şekildir.", yanlis: ["Üçgen", "Daire", "Altıgen"] },
+        { ad: "Eşkenar Dörtgen", ipucu: "4 kenarı birbirine eşit baklava şeklidir.", yanlis: ["Üçgen", "Dikdörtgen", "Silindir"] }
+      ];
+      const s = sekiller[Math.floor(Math.random() * sekiller.length)];
+      return {
+        question: `Geometri tahtasında "${s.ipucu}" özelliği olan şekil hangisidir?`,
+        correct: s.ad,
+        wrong: s.yanlis,
+        isLong: false
       };
     }
   },
@@ -443,7 +479,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-0.5">
-          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-slate-900/80 border border-amber-400/80 max-w-full overflow-hidden">
+          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-slate-900/35 backdrop-blur-md border border-amber-300/60 shadow-sm max-w-full overflow-hidden">
             <span class="text-[9px] xs:text-[11px] sm:text-xs font-black text-emerald-400 mr-0.5 uppercase tracking-wider shrink-0">🏁 BAŞLANGIÇ</span>
             <div class="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-nowrap">
               ${siraGosterim}
@@ -946,8 +982,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = Math.floor(Math.random() * Math.min(maxS2, 10)) + 1;
       const sonuc = s1 + s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} + ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            Toplama işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+          </div>
+        </div>
+      `;
+
       return {
-        question: `${s1} + ${s2} = ?`,
+        question: `${s1} + ${s2} = ?\n\nToplama işleminin sonucu kaçtır?`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 1),
         isLong: false
@@ -965,8 +1013,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = kalanlar[Math.floor(Math.random() * kalanlar.length)];
       const sonuc = s1 + s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} + ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            Onluklarla toplama işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+          </div>
+        </div>
+      `;
+
       return {
-        question: `${s1} + ${s2} = ?`,
+        question: `${s1} + ${s2} = ?\n\nOnluklarla toplama işleminin sonucu kaçtır?`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 10, sonuc - 10, sonuc + 20, sonuc - 20], 10),
         isLong: false
@@ -985,8 +1045,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
       const questionText = solTaraftaMi ? `${s1} + ? = ${toplam}` : `? + ${s1} = ${toplam}`;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${questionText}
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            Soru işareti (<span class="text-amber-300 font-black">?</span>) yerine hangi sayı gelmelidir?
+          </div>
+        </div>
+      `;
+
       return {
         question: `${questionText}\n\nSoru işareti (?) yerine hangi sayı gelmelidir?`,
+        questionHTML,
         correct: eksik,
         wrong: benzersizYanlislar(eksik, [eksik + 1, eksik - 1, eksik + 2, toplam], 1),
         isLong: true
@@ -1002,8 +1074,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = Math.floor(Math.random() * 6) + 3; // 3..8
       const sonuc = s1 + s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} + ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            ${s1} sayısına ${s2} eklersek <span class="text-amber-300 underline decoration-amber-400 font-black">sonuç kaç olur</span>?
+          </div>
+        </div>
+      `;
+
       return {
         question: `${s1} sayısına ${s2} eklersek sonuç kaç olur? (${s1} + ${s2} = ?)`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 1),
         isLong: true
@@ -1022,8 +1106,9 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
       const nesneler = ["balon", "kalem", "ceviz", "elma", "bilye", "çıkartma"];
       const n = nesneler[Math.floor(Math.random() * nesneler.length)];
+      const iyelik = getNesneIyelik(n);
 
-      const soru = `${getIsimTamlayan(isim)} ${s1} tane ${n}si vardı. Öğretmeni ona ${s2} tane daha ${n} verdi. ${getIsimTamlayan(isim)} toplam kaç ${n}si oldu?`;
+      const soru = `${getIsimTamlayan(isim)} ${s1} tane ${iyelik} vardı. Öğretmeni ona ${s2} tane daha ${n} verdi. ${getIsimTamlayan(isim)} toplam kaç ${iyelik} oldu?`;
 
       return {
         question: soru,
@@ -1064,8 +1149,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = Math.floor(Math.random() * (s1 - 2)) + 1;
       const sonuc = s1 - s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} - ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            Çıkarma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+          </div>
+        </div>
+      `;
+
       return {
-        question: `${s1} - ${s2} = ?`,
+        question: `${s1} - ${s2} = ?\n\nÇıkarma işleminin sonucu kaçtır?`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 0),
         isLong: false
@@ -1081,8 +1178,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = (Math.floor(Math.random() * (s1 / 10 - 1)) + 1) * 10;
       const sonuc = s1 - s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} - ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            Onluklarla çıkarma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+          </div>
+        </div>
+      `;
+
       return {
-        question: `${s1} - ${s2} = ?`,
+        question: `${s1} - ${s2} = ?\n\nOnluklarla çıkarma işleminin sonucu kaçtır?`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 10, sonuc - 10, sonuc + 20, sonuc - 20], 0),
         isLong: false
@@ -1098,8 +1207,20 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const s2 = Math.floor(Math.random() * 5) + 1; // 1..5
       const sonuc = s1 - s2;
 
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${s1} - ${s2} = ?
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            ${s1} sayısından ${s2} çıkarırsak <span class="text-amber-300 underline decoration-amber-400 font-black">kaç kalır</span>?
+          </div>
+        </div>
+      `;
+
       return {
         question: `${s1} sayısından ${s2} çıkarırsak kaç kalır? (${s1} - ${s2} = ?)`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 0),
         isLong: true
@@ -1246,8 +1367,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const s1 = Math.floor(Math.random() * 9) + 1;
         const s2 = Math.floor(Math.random() * (10 - s1)) + 1;
         const sonuc = s1 + s2;
+
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg animate-pulse">
+              ${s1} + ${s2} = ?
+            </div>
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              ⚡ Hızlıca topla: <span class="text-amber-300 underline decoration-amber-400 font-black">sonuç kaçtır</span>?
+            </div>
+          </div>
+        `;
+
         return {
           question: `${s1} + ${s2} = ?`,
+          questionHTML,
           correct: sonuc,
           wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 1),
           isLong: false
@@ -1256,8 +1390,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const s1 = Math.floor(Math.random() * 10) + 3;
         const s2 = Math.floor(Math.random() * (s1 - 1)) + 1;
         const sonuc = s1 - s2;
+
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg animate-pulse">
+              ${s1} - ${s2} = ?
+            </div>
+            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              ⚡ Hızlıca çıkar: <span class="text-amber-300 underline decoration-amber-400 font-black">sonuç kaçtır</span>?
+            </div>
+          </div>
+        `;
+
         return {
           question: `${s1} - ${s2} = ?`,
+          questionHTML,
           correct: sonuc,
           wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2, sonuc - 2], 0),
           isLong: false
@@ -1272,8 +1419,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
     generate: () => {
       const sayi = Math.floor(Math.random() * 9) + 1; // 1..9
       const gereken = 10 - sayi;
+
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+          <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg">
+            ${sayi} + ? = 10
+          </div>
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            ${sayi} sayısını <span class="text-yellow-300 font-black">10'a</span> tamamlamak için kaç eklemeliyiz?
+          </div>
+        </div>
+      `;
+
       return {
         question: `${sayi} sayısını 10'a tamamlamak için kaç eklemeliyiz?\n(${sayi} + ? = 10)`,
+        questionHTML,
         correct: gereken,
         wrong: benzersizYanlislar(gereken, [gereken + 1, gereken - 1, gereken + 2, gereken - 2], 1),
         isLong: true

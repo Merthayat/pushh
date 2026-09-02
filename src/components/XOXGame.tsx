@@ -272,7 +272,7 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] h-[100dvh] max-h-[100dvh] overflow-hidden flex flex-col items-center justify-between p-1 xs:p-1.5 sm:p-2.5 font-sans select-none bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
+    <div className="fixed inset-0 top-[48px] xs:top-[56px] sm:top-[70px] md:top-[76px] z-40 h-[calc(100dvh-48px)] xs:h-[calc(100dvh-56px)] sm:h-[calc(100dvh-70px)] md:h-[calc(100dvh-76px)] overflow-hidden flex flex-col items-center justify-between p-1 xs:p-1.5 sm:p-2.5 font-sans select-none bg-gradient-to-br from-sky-100 via-blue-50 to-amber-50/70 dark:from-[#0B132B] dark:via-blue-950 dark:to-slate-950 text-blue-950 dark:text-gray-100">
       {/* SAME POSITIVE BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
@@ -283,31 +283,31 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
         />
       </div>
 
-      {/* Top Header Bar */}
-      <div className="relative z-10 w-full max-w-2xl flex items-center justify-between gap-1.5 shrink-0 mb-1">
+      {/* Top Game Bar - Compact, below global navigation header */}
+      <div className="relative z-10 w-full max-w-2xl flex items-center justify-between gap-1.5 shrink-0 mb-1 px-1">
         <button
           onClick={onClose}
-          className="group relative w-[80px] h-[28px] sm:w-[100px] sm:h-[34px] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
+          className="group relative w-[76px] h-[26px] sm:w-[92px] sm:h-[30px] transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
         >
           <div 
             className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
             style={{ backgroundImage: `url('/butt.png')` }}
           />
           <span className="relative z-10 text-white font-black text-[9px] sm:text-xs tracking-wider [text-shadow:0_2px_0_#000,0_3px_6px_rgba(0,0,0,0.8)] uppercase select-none -translate-y-[1px]">
-            GERİ DÖN
+            MENÜ
           </span>
         </button>
 
-        <div className="flex items-center gap-1 px-2.5 py-0.5 sm:py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-blue-950 font-black text-[11px] sm:text-xs md:text-sm tracking-wider uppercase shadow-md border-2 border-white">
+        <div className="flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-blue-950 font-black text-[11px] sm:text-xs md:text-sm tracking-wider uppercase shadow-md border-2 border-white">
           <Sparkles size={14} className="shrink-0" />
           <span>XOX (TİC-TAC-TOE)</span>
-          <Sparkles size={14} className="shrink-0" />
+          <img src="/icon_5.png" alt="Oyun İkonu" className="h-5 sm:h-6 w-auto object-contain shrink-0 filter drop-shadow-xs" />
         </div>
 
         <button
           onClick={resetAll}
           title="Tüm Skorları Sıfırla"
-          className="group relative w-8 h-8 sm:w-10 sm:h-10 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
+          className="group relative w-7 h-7 sm:w-8 sm:h-8 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.3)] shrink-0"
         >
           <img 
             src="/tekrar.png" 
