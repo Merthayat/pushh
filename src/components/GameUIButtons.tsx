@@ -376,7 +376,9 @@ export const GlossyCompleteCard: React.FC<GlossyCompleteCardProps> = ({
             >
               <img 
                 src="/ana.png" 
-                alt="Ana Sayfaya Dön" 
+                alt="Ana Sayfa" 
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-contain pointer-events-none" 
               />
             </button>
@@ -391,6 +393,8 @@ export const GlossyCompleteCard: React.FC<GlossyCompleteCardProps> = ({
               <img 
                 src="/ileri.png" 
                 alt="Sonraki / İleri" 
+                loading="eager"
+                decoding="async"
                 className="w-full h-full object-contain pointer-events-none" 
               />
             </button>

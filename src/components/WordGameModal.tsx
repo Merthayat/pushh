@@ -5,10 +5,12 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ZIT_ANLAM_DATA, ES_ANLAM_DATA, INGILIZCE_DATA, WordPair } from '../data/wordPairsData';
+import { BasketballRaceTrack } from './BasketballRaceTrack';
 
 interface WordGameModalProps {
   gameType: 'zit_anlam' | 'es_anlam' | 'ingilizce';
   onClose: () => void;
+  onGoHome?: () => void;
   playMp3?: (src: string, onEnded?: () => void) => void;
   playerCountMode?: 1 | 2 | 3;
   onSwitchPlayerCountMode?: (mode: 1 | 2 | 3) => void;
@@ -133,6 +135,7 @@ const getWordOptionFontSize = (options: string[], mode: 1 | 2 | 3 = 1) => {
 export const WordGameModal: React.FC<WordGameModalProps> = ({
   gameType,
   onClose,
+  onGoHome,
   playMp3,
   playerCountMode = 2,
   onSwitchPlayerCountMode
@@ -705,7 +708,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   Yeniden Oyna
                 </button>
                 <button
-                  onClick={onClose}
+                  onClick={onGoHome || onClose}
                   className="flex-1 py-2.5 sm:py-3 rounded-2xl bg-white/20 text-white font-black text-xs sm:text-sm uppercase tracking-wider hover:bg-white/30 active:scale-95 transition-all border border-white/40 cursor-pointer"
                 >
                   Ana Sayfaya Dön
@@ -721,27 +724,34 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             {/* MULTIPLAYER DUEL: 2 & 3 PLAYERS */}
             {(activeMode === 'duel2' || activeMode === 'duel3') && (
               <div className="flex-1 flex flex-col w-full h-full min-h-0">
-                {/* COMMON TOP BAR: SLEEK GLASS CAPSULES MATCHING MAIN CLASSROOM LAYOUT */}
-                <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
-                  <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
+                {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
+                <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
+                  <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
                     ⚔️ {activeMode === 'duel2' ? '2' : '3'} OYUNCU DÜELLO
                   </span>
-                  <div className="flex-1 min-w-0 text-center px-1 sm:px-2">
-                    <div className="inline-flex items-center justify-center gap-2 max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-3 sm:px-6 py-1 sm:py-1.5 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                      <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
+                  <div className="flex-1 min-w-0 text-center px-1.5">
+                    <div className="inline-flex items-center justify-center gap-1.5 max-w-full bg-slate-950/85 backdrop-blur-xl border border-cyan-400/50 rounded-xl px-3 sm:px-6 py-1 shadow-[0_0_16px_rgba(6,182,212,0.3)]">
+                      <h2 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider break-words drop-shadow-md">
                         {gameTitle} ({gameConcept.toUpperCase()})
                       </h2>
                       <img 
                         src={isIng ? '/icon_6.png' : '/icon_5.png'} 
                         alt="Oyun İkonu" 
-                        className="h-5 sm:h-6 md:h-7 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
+                        className="h-4 sm:h-5 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
                       />
                     </div>
                   </div>
-                  <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
+                  <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
                     🎯 HEDEF: {duelTargetScore} PUAN
                   </span>
                 </div>
+
+                {/* BASKETBALL RACE TRACK: 2 VE 3 KİŞİLİK YARIŞ PARKURU */}
+                <BasketballRaceTrack
+                  players={duelPlayers}
+                  playerCountMode={activeMode === 'duel2' ? 2 : 3}
+                  targetScore={duelTargetScore}
+                />
 
                 {/* PLAYERS GRID */}
                 <div className={`flex-1 grid grid-cols-1 ${activeMode === 'duel2' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
@@ -899,10 +909,10 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     </div>
                     <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-1 sm:py-1.5 flex items-center justify-between gap-2.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
                       <div className="flex flex-col min-w-0">
-                        <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
+                        <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider">
                           1. GRUP
                         </span>
-                        <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
+                        <span className="text-[10px] sm:text-xs font-bold text-cyan-300 break-words">
                           {gameTitle} ({gameConcept.toUpperCase()})
                         </span>
                       </div>

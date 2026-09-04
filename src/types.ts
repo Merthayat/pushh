@@ -40,6 +40,9 @@ export interface GroupInfoStat {
 
 export type GroupStatsRecord = Record<string, GroupInfoStat>;
 
+export type GradeStatsMap = Record<number, Record<string, StatRecord>>;
+export type GradeGroupStatsMap = Record<number, GroupStatsRecord>;
+
 export interface PlayerData {
   id: number;
   name: string;
@@ -59,4 +62,5 @@ export interface PlayerData {
   selectedOption: (string | number) | null;
   feedbackState: 'none' | 'correct' | 'wrong';
   askedQuestions: string[];
+  timeLeft?: number;
 }

@@ -30,81 +30,46 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
     {
       id: 'xox',
       title: 'XOX & Zeka Düellosu',
-      subtitle: 'Tic-Tac-Toe & Matematik Meydan Okuması',
-      desc: '3x3 Tahta üzerinde Bot veya Arkadaşınla yarış! Hamle yaparken matematik sorularını çözerek ekstra avantaj yakala.',
-      badge: '🤖 BOT & 👥 2 OYUNCU',
-      badgeColor: 'bg-fuchsia-500/30 text-fuchsia-200 border-fuchsia-400/40',
-      gradient: 'from-purple-600 via-indigo-600 to-blue-700',
-      borderColor: 'border-purple-300',
-      iconEmoji: '🎮',
-      iconBg: 'from-fuchsia-500 to-purple-700',
+      subtitle: 'Tic-Tac-Toe & Bot/Arkadaş Meydan Okuması',
+      icon: '/MENUIKON/grid_icon_32.png',
       sound: '/coin.mp3',
       action: onOpenXOX,
-      features: ['Kolay/Orta/Zor Bot', 'Matematik Sorulu Hamle', 'Puan & Seri Takibi']
     },
     {
       id: 'zit_anlam',
       title: 'Zıt Anlamlı Kelimeler',
-      subtitle: '4 Şıklı & 2-3 Kişilik Yarış Modu',
-      desc: 'Sıcak-Soğuk, Büyük-Küçük gibi zıt anlamlı kelimeleri eğlenerek öğren! ⚔️ 1, 2 ve 3 Kişilik Yarış, 🎯 Test ve 🧩 Hafıza kartları.',
-      badge: '👑 1, 2 & 3 OYUNCU MODU',
-      badgeColor: 'bg-amber-500/30 text-amber-200 border-amber-400/40',
-      gradient: 'from-amber-500 via-orange-600 to-red-600',
-      borderColor: 'border-amber-300',
-      iconEmoji: '⚡',
-      iconBg: 'from-amber-400 to-orange-600',
+      subtitle: '1, 2 ve 3 Kişilik Yarış & Hafıza Kartları',
+      icon: '/MENUIKON/grid_icon_27.png',
       sound: '/farklilvl.mp3',
       action: onOpenZitAnlam,
-      features: ['1, 2 & 3 Kişilik Farklı Sorular', '3 Hata Yapan Elenir', 'Hafıza Kartı Eşleştirme']
     },
     {
       id: 'es_anlam',
       title: 'Eş Anlamlı Kelimeler',
-      subtitle: '4 Şıklı Anlamdaş Kelime Kapışması',
-      desc: 'Okul-Mektep, Hediye-Armağan gibi anlamdaş sözcükleri keşfet! Herkesin sorusu farklı, 3 hata yapanın elendiği heyecan dolu kapışma.',
-      badge: '🌸 1, 2 & 3 OYUNCU MODU',
-      badgeColor: 'bg-emerald-500/30 text-emerald-200 border-emerald-400/40',
-      gradient: 'from-emerald-500 via-teal-600 to-cyan-700',
-      borderColor: 'border-emerald-300',
-      iconEmoji: '📖',
-      iconBg: 'from-emerald-400 to-teal-600',
+      subtitle: '1, 2 ve 3 Kişilik Anlamdaş Kelime Kapışması',
+      icon: '/MENUIKON/grid_icon_21.png',
       sound: '/para.mp3',
       action: onOpenEsAnlam,
-      features: ['1, 2 & 3 Kişilik Canlı Yarış', '3 Hata Yapan Elenir', 'Hafıza Kartı Eşleştirme']
     },
     {
       id: 'lab3d',
       title: '3D Geometri & Şekil Laboratuvarı',
       subtitle: '3 Boyutlu Cisimler, Döndürme & Yüzey Keşfi',
-      desc: 'Küp, dikdörtgen prizma, silindir, koni ve küre gibi geometrik cisimleri 360° döndürerek köşe, ayrıt ve yüzey özelliklerini keşfet!',
-      badge: '🔬 3D İNTERAKTİF LAB',
-      badgeColor: 'bg-cyan-500/30 text-cyan-200 border-cyan-400/40',
-      gradient: 'from-cyan-600 via-teal-600 to-blue-700',
-      borderColor: 'border-cyan-300',
-      iconEmoji: '🧊',
-      iconBg: 'from-cyan-400 to-blue-600',
+      icon: '/MENUIKON/grid_icon_39.png',
       sound: '/coin.mp3',
       action: () => {
         if (onOpen3DLab) onOpen3DLab();
       },
-      features: ['360° 3D Model Döndürme', 'Köşe & Ayrıt Analizi', 'İnteraktif Geometri']
     },
     {
       id: 'geoboard',
       title: 'Geometri Tahtası',
-      subtitle: 'Parmakla Çizim & Geometrik Şekiller',
-      desc: 'Noktalı geometri tahtasında parmağınla kare, üçgen, dikdörtgen ve geometrik şekilleri bağlayarak çiz ve keşfet!',
-      badge: '📐 PARMAKLA ÇİZİM',
-      badgeColor: 'bg-pink-500/30 text-pink-200 border-pink-400/40',
-      gradient: 'from-pink-600 via-rose-600 to-amber-600',
-      borderColor: 'border-pink-300',
-      iconEmoji: '📐',
-      iconBg: 'from-pink-500 to-rose-600',
+      subtitle: 'Noktalı Tahta & Parmakla Şekil Çizimi',
+      icon: '/MENUIKON/grid_icon_29.png',
       sound: '/coin.mp3',
       action: () => {
         if (onOpenGeoboard) onOpenGeoboard();
       },
-      features: ['5x5 Noktalı Tahta', 'Dokunarak Şekil Çizme', 'Kare, Üçgen, Dikdörtgen']
     }
   ];
 
@@ -140,11 +105,11 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
         <div className="flex flex-col items-center justify-center text-center">
           <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-blue-950 font-black text-[8px] sm:text-[10px] tracking-wider uppercase shadow-xs border border-white">
             <Sparkles size={10} className="text-blue-950 shrink-0" />
-            <span>5. BÖLÜM & EĞLENCELİ OYUNLAR</span>
+            <span>5. BÖLÜM</span>
             <Sparkles size={10} className="text-blue-950 shrink-0" />
           </div>
           <h1 className="text-xs sm:text-sm md:text-base font-black text-amber-950 dark:text-amber-300 tracking-wide uppercase drop-shadow-sm leading-tight mt-0.5">
-            Diğer Oyunlar & Zeka Düelloları
+            Diğer Oyunlar
           </h1>
         </div>
 
@@ -156,65 +121,64 @@ export const OtherGamesHub: React.FC<OtherGamesHubProps> = ({
       </header>
 
       {/* 3. GAMES CONTAINER */}
-      <main className="relative z-10 flex-1 p-2 sm:p-4 max-w-4xl mx-auto w-full overflow-y-auto no-scrollbar flex flex-col justify-center gap-2.5 sm:gap-3.5 my-auto">
-        <div className="w-full text-center py-1">
+      <main className="relative z-10 flex-1 p-2 sm:p-4 max-w-4xl mx-auto w-full overflow-y-auto no-scrollbar flex flex-col items-center gap-2 sm:gap-2.5 pt-3 sm:pt-4 md:pt-5">
+        {/* COMPACT CATEGORY HEADER BADGE (MATCHING ALL OTHER GRADES) */}
+        <div className="flex flex-col items-center justify-center mt-1 sm:mt-1.5 mb-1.5 sm:mb-2 max-w-4xl w-full mx-auto shrink-0 py-0.5">
+          <div className="z-10 flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 px-4 sm:px-7 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-2.5 border-white shadow-[0_3px_10px_rgba(0,0,0,0.5)] font-black text-xs sm:text-sm md:text-base uppercase tracking-wider max-w-full shrink-0">
+            <div className="relative shrink-0 flex items-center justify-center">
+              <img src="/icon_5.png" alt="5. Diğer Oyunlar" className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]" />
+            </div>
+            <span className="drop-shadow-xs break-words">5. Diğer Oyunlar</span>
+            <img src="/icon_5.png" alt="5. Bölüm" className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" />
+          </div>
+        </div>
+
+        <div className="w-full text-center py-0.5">
           <p className="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
             🎮 Oynamak istediğin oyuna dokun ve kapışmaya başla!
           </p>
         </div>
 
-        <div className="flex flex-col gap-2.5 sm:gap-3 w-full">
-          {games.map(game => (
-            <div
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 w-full">
+          {games.map((game, index) => (
+            <button
               key={game.id}
               onClick={() => {
                 triggerSound(game.sound);
                 game.action();
               }}
-              className={`group relative w-full bg-gradient-to-r ${game.gradient} rounded-2xl p-2.5 sm:p-3.5 border-2 sm:border-3 ${game.borderColor} shadow-[0_6px_20px_rgba(0,0,0,0.35),0_2px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_28px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3 overflow-hidden cursor-pointer ring-2 ring-white/20`}
+              className={`group relative w-full bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 dark:from-sky-700 dark:via-blue-800 dark:to-indigo-900 border-2 border-white dark:border-amber-300 ring-1 ring-amber-300/80 rounded-xl sm:rounded-2xl px-3 sm:px-4 py-2 sm:py-2.5 pr-3 sm:pr-4 min-h-[74px] sm:min-h-[84px] md:min-h-[90px] flex items-center gap-3 sm:gap-4 shadow-[0_3px_0_#1e3a8a,0_4px_12px_rgba(0,0,0,0.25)] hover:shadow-[0_4px_0_#1e3a8a,0_8px_16px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#1e3a8a] transition-all cursor-pointer overflow-hidden text-left ${
+                index === games.length - 1 && games.length % 2 === 1 ? 'sm:col-span-2 sm:max-w-xl sm:mx-auto' : ''
+              }`}
             >
-              {/* Radial Highlight */}
-              <div className="absolute -left-12 -top-12 w-40 h-40 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+              {/* Glossy top shine */}
+              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-              {/* Left Column: Icon + Text Details */}
-              <div className="flex items-center gap-2.5 sm:gap-3.5 flex-1 min-w-0 z-10">
-                {/* 3D Emoji Icon Frame */}
-                <div className={`shrink-0 w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br ${game.iconBg} border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-1 group-hover:scale-110 group-hover:rotate-6 transition-transform`}>
-                  <span className="text-xl sm:text-2xl filter drop-shadow-md">{game.iconEmoji}</span>
-                </div>
-
-                {/* Text Content */}
-                <div className="flex-1 min-w-0 text-left">
-                  <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
-                    <span className={`px-2 py-0.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-wide border ${game.badgeColor}`}>
-                      {game.badge}
-                    </span>
-                  </div>
-                  <h3 className="font-black text-xs sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
-                    {game.title}
-                  </h3>
-                  <p className="text-[9px] sm:text-xs font-extrabold text-white/90 mt-0.5 drop-shadow-xs line-clamp-2">
-                    {game.desc}
-                  </p>
-                </div>
+              {/* Pure 3D borderless icon without box */}
+              <div className="relative shrink-0 flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18">
+                <img
+                  src={game.icon}
+                  alt={game.title}
+                  className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-2 transition-transform select-none pointer-events-none"
+                />
               </div>
 
-              {/* Right Column: Features Pill + Play Button */}
-              <div className="flex items-center justify-between sm:justify-end gap-2 w-full sm:w-auto shrink-0 z-10 pt-1 sm:pt-0 border-t sm:border-t-0 border-white/15">
-                <div className="hidden md:flex flex-col gap-0.5 text-[9px] font-bold text-white/80 text-right pr-2">
-                  {game.features.map((f, i) => (
-                    <span key={i} className="flex items-center justify-end gap-1">
-                      <Star size={10} className="text-yellow-300" />
-                      {f}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="relative w-[65px] h-[26px] sm:w-[84px] sm:h-[34px] group-hover:scale-105 transition-all filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] flex items-center justify-center ml-auto sm:ml-0">
-                  <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
-                </div>
+              {/* Text Area - Full title, subtitle wraps cleanly */}
+              <div className="flex-1 min-w-0 py-0.5">
+                <h4 className="font-black text-xs sm:text-sm md:text-[15px] text-white group-hover:text-yellow-300 transition-colors leading-snug drop-shadow-xs uppercase tracking-wide break-words">
+                  {game.title}
+                </h4>
+                <p className="text-[10px] sm:text-xs text-yellow-300 font-extrabold mt-0.5 uppercase tracking-wider drop-shadow-xs flex items-start gap-1 leading-snug whitespace-normal break-words">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shrink-0 mt-1" />
+                  <span>{game.subtitle}</span>
+                </p>
               </div>
-            </div>
+
+              {/* 3D Green "OYNA" image */}
+              <div className="relative shrink-0 w-[76px] h-[34px] sm:w-[90px] sm:h-[40px] md:w-[104px] md:h-[46px] group-hover:scale-105 transition-transform filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
+              </div>
+            </button>
           ))}
         </div>
       </main>

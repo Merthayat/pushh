@@ -204,13 +204,39 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const basamakDegeri = rakam * Math.pow(10, indexFromRight);
 
         const yanlislar: string[] = [];
-        const carpanlar = [1, 10, 100, 1000, 10000, 100000].filter(c => c !== Math.pow(10, indexFromRight));
-        for (const c of carpanlar.sort(() => 0.5 - Math.random())) {
-          const y = (rakam * c).toLocaleString('tr-TR');
-          if (!yanlislar.includes(y) && y !== basamakDegeri.toLocaleString('tr-TR')) {
-            yanlislar.push(y);
-            if (yanlislar.length === 3) break;
+        if (rakam === 0) {
+          // 0 rakamının basamak değeri her zaman 0'dır
+          // Çeldirici olarak basamak katları (örn: 10.000, 100.000, 1.000) ve diğer makul seçenekler
+          const p10 = Math.pow(10, indexFromRight);
+          const candidates = [p10, p10 * 10, Math.max(1, Math.floor(p10 / 10)), 10, 100, 1000, 10000, 100000]
+            .filter(v => v !== basamakDegeri)
+            .map(v => v.toLocaleString('tr-TR'));
+          for (const cand of candidates.sort(() => 0.5 - Math.random())) {
+            if (!yanlislar.includes(cand) && cand !== basamakDegeri.toLocaleString('tr-TR')) {
+              yanlislar.push(cand);
+              if (yanlislar.length === 3) break;
+            }
           }
+        } else {
+          const carpanlar = [1, 10, 100, 1000, 10000, 100000].filter(c => c !== Math.pow(10, indexFromRight));
+          for (const c of carpanlar.sort(() => 0.5 - Math.random())) {
+            const y = (rakam * c).toLocaleString('tr-TR');
+            if (!yanlislar.includes(y) && y !== basamakDegeri.toLocaleString('tr-TR')) {
+              yanlislar.push(y);
+              if (yanlislar.length === 3) break;
+            }
+          }
+        }
+
+        // Güvenlik yedeği: Her durumda tam 3 adet farklı yanlış seçenek olmasını garanti et
+        let fallbackCarpan = 10;
+        while (yanlislar.length < 3) {
+          const cand = fallbackCarpan.toLocaleString('tr-TR');
+          if (cand !== basamakDegeri.toLocaleString('tr-TR') && !yanlislar.includes(cand)) {
+            yanlislar.push(cand);
+          }
+          fallbackCarpan = fallbackCarpan * 10;
+          if (fallbackCarpan > 1000000) fallbackCarpan = fallbackCarpan + 17;
         }
 
         return {
@@ -230,7 +256,8 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           isLong: false
         };
       } else {
-        // Çözümleme sorusu (binlik, yüzlük vb.)
+        // Çözümleme sorusu (yüz binlik, on binlik, binlik, yüzlük vb.)
+        const is6Digit = sayi >= 100000;
         const yuzbinler = Math.floor(sayi / 100000);
         const onbinler = Math.floor((sayi % 100000) / 10000);
         const binler = Math.floor((sayi % 10000) / 1000);
@@ -238,11 +265,46 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const onlar = Math.floor((sayi % 100) / 10);
         const birler = sayi % 10;
 
-        const dogruCozumleme = `${sayi >= 100000 ? `${yuzbinler} yüz binlik + ` : ''}${sayi >= 10000 ? `${onbinler} on binlik + ` : ''}${binler} binlik + ${yuzler} yüzlük + ${onlar} onluk + ${birler} birlik`;
-        
-        const yanlis1 = `${sayi >= 100000 ? `${yuzbinler} yüz binlik + ` : ''}${sayi >= 10000 ? `${(onbinler + 1) % 10} on binlik + ` : ''}${binler} binlik + ${yuzler} yüzlük + ${onlar} onluk + ${birler} birlik`;
-        const yanlis2 = `${sayi >= 100000 ? `${yuzbinler} yüz binlik + ` : ''}${sayi >= 10000 ? `${onbinler} on binlik + ` : ''}${binler} binlik + ${(yuzler + 2) % 10} yüzlük + ${onlar} onluk + ${birler} birlik`;
-        const yanlis3 = `${sayi >= 100000 ? `${yuzbinler} yüz binlik + ` : ''}${sayi >= 10000 ? `${onbinler} on binlik + ` : ''}${binler} binlik + ${yuzler} yüzlük + ${(onlar + 3) % 10} onluk + ${birler} birlik`;
+        const formatCozumleme = (yb: number, ob: number, bn: number, y: number, o: number, br: number) => {
+          return `${is6Digit ? `${yb} yüz binlik + ` : ''}${ob} on binlik + ${bn} binlik + ${y} yüzlük + ${o} onluk + ${br} birlik`;
+        };
+
+        const dogruCozumleme = formatCozumleme(yuzbinler, onbinler, binler, yuzler, onlar, birler);
+
+        const yanlislar: string[] = [];
+        const adaylar = [
+          formatCozumleme(is6Digit ? (yuzbinler === 9 ? 8 : yuzbinler + 1) : yuzbinler, (onbinler + 1) % 10, binler, yuzler, onlar, birler),
+          formatCozumleme(yuzbinler, (onbinler + 1) % 10, binler, yuzler, onlar, birler),
+          formatCozumleme(yuzbinler, onbinler, (binler + 1) % 10, yuzler, onlar, birler),
+          formatCozumleme(yuzbinler, onbinler, binler, (yuzler + 2) % 10, onlar, birler),
+          formatCozumleme(yuzbinler, onbinler, binler, yuzler, (onlar + 3) % 10, birler),
+          formatCozumleme(yuzbinler, onbinler, binler, yuzler, onlar, (birler + 2) % 10),
+          formatCozumleme(yuzbinler, (onbinler + 2) % 10, binler, (yuzler + 1) % 10, onlar, birler),
+          formatCozumleme(yuzbinler, onbinler, (binler + 2) % 10, yuzler, (onlar + 1) % 10, birler)
+        ];
+
+        for (const aday of adaylar) {
+          if (aday !== dogruCozumleme && !yanlislar.includes(aday)) {
+            yanlislar.push(aday);
+            if (yanlislar.length === 3) break;
+          }
+        }
+
+        let delta = 1;
+        while (yanlislar.length < 3) {
+          const fallback = formatCozumleme(
+            is6Digit ? (yuzbinler + delta) % 9 + 1 : 0,
+            (onbinler + delta) % 10,
+            (binler + delta) % 10,
+            (yuzler + delta) % 10,
+            (onlar + delta) % 10,
+            (birler + delta) % 10
+          );
+          if (fallback !== dogruCozumleme && !yanlislar.includes(fallback)) {
+            yanlislar.push(fallback);
+          }
+          delta++;
+        }
 
         return {
           question: `${formatliSayi} sayısının basamaklarına göre çözümlenmiş hali hangisidir?`,
@@ -257,7 +319,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
             </div>
           `,
           correct: dogruCozumleme,
-          wrong: [yanlis1, yanlis2, yanlis3],
+          wrong: yanlislar,
           isLong: true
         };
       }
@@ -1148,7 +1210,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
               <div class="flex items-center justify-center gap-3">
                 <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
                 </div>
                 <span class="px-5 py-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-md">
                   ${secilen.ad}
@@ -1175,7 +1237,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
               <div class="flex items-center justify-center gap-3">
                 <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
                 </div>
                 <div class="px-5 py-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-base sm:text-xl border-2 border-white shadow-md max-w-lg">
                   "${secilen.ekstra}"

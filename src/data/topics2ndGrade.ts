@@ -25,12 +25,12 @@ function getRastgeleOgrenci(): string {
 }
 
 const CISIM_SVG: Record<string, string> = {
-  kup: '<img src="/geos/kups.png" alt="Küp" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  kure: '<img src="/geos/kures.png" alt="Küre" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />'
+  kup: '<img src="/geos/kups.png" alt="Küp" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kure: '<img src="/geos/kures.png" alt="Küre" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />'
 };
 
 const CISIM_OZELLIK: Record<string, { ad: string; yüz: number; ayrıt: number; köşe: number }> = {
@@ -1199,7 +1199,7 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const dogruAd = CISIM_OZELLIK[secilenKey].ad;
         const tumAdlar = Object.values(CISIM_OZELLIK).map(o => o.ad);
         const wrong = rastgeleSec(tumAdlar.filter(a => a !== dogruAd), 3);
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full gap-2.5 sm:gap-3.5 my-auto max-h-full py-1"><div class="p-2 sm:p-3 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div><div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">Bu geometrik cismin adı nedir?</div></div>`;
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2 my-auto max-h-full py-0.5"><div class="p-1.5 sm:p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div><div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] w-full px-1">Bu geometrik cismin adı nedir?</div></div>`;
         return {
           question: "Bu geometrik cismin adı nedir?",
           questionHTML: soruHTML,
@@ -1220,7 +1220,7 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const cevap = ozellik[sorulan];
         const ek = OZELLIK_EK[sorulan];
         const tamlayan = getCisimTamlayan(ozellik.ad);
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full gap-2.5 sm:gap-3.5 my-auto max-h-full py-1"><div class="p-2 sm:p-3 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div><div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2"><b>${tamlayan}</b> kaç <b>${ek.buyuk}</b> vardır?</div></div>`;
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2 my-auto max-h-full py-0.5"><div class="p-1.5 sm:p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div><div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] w-full px-1"><b>${tamlayan}</b> kaç <b>${ek.buyuk}</b> vardır?</div></div>`;
         return {
           question: `${tamlayan} kaç ${ek.kucuk} vardır?`,
           questionHTML: soruHTML,
@@ -2395,11 +2395,25 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           }
           let step = 1;
           while (wr.length < 3) {
-            const cand = correctVal + step;
-            if (cand > 0 && cand <= 100 && cand !== correctVal && !wr.includes(cand)) {
-              wr.push(cand);
+            const cand1 = correctVal - step;
+            const cand2 = correctVal + step;
+            if (cand1 > 0 && cand1 <= 100 && cand1 !== correctVal && !wr.includes(cand1)) {
+              wr.push(cand1);
+            } else if (cand2 > 0 && cand2 <= 100 && cand2 !== correctVal && !wr.includes(cand2)) {
+              wr.push(cand2);
+            } else if (cand2 > 100 && cand1 <= 0) {
+              const fallback = wr.length + 10;
+              if (!wr.includes(fallback) && fallback !== correctVal) wr.push(fallback);
             }
             step++;
+            if (step > 150) {
+              while (wr.length < 3) {
+                const dummy = wr.length + 5;
+                if (!wr.includes(dummy) && dummy !== correctVal) wr.push(dummy);
+                else wr.push(dummy + 1);
+              }
+              break;
+            }
           }
           return wr;
         };

@@ -312,6 +312,17 @@ export const Geometry3DLab: React.FC<{ onClose: () => void }> = ({ onClose }) =>
           </button>
         </div>
 
+        {/* COMPACT CATEGORY HEADER BADGE (MATCHING OTHER GRADES) */}
+        <div className="flex flex-col items-center justify-center mb-2 max-w-4xl w-full mx-auto shrink-0 py-0.5">
+          <div className="z-10 flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 px-4 sm:px-7 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-2.5 border-white shadow-[0_3px_10px_rgba(0,0,0,0.5)] font-black text-xs sm:text-sm md:text-base uppercase tracking-wider max-w-full shrink-0">
+            <div className="relative shrink-0 flex items-center justify-center">
+              <img src="/MENUIKON/grid_icon_10.png" alt="3D Geometri Labı" className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]" />
+            </div>
+            <span className="drop-shadow-xs break-words">6. 3D Geometri Keşif Labı</span>
+            <img src="/icon_2.png" alt="2. Sınıf" className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" />
+          </div>
+        </div>
+
         {/* SHAPE SELECTOR DROPDOWN BANNER */}
         <div className="mb-2.5 sm:mb-3 bg-gradient-to-r from-amber-500/25 via-orange-500/20 to-amber-500/25 border-2 border-amber-400/70 rounded-2xl p-2 sm:p-2.5 flex flex-wrap items-center justify-between gap-2 shrink-0 shadow-md">
           <div className="flex items-center gap-1.5 sm:gap-2">

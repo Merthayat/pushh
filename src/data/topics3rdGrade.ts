@@ -1650,9 +1650,18 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         `${payda}/${pay}`,
         `${Math.min(payda, pay + 1)}/${payda}`,
         `${Math.max(1, pay - 1)}/${payda}`,
-        `1/${payda}`
+        `1/${payda}`,
+        `${pay}/${payda + 1}`,
+        `${pay}/${Math.max(2, payda - 1)}`,
+        `${Math.min(payda, pay + 2)}/${payda}`
       ];
-      const yanlis = adaylar.filter(a => a !== dogru).slice(0, 3);
+      const yanlis: string[] = [];
+      for (const a of adaylar) {
+        if (a !== dogru && !yanlis.includes(a)) {
+          yanlis.push(a);
+          if (yanlis.length === 3) break;
+        }
+      }
 
       return {
         question: `Modelde boyalı olarak gösterilen kesir hangisidir?`,
@@ -2312,7 +2321,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
               <div class="flex items-center justify-center gap-3">
                 <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
                 </div>
                 <span class="px-4 py-2 rounded-2xl bg-amber-400 text-slate-950 font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>
@@ -2335,7 +2344,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
               <div class="flex items-center justify-center gap-3">
                 <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
                 </div>
                 <span class="px-4 py-2 rounded-2xl bg-indigo-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>
@@ -2358,7 +2367,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
               <div class="flex items-center justify-center gap-3">
                 <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img w-36 h-36 xs:w-44 xs:h-44 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
+                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
                 </div>
                 <span class="px-4 py-2 rounded-2xl bg-emerald-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
               </div>

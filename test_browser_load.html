@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <img id="img2" src="par2.png" />
+  <img id="img3" src="par3.png" />
+  <script>
+    document.getElementById('img2').onload = () => console.log('par2 loaded', img2.naturalWidth, img2.naturalHeight);
+    document.getElementById('img2').onerror = () => console.log('par2 error');
+    document.getElementById('img3').onload = () => console.log('par3 loaded', img3.naturalWidth, img3.naturalHeight);
+    document.getElementById('img3').onerror = () => console.log('par3 error');
+  </script>
+</body>
+</html>

@@ -70,64 +70,89 @@
 .question-visual-box {
   width: 100%;
   max-width: 100%;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
 }
 
+/* 1-Player generous natural dimensions (AutoFitQuestionBox scales down smoothly if needed) */
 .question-visual-box img,
 .question-visual-box svg {
-  max-height: clamp(80px, 22vh, 180px) !important;
-  max-width: 95% !important;
+  max-height: clamp(80px, 26vh, 185px) !important;
+  max-width: min(92%, 290px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  display: inline-block !important;
+  display: block !important;
   flex-shrink: 1 !important;
 }
 
 .question-visual-box .geo-cisim-img {
-  max-height: clamp(140px, 38vh, 320px) !important;
-  min-height: 120px;
-  max-width: 95% !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-}
-
-.question-visual-box.multi-player-2 img,
-.question-visual-box.multi-player-2 svg {
-  max-height: clamp(65px, 16vh, 130px) !important;
-  max-width: 90% !important;
+  max-height: clamp(85px, 28vh, 195px) !important;
+  max-width: min(92%, 290px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  display: inline-block !important;
+  display: block !important;
+  flex-shrink: 1 !important;
+}
+
+/* 2-PLAYER OPTIMIZED SIZING */
+.question-visual-box.multi-player-2 img,
+.question-visual-box.multi-player-2 svg {
+  max-height: clamp(75px, 22vh, 160px) !important;
+  max-width: min(90%, 230px) !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
   flex-shrink: 1 !important;
 }
 
 .question-visual-box.multi-player-2 .geo-cisim-img {
-  max-height: clamp(75px, 18vh, 150px) !important;
-}
-
-/* 3-PLAYER DEDICATED HIGH-COMPACT VISUAL SIZING TO PREVENT ANY OVERFLOW */
-.question-visual-box.multi-player-3 img,
-.question-visual-box.multi-player-3 svg {
-  max-height: clamp(48px, 12vh, 95px) !important;
-  max-width: 85% !important;
+  max-height: clamp(80px, 24vh, 170px) !important;
+  max-width: min(90%, 230px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
   margin-left: auto !important;
   margin-right: auto !important;
-  display: inline-block !important;
+  display: block !important;
+  flex-shrink: 1 !important;
+}
+
+/* 3-PLAYER PROPORTIONAL COMPACT SIZING */
+.question-visual-box.multi-player-3 img,
+.question-visual-box.multi-player-3 svg {
+  max-height: clamp(65px, 18vh, 125px) !important;
+  max-width: min(88%, 160px) !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
   flex-shrink: 1 !important;
 }
 
 .question-visual-box.multi-player-3 .geo-cisim-img {
-  max-height: clamp(55px, 14vh, 110px) !important;
+  max-height: clamp(70px, 20vh, 135px) !important;
+  max-width: min(88%, 160px) !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  flex-shrink: 1 !important;
 }
 
 .question-visual-box table {
@@ -138,18 +163,36 @@
 }
 
 .question-visual-box.multi-player-3 table {
-  font-size: 0.72rem !important;
+  font-size: 0.78rem !important;
   max-width: 95% !important;
+}
+
+/* MULTI-PLAYER QUESTION TEXT & LAYOUT OPTIMIZATION */
+.question-visual-box.multi-player-2,
+.question-visual-box.multi-player-3 {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.question-visual-box.multi-player-2 .max-w-lg,
+.question-visual-box.multi-player-3 .max-w-lg {
+  max-width: 100% !important;
+}
+
+/* Ensure questions with single-sentence text don't wrap single words onto new lines when space exists */
+.question-visual-box.multi-player-2 p,
+.question-visual-box.multi-player-2 div {
+  text-wrap: pretty;
 }
 
 .question-visual-box.multi-player-3 table td,
 .question-visual-box.multi-player-3 table th {
-  padding: 1px 3px !important;
-  font-size: 0.72rem !important;
+  padding: 1px 4px !important;
+  font-size: 0.78rem !important;
 }
 
 .question-visual-box.multi-player-3 .scale-wrapper {
-  transform: scale(0.85);
+  transform: scale(0.9);
   transform-origin: center center;
 }
 

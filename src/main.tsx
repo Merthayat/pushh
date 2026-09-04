@@ -3,6 +3,34 @@ import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
 
+// Critical UI assets preloader to warm the browser image cache immediately
+const CRITICAL_BUTTON_IMAGES = [
+  '/ana.png',
+  '/geri.png',
+  '/ileri.png',
+  '/ses.png',
+  '/ist.png',
+  '/1oy.png',
+  '/2oy.png',
+  '/3oy.png',
+  '/icon_1.png',
+  '/icon_2.png',
+  '/icon_3.png',
+  '/icon_4.png',
+  '/icon_5.png',
+  '/icon_6.png',
+  '/kap.png',
+  '/ejd.png',
+  '/balta.png',
+];
+
+if (typeof window !== 'undefined') {
+  CRITICAL_BUTTON_IMAGES.forEach((src) => {
+    const img = new Image();
+    img.src = src;
+  });
+}
+
 interface ErrorBoundaryProps {
   children: ReactNode;
 }

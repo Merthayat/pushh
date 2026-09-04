@@ -31,7 +31,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Geometrik Şekil ve Cisimler',
     subtitle: 'Küp, Küre, Silindir & Prizmalar',
     desc: 'Çevrendeki nesnelerin geometrik cisim ve şekillerini tanı!',
-    icon: '/iconn/s21.png',
+    icon: '/MENUIKON/grid_icon_10.png',
     coords: { x: 28, y: 88 } // Bottom left start
   },
   {
@@ -41,7 +41,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Yüz, Ayrıt ve Köşe',
     subtitle: 'Cisimlerin Özellikleri',
     desc: 'Geometrik cisimlerin kaç yüzü, ayrıtı ve köşesi olduğunu keşfet!',
-    icon: '/iconn/s20.png',
+    icon: '/MENUIKON/grid_icon_14.png',
     coords: { x: 38, y: 74 } // Mid-left upward
   },
   {
@@ -51,7 +51,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Geometrik Örüntüler',
     subtitle: 'Kuralı Bul ve Tamamla',
     desc: 'Şekil ve cisim örüntülerindeki gizli kuralı çöz!',
-    icon: '/iconn/s18.png',
+    icon: '/MENUIKON/grid_icon_18.png',
     coords: { x: 62, y: 62 } // Crossing towards right near cottage
   },
   {
@@ -61,7 +61,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Uzamsal İlişkiler & Simetri',
     subtitle: 'Ayna Görüntüsü & Konum',
     desc: 'Sağ-sol, ön-arka ve simetri ekseniyle görsel zekanı geliştir!',
-    icon: '/iconn/s14.png',
+    icon: '/MENUIKON/grid_icon_20.png',
     coords: { x: 82, y: 48 } // Right side path
   },
   {
@@ -71,7 +71,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Sıvı Ölçme',
     subtitle: 'Bardak, Sürahi ve Kova',
     desc: 'Sıvı miktarlarını standart olmayan birimlerle karşılaştır ve tahmin et!',
-    icon: '/iconn/s22.png',
+    icon: '/MENUIKON/grid_icon_22.png',
     coords: { x: 74, y: 32 } // Upper right winding left
   },
   {
@@ -81,7 +81,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: 'Tartma ve Kütle Ölçme',
     subtitle: 'Ağır, Hafif & Eşit Kollu Terazi',
     desc: 'Nesnelerin kütlelerini terazi ve standart ölçülerle tart!',
-    icon: '/iconn/s23.png',
+    icon: '/MENUIKON/grid_icon_23.png',
     coords: { x: 38, y: 20 } // Upper left
   },
   {
@@ -91,7 +91,7 @@ export const GEOMETRI_LEVELS: AdventureLevelItem[] = [
     title: '3D Geometri Zirvesi',
     subtitle: '360° Dokunma & İnceleme Labı',
     desc: 'Tüm cisimleri 3 boyutlu döndürerek şampiyonluğunu taçlandır!',
-    icon: '/iconn/s10.png',
+    icon: '/MENUIKON/grid_icon_14.png',
     isSpecialLab: true,
     coords: { x: 58, y: 7 } // Peak top
   }

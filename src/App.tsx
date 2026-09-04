@@ -12,10 +12,13 @@ import { Geometry3DLab } from './components/Geometry3DLab';
 import { GeoboardActivity } from './components/GeoboardActivity';
 import { XOXGame } from './components/XOXGame';
 import { OtherGamesHub } from './components/OtherGamesHub';
+import { EnglishGamesHub } from './components/EnglishGamesHub';
 import { WordGameModal } from './components/WordGameModal';
 import { GlossyRoundButton, GlossyPillButton, GlossyCompleteCard, GlossyArrowIcon, GlossyScreenRotateIcon, GoldCoinDisplayCard } from './components/GameUIButtons';
 import { ModernStatsView, Cute3DStarMascotSVG } from './components/ModernStatsView';
 import { ChromaKeyVideo } from './components/ChromaKeyVideo';
+import { AutoFitQuestionBox } from './components/AutoFitQuestionBox';
+import { BasketballRaceTrack } from './components/BasketballRaceTrack';
 import { topics1stGrade } from './data/topics1stGrade';
 import { topics2ndGrade } from './data/topics2ndGrade';
 import { topics3rdGrade } from './data/topics3rdGrade';
@@ -23,10 +26,11 @@ import { topics4thGrade } from './data/topics4thGrade';
 import { ZIT_ANLAM_DATA, ES_ANLAM_DATA, INGILIZCE_DATA } from './data/wordPairsData';
 
 // --- TOPICS FOR OTHER WORD GAMES (STANDARDIZED WITH ALL OTHER ACTIVITIES) ---
-const topicsWordGames: Record<string, { title: string; desc: string; generate: () => QuestionData }> = {
+const topicsWordGames: Record<string, { title: string; desc: string; icon?: string; generate: () => QuestionData }> = {
   other_zit_anlam: {
     title: "Zıt Anlamlı Kelimeler",
     desc: "Verilen kelimenin zıt (karşıt) anlamlısını bulma.",
+    icon: "/MENUIKON/grid_icon_27.png",
     generate: () => {
       const secilen = ZIT_ANLAM_DATA[Math.floor(Math.random() * ZIT_ANLAM_DATA.length)];
       const yanlislar = ZIT_ANLAM_DATA
@@ -57,6 +61,7 @@ const topicsWordGames: Record<string, { title: string; desc: string; generate: (
   other_es_anlam: {
     title: "Eş Anlamlı Kelimeler",
     desc: "Verilen kelimenin eş (anlamdaş) anlamlısını bulma.",
+    icon: "/MENUIKON/grid_icon_21.png",
     generate: () => {
       const secilen = ES_ANLAM_DATA[Math.floor(Math.random() * ES_ANLAM_DATA.length)];
       const yanlislar = ES_ANLAM_DATA
@@ -87,6 +92,7 @@ const topicsWordGames: Record<string, { title: string; desc: string; generate: (
   other_ingilizce: {
     title: "İngilizce Kelime Oyunu",
     desc: "İngilizce kelimelerin Türkçe karşılıklarını bulma.",
+    icon: "/MENUIKON/grid_icon_14.png",
     generate: () => {
       const secilen = INGILIZCE_DATA[Math.floor(Math.random() * INGILIZCE_DATA.length)];
       const yanlislar = INGILIZCE_DATA
@@ -210,12 +216,12 @@ function getDynamicOptionFontClass(
 }
 
 const CISIM_SVG: Record<string, string> = {
-  kup: '<img src="/geos/kups.png" alt="Küp" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  kure: '<img src="/geos/kures.png" alt="Küre" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
-  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="geo-cisim-img w-40 h-40 xs:w-52 xs:h-52 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />'
+  kup: '<img src="/geos/kups.png" alt="Küp" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kure: '<img src="/geos/kures.png" alt="Küre" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  silindir: '<img src="/geos/slndrs.png" alt="Silindir" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  dikdortgen_prizma: '<img src="/geos/dikdprz.png" alt="Dikdörtgenler Prizması" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  kare_prizma: '<img src="/geos/kareprz.png" alt="Kare Prizma" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />',
+  ucgen_prizma: '<img src="/geos/ucgenprz.png" alt="Üçgen Prizma" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] mx-auto inline-block hover:scale-105 transition-transform" />'
 };
 
 const CISIM_OZELLIK: Record<string, { ad: string; yüz: number; ayrıt: number; köşe: number }> = {
@@ -1446,14 +1452,14 @@ const CATEGORY_MAP = [
     id: 'geometri',
     name: "1. Nesnelerin Geometrisi",
     shortName: "Geometri",
-    icon: "/iconn/s21.png",
+    icon: "/MENUIKON/grid_icon_39.png",
     keys: ["uzamsal_iliskiler", "es_nesneler", "geometrik_sekil_cisim", "geometri_tahtasi", "yuz_ayrit_kose", "geometrik_oruntu", "uzamsal_iliskiler_simetri", "sivi_olcme", "tartma_olcme"]
   },
   {
     id: 'sayilar',
     name: "2. Sayılar ve Nicelikler",
     shortName: "Sayılar",
-    icon: "/iconn/s19.png",
+    icon: "/MENUIKON/grid_icon_09.png",
     keys: [
       "nesne_sayisi", "sira_sayilari", "cok_az_esit", "sayi_basamak_degeri", "deste_duzine", "kesirler",
       "ritmik_ileri_1", "ritmik_ileri_2", "ritmik_ileri_3", "ritmik_ileri_4", "ritmik_ileri_5", "ritmik_ileri_10",
@@ -1466,7 +1472,7 @@ const CATEGORY_MAP = [
     id: 'islemler',
     name: "3. İşlemlerden Cebirsel Düşünmeye",
     shortName: "İşlemler ve Cebir",
-    icon: "/iconn/s6.png",
+    icon: "/MENUIKON/grid_icon_22.png",
     keys: [
       "tek_islem_toplama_problemleri", "iki_islem_toplama_problemleri",
       "toplama_eldesiz_50", "toplama_eldeli_50", "verilmeyen_toplanani_bul",
@@ -1480,14 +1486,14 @@ const CATEGORY_MAP = [
     id: 'olcme',
     name: "4. Veri İşleme & Ölçme",
     shortName: "Veri ve Ölçme",
-    icon: "/iconn/s15.png",
+    icon: "/MENUIKON/grid_icon_14.png",
     keys: ["veri_grafik", "takvim_olcme"]
   },
   {
     id: 'diger_oyunlar',
     name: "5. Diğer Oyunlar",
     shortName: "Diğer Oyunlar",
-    icon: "/iconn/s1.png",
+    icon: "/MENUIKON/grid_icon_17.png",
     keys: [
       "sureli_toplama_cikarma",
       "sureli_carpma_bolme",
@@ -1504,7 +1510,7 @@ const CATEGORY_MAP = [
     id: 'g3_tema1',
     name: "1. Sayılar ve Nicelikler (1)",
     shortName: "Sayılar (1)",
-    icon: "/iconn/s19.png",
+    icon: "/MENUIKON/grid_icon_21.png",
     keys: [
       "g3_uc_basamakli_okuma_yazma",
       "g3_sayi_cozumleme",
@@ -1528,7 +1534,7 @@ const CATEGORY_MAP = [
     id: 'g3_tema2',
     name: "2. Sayılar ve Nicelikler (2)",
     shortName: "Sayılar (2)",
-    icon: "/iconn/s15.png",
+    icon: "/MENUIKON/grid_icon_11.png",
     keys: [
       "g3_birim_kesirler",
       "g3_pay_payda_modelleme",
@@ -1542,7 +1548,7 @@ const CATEGORY_MAP = [
     id: 'g3_tema3',
     name: "3. İşlemlerden Cebirsel Düşünmeye",
     shortName: "İşlemler ve Cebir",
-    icon: "/iconn/s6.png",
+    icon: "/MENUIKON/grid_icon_04.png",
     keys: [
       "g3_zihinden_toplama_cikarma_tahmin",
       "g3_toplama_cikarma_problemleri",
@@ -1554,7 +1560,7 @@ const CATEGORY_MAP = [
     id: 'g3_tema4',
     name: "4. Nesnelerin Geometrisi ve Ölçme",
     shortName: "Geometri ve Ölçme",
-    icon: "/iconn/s21.png",
+    icon: "/MENUIKON/grid_icon_39.png",
     keys: [
       "g3_geometrik_cisimler_ozellikleri",
       "g3_temel_geometri_kavramlari",
@@ -1567,7 +1573,7 @@ const CATEGORY_MAP = [
     id: 'g4_tema1',
     name: "1. Sayılar ve Nicelikler (1)",
     shortName: "Sayılar (1)",
-    icon: "/iconn/s19.png",
+    icon: "/MENUIKON/grid_icon_21.png",
     keys: [
       "g4_sayi_okuma_yazma",
       "g4_basamak_ve_cozumleme",
@@ -1581,7 +1587,7 @@ const CATEGORY_MAP = [
     id: 'g4_tema2',
     name: "2. Sayılar ve Nicelikler (2)",
     shortName: "Sayılar (2)",
-    icon: "/iconn/s15.png",
+    icon: "/MENUIKON/grid_icon_11.png",
     keys: [
       "g4_kesir_cesitleri_modelleme",
       "g4_birim_kesirler_karsilastirma",
@@ -1594,7 +1600,7 @@ const CATEGORY_MAP = [
     id: 'g4_tema3',
     name: "3. İşlemlerden Cebirsel Düşünmeye",
     shortName: "İşlemler ve Cebir",
-    icon: "/iconn/s6.png",
+    icon: "/MENUIKON/grid_icon_04.png",
     keys: [
       "g4_dort_islem_toplama_cikarma",
       "g4_carpma_islemi_3basamakli",
@@ -1607,7 +1613,7 @@ const CATEGORY_MAP = [
     id: 'g4_tema4',
     name: "4. Geometri, Veri ve Olasılık",
     shortName: "Geometri ve Veri",
-    icon: "/iconn/s21.png",
+    icon: "/MENUIKON/grid_icon_39.png",
     keys: [
       "g4_geometrik_cisimler",
       "g4_cevre_uzunlugu",
@@ -1702,160 +1708,179 @@ const getGradeIconForTopic = (topicKey: string, currentGrade: number | null): st
   return '/icon_2.png';
 };
 
-const TOPIC_3D_ICONS: Record<string, string> = {
-  // 1. Nesnelerin Geometrisi
-  uzamsal_iliskiler: '/iconn/s3.png',
-  es_nesneler: '/iconn/s2.png',
-  geometrik_sekil_cisim: '/iconn/s10.png',
-  geometri_tahtasi: '/iconn/s21.png',
-  yuz_ayrit_kose: '/iconn/s1.png',
-  geometrik_oruntu: '/iconn/s2.png',
-  uzamsal_iliskiler_simetri: '/iconn/s3.png',
-  sivi_olcme: '/iconn/s4.png',
-  tartma_olcme: '/iconn/s5.png',
+export const TOPIC_3D_ICONS: Record<string, string> = {
+  // 1. NESNELERİN GEOMETRİSİ (1. ve 2. Sınıf)
+  uzamsal_iliskiler: '/MENUIKON/grid_icon_29.png',
+  es_nesneler: '/MENUIKON/grid_icon_27.png',
+  geometrik_sekil_cisim: '/MENUIKON/grid_icon_39.png',
+  geometri_tahtasi: '/MENUIKON/grid_icon_10.png',
+  yuz_ayrit_kose: '/MENUIKON/grid_icon_16.png',
+  geometrik_oruntu: '/MENUIKON/grid_icon_19.png',
+  uzamsal_iliskiler_simetri: '/MENUIKON/grid_icon_07.png',
+  sivi_olcme: '/MENUIKON/grid_icon_37.png',
+  tartma_olcme: '/MENUIKON/grid_icon_40.png',
 
-  // 2. Sayılar ve Nicelikler
-  nesne_sayisi: '/iconn/s6.png',
-  en_yakin_onluk: '/iconn/s6.png',
-  sira_sayilari: '/iconn/s15.png',
-  cok_az_esit: '/iconn/s11.png',
-  sayi_basamak_degeri: '/iconn/s7.png',
-  deste_duzine: '/iconn/s8.png',
-  kesirler: '/iconn/s9.png',
-  sayi_karsilastirma: '/iconn/s11.png',
-  paralarimiz: '/iconn/s12.png',
-  zaman_olcme: '/iconn/s13.png',
-  uzunluk_olcme: '/iconn/s14.png',
-  tartma: '/iconn/s5.png',
-  takvim_olcme: '/iconn/s16.png',
-  sayi_sekil_oruntusu: '/iconn/s16.png',
+  // 2. SAYILAR VE NİCELİKLER (1. ve 2. Sınıf)
+  nesne_sayisi: '/MENUIKON/grid_icon_18.png',
+  sira_sayilari: '/MENUIKON/grid_icon_24.png',
+  cok_az_esit: '/MENUIKON/grid_icon_20.png',
+  sayi_basamak_degeri: '/MENUIKON/grid_icon_21.png',
+  deste_duzine: '/MENUIKON/grid_icon_27.png',
+  kesirler: '/MENUIKON/grid_icon_11.png',
+  sayi_karsilastirma: '/MENUIKON/grid_icon_07.png',
+  paralarimiz: '/MENUIKON/grid_icon_13.png',
+  zaman_olcme: '/MENUIKON/grid_icon_12.png',
+  uzunluk_olcme: '/MENUIKON/grid_icon_34.png',
+  tartma: '/MENUIKON/grid_icon_40.png',
+  takvim_olcme: '/MENUIKON/grid_icon_32.png',
+  sayi_sekil_oruntusu: '/MENUIKON/grid_icon_19.png',
+  en_yakin_onluk: '/MENUIKON/grid_icon_09.png',
 
-  // Ritmik Saymalar
-  ritmik_ileri_1: '/iconn/s17.png',
-  ritmik_ileri_2: '/iconn/s18.png',
-  ritmik_ileri_3: '/iconn/s18.png',
-  ritmik_ileri_4: '/iconn/s19.png',
-  ritmik_ileri_5: '/iconn/s20.png',
-  ritmik_ileri_10: '/iconn/s21.png',
-  ritmik_geri_1: '/iconn/s22.png',
-  ritmik_geri_2: '/iconn/s23.png',
-  ritmik_geri_10: '/iconn/s24.png',
+  // Ritmik Saymalar (1. ve 2. Sınıf)
+  ritmik_ileri_1: '/MENUIKON/grid_icon_09.png',
+  ritmik_ileri_2: '/MENUIKON/grid_icon_23.png',
+  ritmik_ileri_3: '/MENUIKON/grid_icon_03.png',
+  ritmik_ileri_4: '/MENUIKON/grid_icon_14.png',
+  ritmik_ileri_5: '/MENUIKON/grid_icon_05.png',
+  ritmik_ileri_10: '/MENUIKON/grid_icon_25.png',
+  ritmik_geri_1: '/MENUIKON/grid_icon_28.png',
+  ritmik_geri_2: '/MENUIKON/grid_icon_17.png',
+  ritmik_geri_10: '/MENUIKON/grid_icon_20.png',
 
-  // Saati Okuma
-  saat_tam: '/iconn/s24.png',
-  saat_yarim: '/iconn/s25.png',
-  saat_ceyrek_gece: '/iconn/s26.png',
-  saat_ceyrek_kala: '/iconn/s27.png',
+  // Saati Okuma (2. Sınıf)
+  saat_tam: '/MENUIKON/grid_icon_07.png',
+  saat_yarim: '/MENUIKON/grid_icon_32.png',
+  saat_ceyrek_gece: '/MENUIKON/grid_icon_17.png',
+  saat_ceyrek_kala: '/MENUIKON/grid_icon_35.png',
 
-  // 3. İşlemler ve Cebir - Toplama
-  toplama_20_ici: '/iconn/s28.png',
-  toplama_onluk: '/iconn/s29.png',
-  verilmeyen_toplanan: '/iconn/s30.png',
-  toplama_eldesiz_50: '/iconn/s28.png',
-  toplama_eldeli_50: '/iconn/s29.png',
-  verilmeyen_toplanani_bul: '/iconn/s28.png',
-  zihinden_toplama: '/iconn/s30.png',
-  tek_islem_toplama_problemleri: '/iconn/s31.png',
-  iki_islem_toplama_problemleri: '/iconn/s32.png',
+  // 3. İŞLEMLER VE CEBİR - TOPLAMA (1. ve 2. Sınıf)
+  toplama_20_ici: '/MENUIKON/grid_icon_08.png',
+  toplama_onluk: '/MENUIKON/grid_icon_24.png',
+  verilmeyen_toplanan: '/MENUIKON/grid_icon_26.png',
+  toplama_eldesiz_50: '/MENUIKON/grid_icon_08.png',
+  toplama_eldeli_50: '/MENUIKON/grid_icon_24.png',
+  verilmeyen_toplanani_bul: '/MENUIKON/grid_icon_26.png',
+  zihinden_toplama: '/MENUIKON/grid_icon_05.png',
+  tek_islem_toplama_problemleri: '/MENUIKON/grid_icon_14.png',
+  iki_islem_toplama_problemleri: '/MENUIKON/grid_icon_33.png',
 
-  // Çıkarma
-  cikarma_20_ici: '/iconn/s34.png',
-  cikarma_onluk: '/iconn/s35.png',
-  cikarma_onluksuz_50: '/iconn/s33.png',
-  cikarma_onluklu_50: '/iconn/s34.png',
-  zihinden_cikarma: '/iconn/s35.png',
-  tek_islem_cikarma_problemleri: '/iconn/s36.png',
-  iki_islem_cikarma_problemleri: '/iconn/s37.png',
+  // ÇIKARMA (1. ve 2. Sınıf) - HER BUTON FARKLI!
+  cikarma_20_ici: '/MENUIKON/grid_icon_30.png',
+  cikarma_onluk: '/MENUIKON/grid_icon_06.png',
+  cikarma_onluksuz_50: '/MENUIKON/grid_icon_31.png',
+  cikarma_onluklu_50: '/MENUIKON/grid_icon_06.png',
+  zihinden_cikarma: '/MENUIKON/grid_icon_35.png',
+  tek_islem_cikarma_problemleri: '/MENUIKON/grid_icon_16.png',
+  iki_islem_cikarma_problemleri: '/MENUIKON/grid_icon_36.png',
 
-  // Karma / Çarpma / Bölme
-  toplama_cikarma_problemleri: '/iconn/s38.png',
-  ardisik_toplama: '/iconn/s39.png',
-  ritmik_carpim: '/iconn/s6.png',
-  esit_paylastirma: '/iconn/s8.png',
-  ardisik_cikarma: '/iconn/s12.png',
-  kalansiz_bolme: '/iconn/s14.png',
+  // KARMA / ÇARPMA / BÖLME (2. Sınıf)
+  toplama_cikarma_problemleri: '/MENUIKON/grid_icon_04.png',
+  ardisik_toplama: '/MENUIKON/grid_icon_28.png',
+  ritmik_carpim: '/MENUIKON/grid_icon_15.png',
+  esit_paylastirma: '/MENUIKON/grid_icon_24.png',
+  ardisik_cikarma: '/MENUIKON/grid_icon_30.png',
+  kalansiz_bolme: '/MENUIKON/grid_icon_03.png',
 
-  // 4. Veri İşleme
-  veri_grafik: '/iconn/s21.png',
+  // 4. VERİ İŞLEME & ÖLÇME
+  veri_grafik: '/MENUIKON/grid_icon_14.png',
 
-  // 5. Diğer Oyunlar
-  sureli_toplama_cikarma: '/iconn/s28.png',
-  sureli_on_tamamlama: '/iconn/s20.png',
-  sureli_carpma_bolme: '/iconn/s6.png',
-  balon_patlatma_mat: '/iconn/s1.png',
-  matematik_hafiza: '/iconn/s16.png',
-  hizli_islem_carki: '/iconn/s27.png',
-  sayi_dedektifi: '/iconn/s20.png',
-  ritim_labirent: '/iconn/s22.png',
-  geometri_eslestirme: '/iconn/s2.png',
+  // 5. DİĞER OYUNLAR (TÜM SINIFLAR)
+  xox: '/MENUIKON/grid_icon_32.png',
+  other_xox: '/MENUIKON/grid_icon_32.png',
+  zit_anlam: '/MENUIKON/grid_icon_27.png',
+  other_zit_anlam: '/MENUIKON/grid_icon_27.png',
+  es_anlam: '/MENUIKON/grid_icon_21.png',
+  other_es_anlam: '/MENUIKON/grid_icon_21.png',
+  ingilizce: '/MENUIKON/grid_icon_14.png',
+  other_ingilizce: '/MENUIKON/grid_icon_14.png',
+  lab3d: '/MENUIKON/grid_icon_38.png',
+  geoboard: '/MENUIKON/grid_icon_29.png',
+  sureli_toplama_cikarma: '/MENUIKON/grid_icon_22.png',
+  sureli_on_tamamlama: '/MENUIKON/grid_icon_09.png',
+  sureli_carpma_bolme: '/MENUIKON/grid_icon_04.png',
+  balon_patlatma_mat: '/MENUIKON/grid_icon_35.png',
+  matematik_hafiza: '/MENUIKON/grid_icon_06.png',
+  hizli_islem_carki: '/MENUIKON/grid_icon_10.png',
+  sayi_dedektifi: '/MENUIKON/grid_icon_36.png',
+  ritim_labirent: '/MENUIKON/grid_icon_17.png',
+  geometri_eslestirme: '/MENUIKON/grid_icon_39.png',
 
-  // 3. Sınıf Tema 1 (Sayılar ve Nicelikler 1)
-  g3_uc_basamakli_okuma_yazma: '/iconn/s6.png',
-  g3_sayi_cozumleme: '/iconn/s7.png',
-  g3_sayi_siralama_karsilastirma: '/iconn/s11.png',
-  g3_en_yakin_onluga_yuvarlama: '/iconn/s26.png',
-  g3_en_yakin_yuzluge_yuvarlama: '/iconn/s27.png',
-  g3_ritmik_6_7: '/iconn/s17.png',
-  g3_ritmik_8_9: '/iconn/s18.png',
-  g3_ritmik_10: '/iconn/s19.png',
-  g3_ritmik_100: '/iconn/s22.png',
-  g3_ritmik_saymalar: '/iconn/s17.png',
-  g3_tek_cift_nesne_toplami: '/iconn/s8.png',
-  g3_tek_cift_20ye_kadar_islemler: '/iconn/s28.png',
-  g3_tek_cift_sayilar: '/iconn/s8.png',
-  g3_tek_cift_islemler: '/iconn/s33.png',
-  g3_sayi_sekil_oruntuleri: '/iconn/s2.png',
-  g3_nesne_tahmin_karsilastirma: '/iconn/s20.png',
+  // 3. SINIF TEMA 1 (Sayılar ve Nicelikler 1) - HER BUTON FARKLI!
+  g3_uc_basamakli_okuma_yazma: '/MENUIKON/grid_icon_21.png',
+  g3_sayi_cozumleme: '/MENUIKON/grid_icon_33.png',
+  g3_sayi_siralama_karsilastirma: '/MENUIKON/grid_icon_07.png',
+  g3_en_yakin_onluga_yuvarlama_100: '/MENUIKON/grid_icon_09.png',
+  g3_en_yakin_onluga_yuvarlama: '/MENUIKON/grid_icon_20.png',
+  g3_en_yakin_yuzluge_yuvarlama: '/MENUIKON/grid_icon_28.png',
 
-  // 3. Sınıf Tema 2 (Sayılar ve Nicelikler 2)
-  g3_birim_kesirler: '/iconn/s9.png',
-  g3_pay_payda_modelleme: '/iconn/s9.png',
-  g3_payda_10_100_kesir: '/iconn/s15.png',
-  g3_zaman_olcme: '/iconn/s13.png',
-  g3_uzunluk_kutle_sivi: '/iconn/s14.png',
-  g3_paralarimiz_lira_kurus: '/iconn/s12.png',
+  // 3. Sınıf Ritmik Saymalar (HER BUTON FARKLI!)
+  g3_ritmik_6: '/MENUIKON/grid_icon_03.png',
+  g3_ritmik_7: '/MENUIKON/grid_icon_05.png',
+  g3_ritmik_8: '/MENUIKON/grid_icon_16.png',
+  g3_ritmik_9: '/MENUIKON/grid_icon_38.png',
+  g3_ritmik_10: '/MENUIKON/grid_icon_14.png',
+  g3_ritmik_100: '/MENUIKON/grid_icon_25.png',
+  g3_ritmik_6_7: '/MENUIKON/grid_icon_03.png',
+  g3_ritmik_8_9: '/MENUIKON/grid_icon_16.png',
+  g3_ritmik_saymalar: '/MENUIKON/grid_icon_23.png',
 
-  // 3. Sınıf Tema 3 (İşlemlerden Cebirsel Düşünmeye)
-  g3_zihinden_toplama_cikarma_tahmin: '/iconn/s30.png',
-  g3_toplama_cikarma_problemleri: '/iconn/s31.png',
-  g3_carpma_bolme_pratik: '/iconn/s39.png',
-  g3_verilmeyen_ogeyi_bulma: '/iconn/s28.png',
+  // 3. Sınıf Tek-Çift ve Örüntü
+  g3_tek_cift_nesne_toplami: '/MENUIKON/grid_icon_18.png',
+  g3_tek_cift_20ye_kadar_islemler: '/MENUIKON/grid_icon_26.png',
+  g3_tek_cift_sayilar: '/MENUIKON/grid_icon_10.png',
+  g3_tek_cift_islemler: '/MENUIKON/grid_icon_24.png',
+  g3_sayi_sekil_oruntuleri: '/MENUIKON/grid_icon_19.png',
+  g3_nesne_tahmin_karsilastirma: '/MENUIKON/grid_icon_18.png',
 
-  // 3. Sınıf Tema 4 (Nesnelerin Geometrisi ve Ölçme)
-  g3_geometrik_cisimler_ozellikleri: '/iconn/s10.png',
-  g3_temel_geometri_kavramlari: '/iconn/s21.png',
-  g3_cevre_ve_olculebilir_nitelikler: '/iconn/s14.png',
+  // 3. SINIF TEMA 2 (Sayılar ve Nicelikler 2)
+  g3_birim_kesirler: '/MENUIKON/grid_icon_11.png',
+  g3_pay_payda_modelleme: '/MENUIKON/grid_icon_31.png',
+  g3_payda_10_100_kesir: '/MENUIKON/grid_icon_15.png',
+  g3_zaman_olcme: '/MENUIKON/grid_icon_12.png',
+  g3_uzunluk_kutle_sivi: '/MENUIKON/grid_icon_37.png',
+  g3_paralarimiz_lira_kurus: '/MENUIKON/grid_icon_13.png',
 
-  // 4. Sınıf Tema 1 (Sayılar ve Nicelikler 1)
-  g4_sayi_okuma_yazma: '/iconn/s6.png',
-  g4_basamak_ve_cozumleme: '/iconn/s7.png',
-  g4_sayi_siralama: '/iconn/s11.png',
-  g4_en_yakin_onluk_yuzluk: '/iconn/s27.png',
-  g4_ritmik_yuzer_biner: '/iconn/s17.png',
-  g4_sayi_sekil_oruntuleri: '/iconn/s2.png',
+  // 3. SINIF TEMA 3 (İşlemlerden Cebirsel Düşünmeye)
+  g3_zihinden_toplama_cikarma_tahmin: '/MENUIKON/grid_icon_08.png',
+  g3_toplama_cikarma_problemleri: '/MENUIKON/grid_icon_22.png',
+  g3_carpma_bolme_pratik: '/MENUIKON/grid_icon_04.png',
+  g3_verilmeyen_ogeyi_bulma: '/MENUIKON/grid_icon_26.png',
 
-  // 4. Sınıf Tema 2 (Sayılar ve Nicelikler 2)
-  g4_kesir_cesitleri_modelleme: '/iconn/s9.png',
-  g4_birim_kesirler_karsilastirma: '/iconn/s9.png',
-  g4_paydalari_esit_kesir_islemleri: '/iconn/s15.png',
-  g4_uzunluk_olculeri_donusum: '/iconn/s14.png',
-  g4_kutle_olculeri_ton_kg_g: '/iconn/s5.png',
+  // 3. SINIF TEMA 4 (Nesnelerin Geometrisi ve Ölçme)
+  g3_geometrik_cisimler_ozellikleri: '/MENUIKON/grid_icon_39.png',
+  g3_temel_geometri_kavramlari: '/MENUIKON/grid_icon_29.png',
+  g3_cevre_ve_olculebilir_nitelikler: '/MENUIKON/grid_icon_40.png',
 
-  // 4. Sınıf Tema 3 (İşlemlerden Cebirsel Düşünmeye)
-  g4_dort_islem_toplama_cikarma: '/iconn/s28.png',
-  g4_carpma_islemi_3basamakli: '/iconn/s39.png',
-  g4_bolme_islemi_4basamakli: '/iconn/s14.png',
-  g4_zihinden_carpma_bolme_10_100_1000: '/iconn/s30.png',
-  g4_esitlik_ve_verilmeyen_deger: '/iconn/s28.png',
+  // 4. SINIF TEMA 1 (Sayılar ve Nicelikler 1)
+  g4_sayi_okuma_yazma: '/MENUIKON/grid_icon_21.png',
+  g4_basamak_ve_cozumleme: '/MENUIKON/grid_icon_33.png',
+  g4_sayi_siralama: '/MENUIKON/grid_icon_07.png',
+  g4_en_yakin_onluk_yuzluk: '/MENUIKON/grid_icon_09.png',
+  g4_ritmik_yuzer_biner: '/MENUIKON/grid_icon_25.png',
+  g4_sayi_sekil_oruntuleri: '/MENUIKON/grid_icon_19.png',
 
-  // 4. Sınıf Tema 4 (Geometri, Veri ve Olasılık)
-  g4_geometrik_cisimler: '/iconn/s10.png',
-  g4_cevre_uzunlugu: '/iconn/s14.png',
-  g4_alan_tahmini_ve_birim_kare: '/iconn/s1.png',
-  g4_dogru_isin_dogru_parcasi_acilar: '/iconn/s21.png',
-  g4_simetri_dogrulari: '/iconn/s3.png',
-  g4_sutun_grafigi_ve_tablolar: '/iconn/s21.png',
-  g4_olaylarin_olasiligi: '/iconn/s20.png',
+  // 4. SINIF TEMA 2 (Sayılar ve Nicelikler 2)
+  g4_kesir_cesitleri_modelleme: '/MENUIKON/grid_icon_11.png',
+  g4_birim_kesirler_karsilastirma: '/MENUIKON/grid_icon_31.png',
+  g4_paydalari_esit_kesir_islemleri: '/MENUIKON/grid_icon_15.png',
+  g4_uzunluk_olculeri_donusum: '/MENUIKON/grid_icon_34.png',
+  g4_kutle_olculeri_ton_kg_g: '/MENUIKON/grid_icon_40.png',
+
+  // 4. SINIF TEMA 3 (İşlemlerden Cebirsel Düşünmeye)
+  g4_dort_islem_toplama_cikarma: '/MENUIKON/grid_icon_22.png',
+  g4_carpma_islemi_3basamakli: '/MENUIKON/grid_icon_04.png',
+  g4_bolme_islemi_4basamakli: '/MENUIKON/grid_icon_03.png',
+  g4_zihinden_carpma_bolme_10_100_1000: '/MENUIKON/grid_icon_28.png',
+  g4_esitlik_ve_verilmeyen_deger: '/MENUIKON/grid_icon_26.png',
+
+  // 4. SINIF TEMA 4 (Geometri, Veri ve Olasılık)
+  g4_geometrik_cisimler: '/MENUIKON/grid_icon_39.png',
+  g4_cevre_uzunlugu: '/MENUIKON/grid_icon_10.png',
+  g4_alan_tahmini_ve_birim_kare: '/MENUIKON/grid_icon_40.png',
+  g4_dogru_isin_dogru_parcasi_acilar: '/MENUIKON/grid_icon_29.png',
+  g4_simetri_dogrulari: '/MENUIKON/grid_icon_16.png',
+  g4_sutun_grafigi_ve_tablolar: '/MENUIKON/grid_icon_36.png',
+  g4_olaylarin_olasiligi: '/MENUIKON/grid_icon_35.png',
 };
 
 // Reference 3D Cartoon Game UI Style (Pill Buttons)
@@ -1908,54 +1933,51 @@ const TopicButtonReferenceStyle: React.FC<{
   onClick: () => void;
   compact?: boolean;
 }> = ({ topicKey, title, onClick, compact }) => {
-  const iconUrl = TOPIC_3D_ICONS[topicKey] || '/iconn/s1.png';
+  const iconUrl = TOPIC_3D_ICONS[topicKey] || '/MENUIKON/grid_icon_39.png';
   const badgeGradient = getTopicBadgeGradient(topicKey);
 
   return (
     <button
       onClick={onClick}
-      className={`group relative w-full bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 dark:from-sky-700 dark:via-blue-800 dark:to-indigo-900 border-3 sm:border-3.5 md:border-4 border-white dark:border-amber-300 ring-2 ring-amber-300/80 rounded-2xl sm:rounded-3xl md:rounded-full ${
+      className={`group relative w-full bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 dark:from-sky-700 dark:via-blue-800 dark:to-indigo-900 border-2 border-white dark:border-amber-300 ring-1 ring-amber-300/80 rounded-xl sm:rounded-2xl ${
         compact 
-          ? 'p-2 sm:p-2.5 md:p-3 pr-3.5 sm:pr-5 md:pr-6 min-h-[58px] sm:min-h-[66px] md:min-h-[72px]' 
-          : 'p-2.5 sm:p-3 md:p-3.5 pr-4 sm:pr-6 md:pr-7 min-h-[66px] sm:min-h-[74px] md:min-h-[82px]'
-      } flex items-center gap-2.5 sm:gap-3.5 md:gap-4 shadow-[0_5px_0_#1e3a8a,0_8px_18px_rgba(0,0,0,0.3)] hover:shadow-[0_7px_0_#1e3a8a,0_12px_24px_rgba(0,0,0,0.4)] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_0_#1e3a8a] transition-all cursor-pointer overflow-hidden`}
+          ? 'px-2 sm:px-2.5 py-1.5 sm:py-2 pr-3 min-h-[64px] sm:min-h-[76px]' 
+          : 'px-2.5 sm:px-3.5 py-2 sm:py-2.5 pr-3.5 min-h-[76px] sm:min-h-[86px] md:min-h-[96px]'
+      } flex items-center gap-2.5 sm:gap-3.5 shadow-[0_3px_0_#1e3a8a,0_4px_12px_rgba(0,0,0,0.25)] hover:shadow-[0_4px_0_#1e3a8a,0_8px_16px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_1px_0_#1e3a8a] transition-all cursor-pointer overflow-hidden`}
     >
       {/* Top Gloss/Shine Highlight Overlay */}
-      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/40 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl md:rounded-t-full" />
+      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/35 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-      {/* Left Circular 3D Icon Badge */}
-      <div className="relative shrink-0 z-10">
-        <div className={`${
-          compact ? 'w-11 h-11 sm:w-13 sm:h-13 md:w-14 md:h-14' : 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
-        } rounded-xl sm:rounded-2xl bg-gradient-to-br ${badgeGradient} text-white ring-2 sm:ring-3 ring-white shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.35)] flex items-center justify-center p-1 sm:p-1.5 transition-transform group-hover:scale-110 group-hover:rotate-6 overflow-hidden`}>
-          <img src={iconUrl} alt={title} className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
-        </div>
+      {/* Left 3D Icon - Enlarged 100%, pure 3D borderless icon with rich depth shadow */}
+      <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+        <img 
+          src={iconUrl} 
+          alt={title} 
+          className={`${
+            compact 
+              ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-15 md:h-15' 
+              : 'w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18'
+          } object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:-rotate-3 transition-transform`} 
+        />
       </div>
 
       {/* Center Text Body */}
       <div className="flex-1 text-left min-w-0 py-0.5 z-10">
-        <h4 className={`font-black ${
-          compact 
-            ? 'text-xs sm:text-sm md:text-base lg:text-lg' 
-            : 'text-sm sm:text-base md:text-lg lg:text-xl'
-        } text-white group-hover:text-yellow-300 transition-colors leading-snug line-clamp-1 drop-shadow-md uppercase tracking-wide`}>
+        <h4 className="font-black text-xs sm:text-sm md:text-base text-white group-hover:text-yellow-300 transition-colors leading-snug drop-shadow-xs uppercase tracking-wide break-words">
           {title}
         </h4>
-        <p className={`${
-          compact 
-            ? 'text-[10px] sm:text-xs' 
-            : 'text-[11px] sm:text-xs md:text-sm'
-        } text-yellow-300 font-extrabold truncate mt-0.5 uppercase tracking-wider drop-shadow-xs`}>
-          🎯 Alıştırma & Oyun Etkinliği
+        <p className="text-[10px] sm:text-xs text-yellow-300 font-extrabold mt-0.5 uppercase tracking-wider drop-shadow-xs flex items-center gap-1 leading-tight">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block shrink-0" />
+          <span>Alıştırma & Oyun</span>
         </p>
       </div>
 
       {/* Right 3D Green PLAY Action Image */}
       <div className={`z-10 shrink-0 relative ${
         compact 
-          ? 'w-[52px] h-[34px] sm:w-[64px] sm:h-[42px] md:w-[74px] md:h-[48px]' 
-          : 'w-[58px] h-[38px] sm:w-[72px] sm:h-[46px] md:w-[84px] md:h-[54px]'
-      } group-hover:scale-110 transition-transform filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.4)] flex items-center justify-center`}>
+          ? 'w-[76px] h-[34px] sm:w-[88px] sm:h-[38px] md:w-[100px] md:h-[44px]' 
+          : 'w-[84px] h-[38px] sm:w-[98px] sm:h-[44px] md:w-[112px] md:h-[50px]'
+      } group-hover:scale-108 transition-transform filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] flex items-center justify-center`}>
         <div 
           className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
           style={{ backgroundImage: `url('/ply.png')` }}
@@ -2374,11 +2396,9 @@ export default function App() {
   const [shuffledOptions, setShuffledOptions] = useState<(string | number)[]>([]);
   const [selectedOption, setSelectedOption] = useState<string | number | null>(null);
   const [feedbackState, setFeedbackState] = useState<'none' | 'correct' | 'wrong'>('none');
-  const [isTimedMode, setIsTimedMode] = useState<boolean>(false);
   const [questionTimeLeft, setQuestionTimeLeft] = useState<number>(10);
 
   const isTimedTopic = (topicKey: string) => {
-    if (isTimedMode) return true;
     if (!topicKey) return false;
     return (
       topicKey.startsWith('sureli_') ||
@@ -2410,6 +2430,8 @@ export default function App() {
   const [show3DLab, setShow3DLab] = useState(false);
   const [showGeoboard, setShowGeoboard] = useState(false);
   const [showOtherGamesModal, setShowOtherGamesModal] = useState(false);
+  const [showEnglishGamesModal, setShowEnglishGamesModal] = useState(false);
+  const [openedFromOtherGamesModal, setOpenedFromOtherGamesModal] = useState(false);
   const [showXOXGame, setShowXOXGame] = useState(false);
   const [wordGameType, setWordGameType] = useState<'zit_anlam' | 'es_anlam' | 'ingilizce' | null>(null);
   const [activityToast, setActivityToast] = useState<string | null>(null);
@@ -2528,10 +2550,9 @@ export default function App() {
     }
   }, [gameState, gameResult]);
 
-  // 10-Second Countdown Timer for Timed Challenge Activities (Single Player & Multi-Player)
+  // 10-Second Countdown Timer for Timed Challenge Activities (Single Player ONLY)
   useEffect(() => {
-    const isTimerActive = isTimedMode || isTimedTopic(currentTopic);
-    if (gameState !== 'playing' || !isTimerActive || feedbackState !== 'none' || !currentQuestionData) {
+    if (gameState !== 'playing' || playerCountMode !== 1 || !isTimedTopic(currentTopic) || feedbackState !== 'none' || !currentQuestionData) {
       return;
     }
 
@@ -2541,43 +2562,24 @@ export default function App() {
       kaydetIstatistik(currentTopic, false);
       setStreak(0);
 
-      if (playerCountMode === 1) {
-        setLives(prev => {
-          const nextLives = prev - 1;
-          if (nextLives <= 0) {
-            setTimeout(() => {
-              setGameResult({ reason: 'can', score, livesLeft: 0 });
-              setGameState('gameover');
-            }, 800);
-          } else {
-            setTimeout(() => {
-              nextQuestion(currentTopic);
-            }, 900);
-          }
-          return nextLives;
-        });
-      } else {
-        // Multi-player timed expiry
-        setPlayers(prev => prev.map(p => {
-          if (p.feedbackState === 'none' && p.lives > 0) {
-            const nextLives = p.lives - 1;
-            return {
-              ...p,
-              lives: nextLives,
-              feedbackState: 'wrong'
-            };
-          }
-          return p;
-        }));
-
-        setTimeout(() => {
-          nextQuestion(currentTopic);
-        }, 1000);
-      }
+      setLives(prev => {
+        const nextLives = prev - 1;
+        if (nextLives <= 0) {
+          setTimeout(() => {
+            setGameResult({ reason: 'can', score, livesLeft: 0 });
+            setGameState('gameover');
+          }, 800);
+        } else {
+          setTimeout(() => {
+            nextQuestion(currentTopic);
+          }, 900);
+        }
+        return nextLives;
+      });
       return;
     }
 
-    // Play audible warning on last 3 seconds (3, 2, 1)
+    // Play audible warning on last 3 seconds (3, 2, 1) in Single Player ONLY
     if (questionTimeLeft <= 3 && questionTimeLeft >= 1) {
       playCountdownWarningSound(questionTimeLeft);
     }
@@ -2587,7 +2589,109 @@ export default function App() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameState, currentTopic, isTimedMode, feedbackState, questionTimeLeft, currentQuestionData, score, soundEnabled, playerCountMode]);
+  }, [gameState, currentTopic, feedbackState, questionTimeLeft, currentQuestionData, score, soundEnabled, playerCountMode]);
+
+  // Multi-Player Independent Countdown Timers (Each player has their own 10-second timer, silent to avoid confusion)
+  useEffect(() => {
+    if (gameState !== 'playing' || playerCountMode <= 1 || !isTimedTopic(currentTopic)) {
+      return;
+    }
+
+    const timer = setInterval(() => {
+      setPlayers(prevPlayers => {
+        if (prevPlayers.length === 0) return prevPlayers;
+
+        const timedOutIndices: number[] = [];
+        let hasChanges = false;
+
+        const updated = prevPlayers.map((p, idx) => {
+          if (p.lives <= 0 || p.feedbackState !== 'none' || !p.currentQuestionData) {
+            return p;
+          }
+
+          const currentTime = p.timeLeft ?? 10;
+          if (currentTime <= 1) {
+            hasChanges = true;
+            timedOutIndices.push(idx);
+            return {
+              ...p,
+              timeLeft: 0,
+              feedbackState: 'wrong' as const,
+              lives: p.lives - 1,
+              streak: 0
+            };
+          } else {
+            hasChanges = true;
+            return {
+              ...p,
+              timeLeft: currentTime - 1
+            };
+          }
+        });
+
+        if (timedOutIndices.length > 0) {
+          // In 2 and 3 player modes, no sounds are played on timeout or time completion to prevent confusion
+
+          timedOutIndices.forEach(idx => {
+            kaydetIstatistik(currentTopic, false);
+            kaydetGrupIstatistik(idx, currentTopic, false);
+          });
+
+          // Check if game ends due to lives running out
+          const alivePlayers = updated.filter(p => p.lives > 0);
+          if (alivePlayers.length <= 1) {
+            let winnerIdx = 0;
+            if (alivePlayers.length === 1) {
+              winnerIdx = updated.findIndex(p => p.id === alivePlayers[0].id);
+            } else {
+              const sorted = [...updated].sort((a, b) => b.score - a.score);
+              winnerIdx = updated.findIndex(p => p.id === sorted[0].id);
+            }
+            if (winnerIdx < 0) winnerIdx = 0;
+
+            // No completion sound on time expiration / timeout
+            triggerFireworks();
+            setDuelWinnerIndex(winnerIdx);
+            kaydetGrupGalibiyet(winnerIdx);
+            setGameResult({
+              reason: 'can',
+              score: updated[winnerIdx]?.score || 0,
+              livesLeft: updated[winnerIdx]?.lives || 0
+            });
+            setGameState('gameover');
+            return updated;
+          }
+
+          // Advance question after 800ms for players who timed out but still have lives left
+          setTimeout(() => {
+            setPlayers(latest => {
+              const nextState = [...latest];
+              timedOutIndices.forEach(idx => {
+                if (idx < nextState.length && nextState[idx].lives > 0) {
+                  const cp = nextState[idx];
+                  const qRes = generateQuestionForPlayer(currentTopic, cp.askedQuestions);
+                  nextState[idx] = {
+                    ...cp,
+                    currentQuestionData: qRes.data,
+                    shuffledOptions: qRes.shuffledOptions,
+                    selectedOption: null,
+                    feedbackState: 'none',
+                    askedQuestions: [...cp.askedQuestions, qRes.signature],
+                    timeLeft: 10
+                  };
+                }
+              });
+              return nextState;
+            });
+          }, 800);
+        }
+
+        return hasChanges ? updated : prevPlayers;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [gameState, playerCountMode, currentTopic, soundEnabled]);
 
   // Audio Context Ref
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -2674,8 +2778,8 @@ export default function App() {
         playTone(659.25, 0.18, 'sine', 0, 0.45);
         playMp3('/tek.mp3');
       } else if (secondsLeft === 1) {
-        playTone(880.00, 0.25, 'triangle', 0, 0.6);
-        playMp3('/dtt.mp3');
+        playTone(784.00, 0.20, 'sine', 0, 0.5);
+        playMp3('/tek.mp3');
       }
     } catch {
       // Audio error fallback
@@ -2854,7 +2958,8 @@ export default function App() {
           shuffledOptions: qRes.shuffledOptions,
           selectedOption: null,
           feedbackState: 'none',
-          askedQuestions: [qRes.signature]
+          askedQuestions: [qRes.signature],
+          timeLeft: 10
         });
       }
 
@@ -2873,6 +2978,7 @@ export default function App() {
   };
 
   const selectTopicAndStart = (topicKey: string, gradeOverride?: 1 | 2 | 3 | 4) => {
+    playMp3('/op.mp3');
     if (gradeOverride !== undefined) {
       setSelectedGrade(gradeOverride);
       setLastSelectedGrade(gradeOverride);
@@ -2959,7 +3065,8 @@ export default function App() {
         shuffledOptions: qRes.shuffledOptions,
         selectedOption: null,
         feedbackState: 'none',
-        askedQuestions: [qRes.signature]
+        askedQuestions: [qRes.signature],
+        timeLeft: 10
       });
     }
 
@@ -2986,7 +3093,8 @@ export default function App() {
             shuffledOptions: qRes.shuffledOptions,
             selectedOption: null,
             feedbackState: 'none',
-            askedQuestions: [...p.askedQuestions, qRes.signature]
+            askedQuestions: [...p.askedQuestions, qRes.signature],
+            timeLeft: 10
           };
         }));
       } else {
@@ -3012,7 +3120,7 @@ export default function App() {
     }
 
     // 4. If in category view and topic modal not open
-    if (!showTopicModal && !show3DLab && !showGeoboard && !showOtherGamesModal && !showXOXGame && wordGameType === null) {
+    if (!showTopicModal && !show3DLab && !showGeoboard && !showOtherGamesModal && !showEnglishGamesModal && !showXOXGame && wordGameType === null) {
       setShowTopicModal(true);
       return;
     }
@@ -3139,6 +3247,7 @@ export default function App() {
     setShowGeoboard(false);
     setShowXOXGame(false);
     setShowOtherGamesModal(false);
+    setShowEnglishGamesModal(false);
     setShowTopicModal(false);
     setShowStatsModal(false);
     setWordGameType(null);
@@ -3465,7 +3574,8 @@ export default function App() {
             shuffledOptions: qRes.shuffledOptions,
             selectedOption: null,
             feedbackState: 'none',
-            askedQuestions: [...currentP.askedQuestions, qRes.signature]
+            askedQuestions: [...currentP.askedQuestions, qRes.signature],
+            timeLeft: 10
           };
           return updated;
         });
@@ -3526,7 +3636,8 @@ export default function App() {
               shuffledOptions: qRes.shuffledOptions,
               selectedOption: null,
               feedbackState: 'none',
-              askedQuestions: [...currentP.askedQuestions, qRes.signature]
+              askedQuestions: [...currentP.askedQuestions, qRes.signature],
+              timeLeft: 10
             };
             return updated;
           }
@@ -3553,9 +3664,57 @@ export default function App() {
       {/* GLOBAL HEADER BAR - 3D CARTOON GAME UI STYLE WITH ALL BUTTONS GROUPED AND CENTERED (HIDDEN ON INTRO) */}
       {!showIntro && (
         <header className="bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-b-3 border-yellow-400 dark:border-yellow-500/80 px-1 xs:px-2 sm:px-4 py-0.5 sm:py-1 flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 shadow-lg z-[100] relative shrink-0 w-full max-w-full overflow-x-auto no-scrollbar">
+        {/* SINIF BELİRTEN BUTONLAR (1, 2, 3, 4. SINIF) - 1. BUTONUN (ANA SAYFA) SOL TARAFI */}
+        {selectedGrade !== null && (
+          <div className="flex items-center gap-0.5 xs:gap-1 sm:gap-1.5 p-0.5 sm:p-1 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-md rounded-xl sm:rounded-2xl border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)] shrink-0 mr-0.5 sm:mr-1">
+            {[1, 2, 3, 4].map((g) => {
+              const isSelected = selectedGrade === g;
+              const iconSrc = g === 1 ? '/icon_1.png' : g === 2 ? '/icon_2.png' : g === 3 ? '/icon_3.png' : '/icon_4.png';
+              return (
+                <button
+                  key={g}
+                  onClick={() => {
+                    playMp3('/op.mp3');
+                    setSelectedGrade(g);
+                    setLastSelectedGrade(g);
+                    setSelectedCategoryId(null);
+                    setGameState('welcome');
+                    setShow3DLab(false);
+                    setShowGeoboard(false);
+                    setShowOtherGamesModal(false);
+                    setShowEnglishGamesModal(false);
+                    setShowXOXGame(false);
+                    setWordGameType(null);
+                    setShowStatsModal(false);
+                    setShowTopicModal(false);
+                  }}
+                  title={`${g}. Sınıf`}
+                  className={`relative group w-8 h-8 xs:w-9 xs:h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 aspect-square rounded-lg sm:rounded-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.35)] shrink-0 border-2 ${
+                    isSelected
+                      ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-red-500 border-yellow-200 ring-2 ring-yellow-300 scale-105 shadow-[0_0_10px_rgba(245,158,11,0.85)] z-10'
+                      : 'bg-slate-800/80 border-slate-700 opacity-60 hover:opacity-100 hover:border-amber-300'
+                  }`}
+                >
+                  <img 
+                    src={iconSrc} 
+                    alt={`${g}. Sınıf`} 
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full object-contain p-0.5 pointer-events-none" 
+                  />
+                  {isSelected && (
+                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-yellow-300 shadow-[0_0_6px_#fde047]" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {/* 1. ANA SAYFA */}
         <button
           onClick={() => {
+            playMp3('/op.mp3');
             setGameState('welcome');
             setSelectedCategoryId(null);
             setShowTopicModal(false);
@@ -3563,6 +3722,8 @@ export default function App() {
             setShow3DLab(false);
             setShowGeoboard(false);
             setShowOtherGamesModal(false);
+            setShowEnglishGamesModal(false);
+            setOpenedFromOtherGamesModal(false);
             setShowXOXGame(false);
             setWordGameType(null);
             setSelectedGrade(null);
@@ -3573,6 +3734,8 @@ export default function App() {
           <img 
             src="/ana.png" 
             alt="Ana Sayfa" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
         </button>
@@ -3580,42 +3743,109 @@ export default function App() {
         {/* 2. GERİ */}
         <button
           onClick={() => {
+            playMp3('/op.mp3');
+
+            // 1. If inside Word Game (Zıt Anlam, Eş Anlam, İngilizce)
             if (wordGameType !== null) {
+              const isEnglish = wordGameType === 'ingilizce';
+              const wasOtherGame = openedFromOtherGamesModal || wordGameType === 'zit_anlam' || wordGameType === 'es_anlam';
               setWordGameType(null);
+              if (isEnglish) {
+                setShowEnglishGamesModal(true);
+              } else if (wasOtherGame) {
+                setShowOtherGamesModal(true);
+              }
               return;
             }
+
+            // 2. If inside XOX Game
             if (showXOXGame) {
               setShowXOXGame(false);
+              if (openedFromOtherGamesModal || selectedGrade === null) {
+                setShowOtherGamesModal(true);
+              }
               return;
             }
-            if (showOtherGamesModal) {
-              setShowOtherGamesModal(false);
-              return;
-            }
+
+            // 3. If inside 3D Lab (Checked before showOtherGamesModal)
             if (show3DLab) {
               setShow3DLab(false);
+              if (openedFromOtherGamesModal || selectedGrade === null) {
+                setShowOtherGamesModal(true);
+              }
               return;
             }
+
+            // 4. If inside Geoboard (Checked before showOtherGamesModal)
             if (showGeoboard) {
               setShowGeoboard(false);
+              if (openedFromOtherGamesModal || selectedGrade === null) {
+                setShowOtherGamesModal(true);
+              }
               return;
             }
+
+            // 5. If inside Other Games Hub modal itself
+            if (showOtherGamesModal) {
+              setShowOtherGamesModal(false);
+              setOpenedFromOtherGamesModal(false);
+              return;
+            }
+
+            // 5.1 If inside English Games Hub modal itself
+            if (showEnglishGamesModal) {
+              setShowEnglishGamesModal(false);
+              return;
+            }
+
+            // 6. If stats modal is open
             if (showStatsModal) {
               setShowStatsModal(false);
               return;
             }
+
+            // 7. If topic modal is open
             if (showTopicModal) {
               setShowTopicModal(false);
               return;
             }
-            if (gameState === 'playing') {
+
+            // 8. If actively playing or in game over screen
+            if (gameState === 'playing' || gameState === 'gameover') {
+              const isOtherGameTopic =
+                currentTopic.startsWith('other_') ||
+                currentTopic === 'balon_patlatma_mat' ||
+                currentTopic === 'matematik_hafiza' ||
+                currentTopic === 'hizli_islem_carki' ||
+                currentTopic === 'sayi_dedektifi' ||
+                currentTopic === 'ritim_labirent' ||
+                currentTopic === 'geometri_eslestirme' ||
+                currentTopic.startsWith('sureli_');
+
               setGameState('welcome');
+              if (selectedGrade === null) {
+                if (isOtherGameTopic || openedFromOtherGamesModal) {
+                  setShowOtherGamesModal(true);
+                }
+                return;
+              }
+
+              // If in a grade (1, 2, 3, 4)
+              if (isOtherGameTopic) {
+                setSelectedCategoryId('diger_oyunlar');
+              } else if (selectedCategoryId === null) {
+                setSelectedCategoryId(getCategoryIdForTopic(currentTopic));
+              }
               return;
             }
+
+            // 9. If inside a category (e.g. 5. Diğer Oyunlar topic list, 1. Geometri, etc.)
             if (selectedCategoryId !== null) {
               setSelectedCategoryId(null);
               return;
             }
+
+            // 10. If inside a grade (1, 2, 3, 4 Sınıf)
             if (selectedGrade !== null) {
               setSelectedGrade(null);
               return;
@@ -3627,32 +3857,44 @@ export default function App() {
           <img 
             src="/geri.png" 
             alt="Geri" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
         </button>
 
         {/* 3. İLERİ */}
         <button
-          onClick={handleForwardNavigation}
+          onClick={() => {
+            playMp3('/op.mp3');
+            handleForwardNavigation();
+          }}
           title="İleri git"
           className="relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0"
         >
           <img 
             src="/ileri.png" 
             alt="İleri" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
         </button>
 
         {/* 4. SES */}
         <button
-          onClick={toggleSound}
+          onClick={() => {
+            playMp3('/op.mp3');
+            toggleSound();
+          }}
           className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 ${!soundEnabled ? 'opacity-40 grayscale' : ''}`}
           title={soundEnabled ? "Sesi Kapat" : "Sesi Aç"}
         >
           <img 
             src="/ses.png" 
             alt="Ses" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
           {!soundEnabled && (
@@ -3665,6 +3907,7 @@ export default function App() {
         {/* 5. İSTATİSTİK */}
         <button
           onClick={() => {
+            playMp3('/op.mp3');
             try {
               setStatsData(JSON.parse(localStorage.getItem('mathGameStats_v1') || '{}'));
             } catch {}
@@ -3676,6 +3919,8 @@ export default function App() {
           <img 
             src="/ist.png" 
             alt="İstatistik" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
         </button>
@@ -3685,7 +3930,10 @@ export default function App() {
 
         {/* 6. 1 OYUNCU (1oy.png) */}
         <button
-          onClick={() => switchPlayerCountMode(1)}
+          onClick={() => {
+            playMp3('/op.mp3');
+            switchPlayerCountMode(1);
+          }}
           className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
             playerCountMode === 1
               ? 'ring-3 ring-amber-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]'
@@ -3696,6 +3944,8 @@ export default function App() {
           <img 
             src="/1oy.png" 
             alt="1 Oyuncu" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
           {playerCountMode === 1 && (
@@ -3705,7 +3955,10 @@ export default function App() {
 
         {/* 7. 2 OYUNCU KAPIŞMA (2oy.png) */}
         <button
-          onClick={() => switchPlayerCountMode(2)}
+          onClick={() => {
+            playMp3('/op.mp3');
+            switchPlayerCountMode(2);
+          }}
           className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
             playerCountMode === 2
               ? 'ring-3 ring-rose-500 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(244,63,94,0.8)]'
@@ -3716,6 +3969,8 @@ export default function App() {
           <img 
             src="/2oy.png" 
             alt="2 Oyuncu Kapışma" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
           {playerCountMode === 2 && (
@@ -3725,7 +3980,10 @@ export default function App() {
 
         {/* 8. 3 OYUNCU KAPIŞMA (3oy.png) */}
         <button
-          onClick={() => switchPlayerCountMode(3)}
+          onClick={() => {
+            playMp3('/op.mp3');
+            switchPlayerCountMode(3);
+          }}
           className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
             playerCountMode === 3
               ? 'ring-3 ring-emerald-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(52,211,153,0.8)]'
@@ -3736,44 +3994,12 @@ export default function App() {
           <img 
             src="/3oy.png" 
             alt="3 Oyuncu Kapışma" 
+            loading="eager"
+            decoding="async"
             className="w-full h-full object-contain pointer-events-none" 
           />
           {playerCountMode === 3 && (
             <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-          )}
-        </button>
-
-        {/* 9. SÜRELİ OYUN MODU (10s GERİ SAYIM + SESLİ UYARI) */}
-        <button
-          onClick={() => {
-            setIsTimedMode(prev => {
-              const next = !prev;
-              if (next) {
-                playMp3('/farklilvl.mp3');
-              } else {
-                playMp3('/coin.mp3');
-              }
-              return next;
-            });
-          }}
-          className={`relative group h-11 xs:h-13 sm:h-16 px-2.5 sm:px-3.5 rounded-2xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 border-2 ${
-            isTimedMode
-              ? 'bg-rose-950/90 border-rose-500 text-rose-200 ring-3 ring-rose-400/80 shadow-[0_0_18px_rgba(244,63,94,0.7)]'
-              : 'bg-slate-950/70 border-cyan-400/40 text-cyan-200 hover:border-cyan-300'
-          }`}
-          title="10 Saniyelik Süreli Oyun Modu (Son 3 Saniye Sesli Uyarı)"
-        >
-          <span className={`text-base sm:text-xl ${isTimedMode ? 'animate-bounce' : ''}`}>⏱️</span>
-          <div className="flex flex-col text-left leading-tight hidden xs:flex">
-            <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-amber-300">
-              SÜRELİ
-            </span>
-            <span className={`text-[8px] sm:text-[10px] font-extrabold ${isTimedMode ? 'text-rose-300' : 'text-slate-300'}`}>
-              {isTimedMode ? 'AÇIK (10s)' : 'KAPALI'}
-            </span>
-          </div>
-          {isTimedMode && (
-            <div className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_#f43f5e] animate-ping" />
           )}
         </button>
 
@@ -3783,7 +4009,10 @@ export default function App() {
         {/* GEÇİCİ ETKİNLİKLER ARASI GEÇİŞ BUTONLARI (1. SINIFTAN 6. İNGİLİZCEYE KADAR) */}
         <div className="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 border-amber-400 shadow-[0_0_18px_rgba(245,158,11,0.35)] shrink-0">
           <button
-            onClick={handlePrevActivity}
+            onClick={() => {
+              playMp3('/op.mp3');
+              handlePrevActivity();
+            }}
             title="Önceki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
             className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
           >
@@ -3792,7 +4021,10 @@ export default function App() {
             <span className="sm:hidden tracking-wide uppercase">Önceki</span>
           </button>
           <button
-            onClick={handleNextActivity}
+            onClick={() => {
+              playMp3('/op.mp3');
+              handleNextActivity();
+            }}
             title="Sonraki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
             className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
           >
@@ -3844,15 +4076,15 @@ export default function App() {
                 {/* 1. SINIF */}
                 <button
                   onClick={() => {
-                    playMp3('/coin.mp3');
+                    playMp3('/op.mp3');
                     setSelectedGrade(1);
                     setLastSelectedGrade(1);
                   }}
                   className="group relative w-full bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-amber-300 shadow-[0_6px_18px_rgba(234,88,12,0.4),0_2px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_26px_rgba(234,88,12,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-yellow-300/50 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_1.png" alt="1. Sınıf" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_1.png" alt="1. Sınıf" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-yellow-200 flex items-center gap-1 drop-shadow-xs">
@@ -3861,7 +4093,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       1. Sınıf Matematik
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-amber-100 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-amber-100 mt-0.5 drop-shadow-xs break-words leading-tight">
                       Geometri, Sayılar, İşlemler, Veri, Zeka Oyunları & 3D Lab
                     </p>
                   </div>
@@ -3873,15 +4105,15 @@ export default function App() {
                 {/* 2. SINIF - FULLY ACTIVE (6 ANA KONU & TÜM OYUNLAR) */}
                 <button
                   onClick={() => {
-                    playMp3('/farklilvl.mp3');
+                    playMp3('/op.mp3');
                     setSelectedGrade(2);
                     setLastSelectedGrade(2);
                   }}
                   className="group relative w-full bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-emerald-300 shadow-[0_6px_16px_rgba(16,185,129,0.35),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_24px_rgba(16,185,129,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-emerald-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_2.png" alt="2. Sınıf" className="w-full h-full object-cover scale-[1.45] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_2.png" alt="2. Sınıf" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-emerald-200 flex items-center gap-1 drop-shadow-xs">
@@ -3890,7 +4122,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       2. Sınıf Matematik
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                       Geometri, Sayılar, İşlemler, Veri, Zeka Oyunları & 3D Lab
                     </p>
                   </div>
@@ -3902,15 +4134,15 @@ export default function App() {
                 {/* 3. SINIF */}
                 <button
                   onClick={() => {
-                    playMp3('/coin.mp3');
+                    playMp3('/op.mp3');
                     setSelectedGrade(3);
                     setLastSelectedGrade(3);
                   }}
                   className="group relative w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-white/90 shadow-[0_6px_16px_rgba(147,51,234,0.35),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_24px_rgba(147,51,234,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-purple-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_3.png" alt="3. Sınıf" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_3.png" alt="3. Sınıf" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-purple-200 flex items-center gap-1 drop-shadow-xs">
@@ -3919,7 +4151,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       3. Sınıf Matematik
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-purple-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-purple-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                       3 Basamaklı Sayılar, Çarpma, Bölme, Kesirler & Problemler
                     </p>
                   </div>
@@ -3931,15 +4163,15 @@ export default function App() {
                 {/* 4. SINIF */}
                 <button
                   onClick={() => {
-                    playMp3('/farklilvl.mp3');
+                    playMp3('/op.mp3');
                     setSelectedGrade(4);
                     setLastSelectedGrade(4);
                   }}
                   className="group relative w-full bg-gradient-to-r from-sky-600 via-indigo-700 to-purple-800 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-amber-300 shadow-[0_6px_18px_rgba(79,70,229,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(79,70,229,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-cyan-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_4.png" alt="4. Sınıf" className="w-full h-full object-cover scale-[1.45] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_4.png" alt="4. Sınıf" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-amber-300 flex items-center gap-1 drop-shadow-xs">
@@ -3948,7 +4180,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       4. Sınıf Matematik
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-cyan-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-cyan-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                       4-6 Basamaklı Sayılar, Kesirler, Dört İşlem, Geometri & Olasılık
                     </p>
                   </div>
@@ -3966,8 +4198,8 @@ export default function App() {
                   className="group relative w-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-pink-300 shadow-[0_6px_18px_rgba(217,70,239,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(217,70,239,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-pink-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_5.png" alt="5. Diğer Oyunlar" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_5.png" alt="5. Diğer Oyunlar" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-pink-200 flex items-center gap-1 drop-shadow-xs">
@@ -3976,7 +4208,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       5. Diğer Oyunlar
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                       XOX & Matematik, Zıt & Eş Anlam, Hafıza
                     </p>
                   </div>
@@ -3989,13 +4221,13 @@ export default function App() {
                 <button
                   onClick={() => {
                     playMp3('/coin.mp3');
-                    setWordGameType('ingilizce');
+                    setShowEnglishGamesModal(true);
                   }}
                   className="group relative w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-sky-300 shadow-[0_6px_18px_rgba(14,165,233,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(14,165,233,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-sky-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
                   <div className="absolute -left-10 -top-10 w-44 h-44 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.4)_0%,transparent_70%)] pointer-events-none" />
-                  <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-xl sm:rounded-2xl bg-white/25 backdrop-blur-md border-2 sm:border-3 border-white shadow-md flex items-center justify-center p-0.5 group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                    <img src="/icon_6.png" alt="6. İngilizce Oyunlar" className="w-full h-full object-cover scale-[1.35] filter drop-shadow-md" />
+                  <div className="relative shrink-0 z-10 flex items-center justify-center -my-1">
+                    <img src="/icon_6.png" alt="6. İngilizce Oyunlar" className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.45)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                   </div>
                   <div className="flex-1 text-left min-w-0 z-10 py-0.5">
                     <div className="text-[8px] sm:text-[10px] md:text-xs font-black uppercase tracking-wider text-sky-200 flex items-center gap-1 drop-shadow-xs">
@@ -4004,7 +4236,7 @@ export default function App() {
                     <h3 className="font-black text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider">
                       6. İngilizce Oyunlar
                     </h3>
-                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-sky-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                    <p className="text-[9px] sm:text-xs md:text-sm font-extrabold text-sky-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                       2., 3. ve 4. Sınıflar
                     </p>
                   </div>
@@ -4017,229 +4249,267 @@ export default function App() {
           ) : selectedCategoryId === null ? (
             /* CATEGORY CARDS SCREEN */
             <div className="max-w-6xl w-full mx-auto flex flex-col items-center py-1 sm:py-1.5">
-              {/* CENTERED GRADE ICON */}
-              <div className="w-full flex items-center justify-center mb-2 sm:mb-3 px-1 shrink-0">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl sm:rounded-3xl bg-white/20 backdrop-blur-md p-1.5 sm:p-2 border-2 sm:border-3 border-white/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),inset_0_2px_4px_rgba(255,255,255,0.6)] flex items-center justify-center transform hover:scale-105 transition-transform shrink-0">
-                  <img
-                    src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'}
-                    alt={`${selectedGrade}. Sınıf`}
-                    className="w-full h-full object-contain filter drop-shadow-md"
+              {/* COMPACT GRADE HEADER BADGE (MATCHING 5. & 6. BÖLÜM STİLİ) */}
+              <div className="flex flex-col items-center justify-center mt-1 sm:mt-1.5 mb-1.5 sm:mb-2 max-w-4xl w-full mx-auto shrink-0 py-0.5">
+                <div className="z-10 flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 px-4 sm:px-7 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-2.5 border-white shadow-[0_3px_10px_rgba(0,0,0,0.5)] font-black text-xs sm:text-sm md:text-base uppercase tracking-wider max-w-full shrink-0">
+                  <div className="relative shrink-0 flex items-center justify-center">
+                    <img 
+                      src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                      alt={`${selectedGrade}. Sınıf`} 
+                      className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]" 
+                    />
+                  </div>
+                  <span className="drop-shadow-xs break-words">{selectedGrade}. Sınıf Matematik</span>
+                  <img 
+                    src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
+                    alt={`${selectedGrade}. Sınıf`} 
+                    className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" 
                   />
                 </div>
               </div>
 
+              <div className="w-full text-center py-0.5 mb-1 sm:mb-1.5">
+                <p className="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                  🎯 Çalışmak istediğin konuya dokun ve öğrenmeye başla!
+                </p>
+              </div>
+
               {/* 4. SINIF: 4 MAIN THEME CARDS (2x2 GRID) */}
               {selectedGrade === 4 ? (
-                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2.5 sm:gap-3.5">
-                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 md:gap-4 w-full">
-                    {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
+                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
+                      {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
                     <button
-                      onClick={() => setSelectedCategoryId('g4_tema1')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g4_tema1');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s19.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_21.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           1. Sayılar ve Nicelikler (1)
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-blue-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           4-6 Basamaklı Sayılar, Çözümleme & Yuvarlama
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 2: SAYILAR VE NİCELİKLER 2 */}
                     <button
-                      onClick={() => setSelectedCategoryId('g4_tema2')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g4_tema2');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s15.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_11.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           2. Sayılar ve Nicelikler (2)
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-amber-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Kesirler, Birim Kesirler & Ölçme Birimleri
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                     <button
-                      onClick={() => setSelectedCategoryId('g4_tema3')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g4_tema3');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s6.png" alt="İşlemler ve Cebir" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_22.png" alt="İşlemler ve Cebir" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           3. İşlemlerden Cebirsel Düşünmeye
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-pink-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Eldeli Toplama, Çarpma, Bölme & Cebir
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 4: GEOMETRİ, VERİ VE OLASILIK */}
                     <button
-                      onClick={() => setSelectedCategoryId('g4_tema4')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g4_tema4');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s21.png" alt="Geometri, Veri ve Olasılık" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_39.png" alt="Geometri, Veri ve Olasılık" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           4. Geometri, Veri ve Olasılık
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-emerald-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Açılar, Çevre, Alan, Grafikler & Olasılık
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
                 </div>
               ) : selectedGrade === 3 ? (
-                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2.5 sm:gap-3.5">
-                  <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 md:gap-4 w-full">
-                    {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
+                <div className="w-full max-w-6xl mx-auto flex flex-col gap-2 sm:gap-2.5">
+                  <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
+                      {/* TEMA 1: SAYILAR VE NİCELİKLER 1 */}
                     <button
-                      onClick={() => setSelectedCategoryId('g3_tema1')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g3_tema1');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s19.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_21.png" alt="Sayılar ve Nicelikler 1" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           1. Sayılar ve Nicelikler (1)
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-blue-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           1000'e Kadar Sayılar, Çözümleme & Ritmik
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 2: SAYILAR VE NİCELİKLER 2 */}
                     <button
-                      onClick={() => setSelectedCategoryId('g3_tema2')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g3_tema2');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s15.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_11.png" alt="Sayılar ve Nicelikler 2" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           2. Sayılar ve Nicelikler (2)
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-amber-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Kesirler, Zaman, Ölçme & Paralarımız
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                     <button
-                      onClick={() => setSelectedCategoryId('g3_tema3')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g3_tema3');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s6.png" alt="İşlemler ve Cebir" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_22.png" alt="İşlemler ve Cebir" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           3. İşlemlerden Cebirsel Düşünmeye
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-pink-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Zihinden İşlem, Çarpma, Bölme & Cebir
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* TEMA 4: NESNELERİN GEOMETRİSİ VE ÖLÇME */}
                     <button
-                      onClick={() => setSelectedCategoryId('g3_tema4')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2.5 sm:p-3.5 md:p-4 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_20px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[110px] xs:min-h-[125px] sm:min-h-[145px] md:min-h-[165px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('g3_tema4');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      <div className="relative shrink-0 z-10 w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s21.png" alt="Geometri ve Ölçme" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_39.png" alt="Geometri ve Ölçme" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-1 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           4. Nesnelerin Geometrisi ve Ölçme
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-sm md:text-base font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-emerald-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Cisimler, Açılar & Çevre Hesabı
                         </p>
                       </div>
 
-                      <div className="z-10 shrink-0 relative w-[70px] h-[28px] sm:w-[88px] sm:h-[35px] md:w-[100px] md:h-[40px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
                         <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
@@ -4252,233 +4522,208 @@ export default function App() {
                   <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
                     {/* CARD 1: GEOMETRİ */}
                     <button
-                      onClick={() => setSelectedCategoryId('geometri')}
-                      className="group relative w-full bg-gradient-to-br from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('geometri');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-blue-500 via-indigo-600 to-sky-600 dark:from-blue-600 dark:via-indigo-700 dark:to-sky-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s21.png" alt="Geometri" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_39.png" alt="Geometri" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      {/* Center Text Column */}
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           1. Nesnelerin Geometrisi
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-blue-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-blue-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Şekiller, Cisimler & Örüntüler
                         </p>
                       </div>
 
-                      {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div 
-                          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/ply.png')` }}
-                        />
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* CARD 2: SAYILAR */}
                     <button
-                      onClick={() => setSelectedCategoryId('sayilar')}
-                      className="group relative w-full bg-gradient-to-br from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('sayilar');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 dark:from-amber-600 dark:via-orange-700 dark:to-red-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s19.png" alt="Sayılar" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_21.png" alt="Sayılar" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      {/* Center Text Column */}
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           2. Sayılar ve Nicelikler
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-amber-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-amber-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Ritmik Sayma & Basamak Değeri
                         </p>
                       </div>
 
-                      {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div 
-                          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/ply.png')` }}
-                        />
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* CARD 3: İŞLEMLER */}
                     <button
-                      onClick={() => setSelectedCategoryId('islemler')}
-                      className="group relative w-full bg-gradient-to-br from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('islemler');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-pink-600 dark:from-purple-700 dark:via-fuchsia-700 dark:to-pink-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s6.png" alt="İşlemler" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_22.png" alt="İşlemler" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      {/* Center Text Column */}
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           3. İşlemler ve Cebir
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-pink-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-pink-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Toplama, Çıkarma, Çarpma, Bölme
                         </p>
                       </div>
 
-                      {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div 
-                          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/ply.png')` }}
-                        />
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
 
                     {/* CARD 4: VERİ İŞLEME */}
                     <button
-                      onClick={() => setSelectedCategoryId('olcme')}
-                      className="group relative w-full bg-gradient-to-br from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-2xl sm:rounded-3xl p-2 sm:p-2.5 md:p-3 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(0,0,0,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(0,0,0,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex flex-col items-center justify-between text-center overflow-hidden cursor-pointer min-h-[95px] xs:min-h-[105px] sm:min-h-[120px] md:min-h-[135px]"
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('olcme');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-teal-500 via-emerald-600 to-green-700 dark:from-teal-600 dark:via-emerald-700 dark:to-green-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(0,0,0,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                     >
-                      {/* Sunburst Ray & Top Gloss Overlays */}
-                      <div className="absolute -left-10 -top-10 w-44 h-44 sm:w-56 sm:h-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,rgba(255,255,255,0.08)_50%,transparent_70%)] pointer-events-none" />
-                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 via-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
 
-                      {/* Top 3D Icon Badge */}
-                      <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),0_4px_10px_rgba(0,0,0,0.3)] flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                        <img src="/iconn/s15.png" alt="Veri İşleme" className="w-full h-full object-cover scale-[1.55] sm:scale-[1.65] filter drop-shadow-md" />
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_14.png" alt="Veri İşleme" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-3 transition-transform" />
                       </div>
 
-                      {/* Center Text Column */}
-                      <div className="flex-1 flex flex-col items-center justify-center z-10 py-0.5 min-w-0">
-                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide">
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                           4. Veri İşleme
                         </h3>
-                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-emerald-100/90 mt-0.5 drop-shadow-xs line-clamp-1">
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-emerald-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Sütun Grafikleri & Tablolar
                         </p>
                       </div>
 
-                      {/* Bottom Action Pill Button */}
-                      <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                        <div 
-                          className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                          style={{ backgroundImage: `url('/ply.png')` }}
-                        />
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                       </div>
                     </button>
                   </div>
 
-                  {/* ROW 3: 2-COLUMN FOR 2. SINIF (5 & 6) OR SINGLE ENLARGED 5TH ITEM FOR 1. SINIF */}
+                  {/* ROW 3: 2-COLUMN FOR 2. SINIF (5 & 6) OR SINGLE 5TH ITEM FOR 1. SINIF */}
                   {selectedGrade === 2 ? (
                     <div className="grid grid-cols-2 gap-2 sm:gap-2.5 md:gap-3 w-full">
                       {/* CARD 5: 5. DİĞER OYUNLAR */}
                       <button
-                        onClick={() => setSelectedCategoryId('diger_oyunlar')}
-                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(124,58,237,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(124,58,237,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
+                        onClick={() => {
+                          playMp3('/op.mp3');
+                          setSelectedCategoryId('diger_oyunlar');
+                        }}
+                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                       >
                         <div className="absolute -left-6 -top-6 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
-                        {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                          <img src="/iconn/s1.png" alt="Diğer Oyunlar" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
+                        <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                          <img src="/MENUIKON/grid_icon_32.png" alt="Diğer Oyunlar" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                         </div>
 
-                        {/* Center Text */}
-                        <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                        <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                             5. Diğer Oyunlar
                           </h3>
-                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-purple-100/90 drop-shadow-xs break-words leading-tight mt-0.5">
                             Balon, Hafıza & Zeka
                           </p>
                         </div>
 
-                        {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[55px] h-[22px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                          <div 
-                            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/ply.png')` }}
-                          />
+                        <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                          <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                         </div>
                       </button>
 
                       {/* CARD 6: 6. 3D GEOMETRİ LABI */}
                       <button
-                        onClick={() => setShow3DLab(true)}
-                        className="group relative w-full bg-gradient-to-r from-amber-400 via-orange-500 to-pink-600 dark:from-amber-500 dark:via-orange-600 dark:to-pink-700 text-white rounded-2xl sm:rounded-3xl px-3 sm:px-4 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(249,115,22,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(249,115,22,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
+                        onClick={() => {
+                          playMp3('/op.mp3');
+                          setShow3DLab(true);
+                        }}
+                        className="group relative w-full bg-gradient-to-r from-amber-400 via-orange-500 to-pink-600 dark:from-amber-500 dark:via-orange-600 dark:to-pink-700 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(249,115,22,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(249,115,22,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                       >
                         <div className="absolute -left-6 -top-6 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
-                        {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                          <img src="/iconn/s10.png" alt="3D Geometri" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
+                        <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                          <img src="/MENUIKON/grid_icon_10.png" alt="3D Geometri" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
                         </div>
 
-                        {/* Center Text */}
-                        <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                        <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                             6. 3D Geometri Labı
                           </h3>
-                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-amber-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-amber-100/90 drop-shadow-xs break-words leading-tight mt-0.5">
                             Küp, Silindir, Prizma 3D
                           </p>
                         </div>
 
-                        {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[55px] h-[22px] sm:w-[70px] sm:h-[28px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                          <div 
-                            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/ply.png')` }}
-                          />
+                        <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                          <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                         </div>
                       </button>
                     </div>
                   ) : (
-                    /* ROW 3: SINGLE 5TH ITEM (5. DİĞER OYUNLAR) FOR 1. SINIF (FULL WIDTH EXPANSIVE) */
+                    /* ROW 3: SINGLE 5TH ITEM (5. DİĞER OYUNLAR) FOR 1. SINIF */
                     <div className="w-full">
                       {/* CARD 5: 5. DİĞER OYUNLAR */}
                       <button
-                        onClick={() => setSelectedCategoryId('diger_oyunlar')}
-                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-2xl sm:rounded-3xl px-4 sm:px-6 py-2 sm:py-2.5 border-3 sm:border-4 border-white/90 dark:border-slate-700/80 shadow-[0_6px_18px_rgba(124,58,237,0.35),0_3px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_25px_rgba(124,58,237,0.45)] transition-all transform hover:-translate-y-1 active:translate-y-0.5 flex items-center justify-between gap-3 sm:gap-4 overflow-hidden cursor-pointer min-h-[65px] xs:min-h-[70px] sm:min-h-[80px] md:min-h-[90px]"
+                        onClick={() => {
+                          playMp3('/op.mp3');
+                          setSelectedCategoryId('diger_oyunlar');
+                        }}
+                        className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
                       >
                         <div className="absolute -left-6 -top-6 w-40 h-40 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.3)_0%,transparent_70%)] pointer-events-none" />
                         
-                        {/* Left Icon */}
-                        <div className="relative shrink-0 z-10 w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 rounded-xl sm:rounded-2xl bg-white/20 backdrop-blur-md border-2 sm:border-3 border-white/80 shadow-md flex items-center justify-center p-0 overflow-hidden group-hover:scale-110 group-hover:rotate-6 transition-transform">
-                          <img src="/iconn/s1.png" alt="Diğer Oyunlar" className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
+                        <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                          <img src="/MENUIKON/grid_icon_32.png" alt="Diğer Oyunlar" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-110 group-hover:rotate-6 transition-transform" />
                         </div>
 
-                        {/* Center Text */}
-                        <div className="flex-1 text-center min-w-0 z-10 py-0 flex flex-col items-center justify-center">
-                          <h3 className="font-black text-xs xs:text-sm sm:text-lg md:text-xl text-white drop-shadow-[0_2px_3px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wider truncate w-full text-center">
+                        <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                          <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
                             5. Diğer Oyunlar
                           </h3>
-                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-extrabold text-purple-100/90 drop-shadow-xs truncate w-full text-center mt-0.5">
+                          <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-purple-100/90 drop-shadow-xs break-words leading-tight mt-0.5">
                             Balon, Hafıza & Zeka Oyunları
                           </p>
                         </div>
 
-                        {/* Right Action Button */}
-                        <div className="z-10 shrink-0 relative w-[60px] h-[24px] sm:w-[75px] sm:h-[30px] md:w-[88px] md:h-[35px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
-                          <div 
-                            className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none"
-                            style={{ backgroundImage: `url('/ply.png')` }}
-                          />
+                        <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                          <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
                         </div>
                       </button>
                     </div>
@@ -4492,37 +4737,43 @@ export default function App() {
               
               {/* CENTERED TITLE HEADER LOGO (mattt.gif) & CATEGORY TITLE BADGE */}
               {/* COMPACT CATEGORY HEADER BADGE */}
-              <div className="flex flex-col items-center justify-center mb-4 sm:mb-6 max-w-6xl w-full mx-auto shrink-0 py-1">
+              <div className="flex flex-col items-center justify-center mt-1 sm:mt-1.5 mb-1.5 sm:mb-2 max-w-4xl w-full mx-auto shrink-0 py-0.5">
                 {(() => {
                   const cat = CATEGORY_MAP.find(c => c.id === selectedCategoryId);
                   if (!cat) return null;
                   return (
-                    <div className="z-10 flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 px-5 sm:px-8 py-2 rounded-xl sm:rounded-2xl border-2 sm:border-3 border-white shadow-[0_4px_15px_rgba(0,0,0,0.6)] font-black text-sm sm:text-base md:text-lg uppercase tracking-wider whitespace-nowrap max-w-full shrink-0">
-                      <span className="w-6 h-6 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-white text-blue-950 border-2 border-amber-500 shadow-xs flex items-center justify-center shrink-0 overflow-hidden">
+                    <div className="z-10 flex items-center justify-center gap-2.5 sm:gap-3 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-blue-950 px-4 sm:px-7 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl border-2 sm:border-2.5 border-white shadow-[0_3px_10px_rgba(0,0,0,0.5)] font-black text-xs sm:text-sm md:text-base uppercase tracking-wider max-w-full shrink-0">
+                      <div className="relative shrink-0 flex items-center justify-center">
                         {cat.icon.startsWith('/') ? (
-                          <img src={cat.icon} alt={cat.name} className="w-full h-full object-cover scale-[1.55] filter drop-shadow-xs" />
+                          <img src={cat.icon} alt={cat.name} className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.4)]" />
                         ) : (
-                          cat.icon
+                          <span className="text-xl sm:text-2xl">{cat.icon}</span>
                         )}
-                      </span>
-                      <span className="drop-shadow-xs truncate">{cat.name}</span>
+                      </div>
+                      <span className="drop-shadow-xs break-words">{cat.name}</span>
                       <img 
                         src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
                         alt="Sınıf" 
-                        className="h-6 sm:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" 
+                        className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs ml-1" 
                       />
                     </div>
                   );
                 })()}
               </div>
 
+              <div className="w-full text-center py-0.5 mb-1 sm:mb-1.5">
+                <p className="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                  🎯 Oynamak veya çalışmak istediğin etkinliğe dokun ve başla!
+                </p>
+              </div>
+
               {/* SUB-TOPICS RENDERED AS PILL BUTTONS IN A 2-COLUMN GRID (REFERENCE STYLE) */}
-              <div className="w-full space-y-5">
+              <div className="w-full space-y-3 sm:space-y-4">
                 
                 {/* 1. NESNELERİN GEOMETRİSİ */}
                 {selectedCategoryId === 'geometri' && (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {(selectedGrade === 1
                         ? ['uzamsal_iliskiler', 'es_nesneler', 'geometrik_sekil_cisim', 'geometri_tahtasi']
                         : ['geometrik_sekil_cisim', 'geometri_tahtasi', 'yuz_ayrit_kose', 'geometrik_oruntu', 'uzamsal_iliskiler_simetri', 'sivi_olcme', 'tartma_olcme']
@@ -4546,7 +4797,7 @@ export default function App() {
                 {selectedCategoryId === 'sayilar' && (
                   <div className="space-y-5">
                     {/* Standalone topics */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {(selectedGrade === 1
                         ? ['nesne_sayisi', 'sira_sayilari', 'cok_az_esit']
                         : ['nesne_sayisi', 'sayi_basamak_degeri', 'en_yakin_onluk', 'deste_duzine', 'kesirler', 'sayi_karsilastirma', 'sira_sayilari', 'paralarimiz', 'zaman_olcme', 'uzunluk_olcme']
@@ -4568,18 +4819,18 @@ export default function App() {
 
                     {/* Ritmik Saymalar Group Section */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src="/iconn/s17.png" alt="Ritmik" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
-                          <span className="truncate">Ritmik Saymalar {selectedGrade === 1 ? "(1'er, 2'şer, 5'er, 10'ar)" : ""}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_23.png" alt="Ritmik" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
+                          <span className="break-words text-sm sm:text-base md:text-lg">Ritmik Saymalar {selectedGrade === 1 ? "(1'er, 2'şer, 5'er, 10'ar)" : ""}</span>
                         </div>
                         <img 
                           src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
                           alt="Sınıf" 
-                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                          className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs" 
                         />
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {(selectedGrade === 1
                           ? ['ritmik_ileri_1', 'ritmik_ileri_2', 'ritmik_ileri_5', 'ritmik_ileri_10', 'ritmik_geri_1', 'ritmik_geri_2', 'ritmik_geri_10']
                           : ['ritmik_ileri_2', 'ritmik_ileri_3', 'ritmik_ileri_4', 'ritmik_ileri_5', 'ritmik_ileri_10', 'ritmik_geri_2', 'ritmik_geri_10']
@@ -4602,18 +4853,18 @@ export default function App() {
                     {/* Saati Okuma Group Section (Sadece 2. Sınıf) */}
                     {selectedGrade === 2 && (
                       <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                        <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <img src="/iconn/s24.png" alt="Saati Okuma" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
-                            <span className="truncate">Saati Okuma (Tam, Yarım, Çeyrek)</span>
+                        <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                          <div className="flex items-center gap-2.5 min-w-0">
+                            <img src="/MENUIKON/grid_icon_12.png" alt="Saati Okuma" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
+                            <span className="break-words text-sm sm:text-base md:text-lg">Saati Okuma (Tam, Yarım, Çeyrek)</span>
                           </div>
                           <img 
                             src="/icon_2.png" 
                             alt="2. Sınıf" 
-                            className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                            className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs" 
                           />
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                           {['saat_tam', 'saat_yarim', 'saat_ceyrek_gece', 'saat_ceyrek_kala'].map(key => {
                             const t = topics[key];
                             if (!t) return null;
@@ -4633,7 +4884,7 @@ export default function App() {
 
                     {/* 1. Sınıf En Alttaki Ek Başlıklar: Sayı & Şekil Örüntüsü, Uzunluk, Tartma, Paralarımız */}
                     {selectedGrade === 1 && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {['sayi_sekil_oruntusu', 'uzunluk_olcme', 'tartma', 'paralarimiz'].map(key => {
                           const t = topics[key];
                           if (!t) return null;
@@ -4656,18 +4907,18 @@ export default function App() {
                   <div className="space-y-5">
                     {/* Toplama İşlemi Group */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src="/iconn/s28.png" alt="Toplama" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
-                          <span className="truncate">{selectedGrade === 1 ? "Toplama İşlemleri (20 İçinde & Onluklar)" : "Toplama İşlemi"}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_22.png" alt="Toplama" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
+                          <span className="break-words text-sm sm:text-base md:text-lg">{selectedGrade === 1 ? "Toplama İşlemleri (20 İçinde & Onluklar)" : "Toplama İşlemi"}</span>
                         </div>
                         <img 
                           src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
                           alt="Sınıf" 
-                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                          className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs" 
                         />
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {(selectedGrade === 1
                           ? ['toplama_20_ici', 'toplama_onluk', 'verilmeyen_toplanan', 'zihinden_toplama', 'tek_islem_toplama_problemleri', 'iki_islem_toplama_problemleri']
                           : ['toplama_eldesiz_50', 'toplama_eldeli_50', 'verilmeyen_toplanani_bul', 'zihinden_toplama', 'tek_islem_toplama_problemleri', 'iki_islem_toplama_problemleri']
@@ -4689,18 +4940,18 @@ export default function App() {
 
                     {/* Çıkarma İşlemi Group */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src="/iconn/s33.png" alt="Çıkarma" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
-                          <span className="truncate">{selectedGrade === 1 ? "Çıkarma İşlemleri (20 İçinde & Onluklar)" : "Çıkarma İşlemi"}</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_30.png" alt="Çıkarma" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
+                          <span className="break-words text-sm sm:text-base md:text-lg">{selectedGrade === 1 ? "Çıkarma İşlemleri (20 İçinde & Onluklar)" : "Çıkarma İşlemi"}</span>
                         </div>
                         <img 
                           src={selectedGrade === 1 ? '/icon_1.png' : selectedGrade === 3 ? '/icon_3.png' : selectedGrade === 4 ? '/icon_4.png' : '/icon_2.png'} 
                           alt="Sınıf" 
-                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                          className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs" 
                         />
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {(selectedGrade === 1
                           ? ['cikarma_20_ici', 'cikarma_onluk', 'zihinden_cikarma', 'tek_islem_cikarma_problemleri', 'iki_islem_cikarma_problemleri']
                           : ['cikarma_onluksuz_50', 'cikarma_onluklu_50', 'zihinden_cikarma', 'tek_islem_cikarma_problemleri', 'iki_islem_cikarma_problemleri']
@@ -4721,7 +4972,7 @@ export default function App() {
                     </div>
 
                     {/* Karışık Toplama Çıkarma Problemleri */}
-                    <div className="grid grid-cols-1 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 gap-2 sm:gap-2.5 md:gap-3">
                       {['toplama_cikarma_problemleri'].map(key => {
                         const t = topics[key];
                         if (!t) return null;
@@ -4738,7 +4989,7 @@ export default function App() {
 
                     {/* Çarpma, Bölme ve Diğer İşlemler Cards (2. Sınıf) */}
                     {selectedGrade === 2 && (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {['ardisik_toplama', 'ritmik_carpim', 'esit_paylastirma', 'ardisik_cikarma', 'kalansiz_bolme'].map(key => {
                           const t = topics[key];
                           if (!t) return null;
@@ -4758,7 +5009,7 @@ export default function App() {
 
                 {/* 4. VERİ İŞLEME & ÖLÇME */}
                 {selectedCategoryId === 'olcme' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                     {(selectedGrade === 1
                       ? ['veri_grafik']
                       : ['veri_grafik', 'takvim_olcme']
@@ -4780,7 +5031,7 @@ export default function App() {
                 {/* 5. DİĞER OYUNLAR */}
                 {selectedCategoryId === 'diger_oyunlar' && (
                   <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {(selectedGrade === 1
                         ? [
                             'sureli_toplama_cikarma',
@@ -4822,7 +5073,7 @@ export default function App() {
                 {selectedCategoryId === 'g3_tema1' && (
                   <div className="space-y-5">
                     {/* Temel Sayı & Yuvarlama Konuları */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g3_uc_basamakli_okuma_yazma',
                         'g3_sayi_cozumleme',
@@ -4846,18 +5097,18 @@ export default function App() {
 
                     {/* Ritmik Saymalar Alt Başlığı & Konuları */}
                     <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
-                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-1.5 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2 mb-3">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <img src="/iconn/s17.png" alt="Ritmik Saymalar" className="w-7 h-7 object-contain filter drop-shadow-sm shrink-0" />
-                          <span className="truncate">Ritmik Saymalar (6, 7, 8, 9, 10 ve 100'er)</span>
+                      <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_23.png" alt="Ritmik Saymalar" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
+                          <span className="break-words text-sm sm:text-base md:text-lg">Ritmik Saymalar (6, 7, 8, 9, 10 ve 100'er)</span>
                         </div>
                         <img 
                           src="/icon_3.png" 
                           alt="3. Sınıf" 
-                          className="h-6 sm:h-7 w-auto object-contain shrink-0 filter drop-shadow-xs" 
+                          className="h-6 sm:h-7 md:h-8 w-auto object-contain shrink-0 filter drop-shadow-xs" 
                         />
                       </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                         {[
                           'g3_ritmik_6',
                           'g3_ritmik_7',
@@ -4882,7 +5133,7 @@ export default function App() {
                     </div>
 
                     {/* Tek-Çift ve Örüntü Konuları */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g3_tek_cift_20ye_kadar_islemler',
                         'g3_tek_cift_sayilar',
@@ -4906,7 +5157,7 @@ export default function App() {
 
                 {/* 3. SINIF TEMA 2: SAYILAR VE NİCELİKLER (2) */}
                 {selectedCategoryId === 'g3_tema2' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                     {[
                       'g3_birim_kesirler',
                       'g3_pay_payda_modelleme',
@@ -4931,7 +5182,7 @@ export default function App() {
 
                 {/* 3. SINIF TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                 {selectedCategoryId === 'g3_tema3' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                     {[
                       'g3_zihinden_toplama_cikarma_tahmin',
                       'g3_toplama_cikarma_problemleri',
@@ -4954,7 +5205,7 @@ export default function App() {
 
                 {/* 3. SINIF TEMA 4: NESNELERİN GEOMETRİSİ VE ÖLÇME */}
                 {selectedCategoryId === 'g3_tema4' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                     {[
                       'g3_geometrik_cisimler_ozellikleri',
                       'g3_temel_geometri_kavramlari',
@@ -4977,7 +5228,7 @@ export default function App() {
                 {/* 4. SINIF TEMA 1: SAYILAR VE NİCELİKLER (1) */}
                 {selectedCategoryId === 'g4_tema1' && (
                   <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g4_sayi_okuma_yazma',
                         'g4_basamak_ve_cozumleme',
@@ -5004,7 +5255,7 @@ export default function App() {
                 {/* 4. SINIF TEMA 2: SAYILAR VE NİCELİKLER (2) */}
                 {selectedCategoryId === 'g4_tema2' && (
                   <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g4_kesir_cesitleri_modelleme',
                         'g4_birim_kesirler_karsilastirma',
@@ -5030,7 +5281,7 @@ export default function App() {
                 {/* 4. SINIF TEMA 3: İŞLEMLERDEN CEBİRSEL DÜŞÜNMEYE */}
                 {selectedCategoryId === 'g4_tema3' && (
                   <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g4_dort_islem_toplama_cikarma',
                         'g4_carpma_islemi_3basamakli',
@@ -5056,7 +5307,7 @@ export default function App() {
                 {/* 4. SINIF TEMA 4: GEOMETRİ, VERİ VE OLASILIK */}
                 {selectedCategoryId === 'g4_tema4' && (
                   <div className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
                       {[
                         'g4_geometrik_cisimler',
                         'g4_cevre_uzunlugu',
@@ -5100,10 +5351,10 @@ export default function App() {
               </div>
               <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between gap-2.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
                 <div className="flex flex-col min-w-0">
-                  <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider truncate">
+                  <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider">
                     1. GRUP
                   </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-cyan-300 truncate">
+                  <span className="text-[10px] sm:text-xs font-bold text-cyan-300 break-words">
                     {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || 'Etkinlik'}
                   </span>
                 </div>
@@ -5115,8 +5366,8 @@ export default function App() {
               </div>
             </div>
 
-            {/* CENTER: COUNTDOWN TIMER BADGE IF TIMED MODE OR TIMED TOPIC */}
-            {(isTimedMode || isTimedTopic(currentTopic)) && (
+            {/* CENTER: COUNTDOWN TIMER BADGE IF TIMED TOPIC (SINGLE PLAYER) */}
+            {isTimedTopic(currentTopic) && (
               <div className={`backdrop-blur-xl border-2 sm:border-3 rounded-2xl px-3 sm:px-4.5 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 font-black text-xs sm:text-base transition-all shrink-0 ${
                 questionTimeLeft <= 3 
                   ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-4 ring-rose-500/60 scale-105 shadow-[0_0_22px_rgba(244,63,94,0.9)] animate-pulse' 
@@ -5149,27 +5400,22 @@ export default function App() {
             </div>
           </div>
 
-          {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER */}
-          <div className="relative flex-1 rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-3 sm:p-6 my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-[160px] sm:min-h-[220px]">
+          {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER WITH AUTO-FIT SCALING */}
+          <div className="relative flex-1 rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-2 sm:p-4 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0">
             {/* Glossy top-light reflection */}
             <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-3xl" />
 
-            <div className="relative z-10 flex flex-col items-center justify-center text-center w-full px-1 sm:px-4 max-h-full overflow-y-auto no-scrollbar">
-              {currentQuestionData?.questionHTML ? (
-                <div 
-                  dangerouslySetInnerHTML={{ __html: currentQuestionData.questionHTML }} 
-                  className={`question-visual-box drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white w-full flex flex-col items-center justify-center min-h-0 ${getDynamicQuestionFontClass(currentQuestionData.question || '', true, 1)}`} 
-                />
-              ) : (
-                <div className={`my-auto text-white tracking-wide drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_6px_#000,_0_4px_14px_rgba(0,0,0,0.9)] px-2 py-1 max-w-full text-center ${getDynamicQuestionFontClass(currentQuestionData?.question || '', false, 1)}`}>
-                  {currentQuestionData?.question}
-                </div>
-              )}
+            <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
+              <AutoFitQuestionBox
+                questionHTML={currentQuestionData?.questionHTML}
+                questionText={currentQuestionData?.question}
+                mode={1}
+              />
             </div>
           </div>
 
           {/* BOTTOM: 2x2 OPTIONS GRID WITH VIBRANT GLOSSY CANDY BUTTONS */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3.5 w-full shrink-0">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full shrink-0">
             {(() => {
               const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 1);
               const OPTION_COLOR_THEMES = [
@@ -5212,7 +5458,7 @@ export default function App() {
                     key={idx}
                     onClick={() => handleAnswer(opt)}
                     disabled={feedbackState !== 'none'}
-                    className={`relative group w-full py-5 sm:py-7 px-3 min-h-[78px] sm:min-h-[99px] rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
+                    className={`relative group w-full py-3.5 sm:py-4.5 px-3 min-h-[56px] sm:min-h-[70px] rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
                   >
                     {/* Subtle top glare in button */}
                     <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
@@ -5229,45 +5475,38 @@ export default function App() {
 
       {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU - ŞEFFAF GLASSMORPHISM) */}
       {gameState === 'playing' && playerCountMode > 1 && (
-        <div className="flex-1 flex flex-col p-2 sm:p-3 w-full h-full overflow-hidden min-h-0 relative z-10 max-w-7xl mx-auto">
-          {/* COMMON TOP BAR: SLEEK GLASS CAPSULES */}
-          <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
-            <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
+        <div className="flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 max-w-7xl mx-auto">
+          {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
+            <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
               ⚔️ {playerCountMode} OYUNCU DÜELLO
             </span>
-            <div className="flex-1 min-w-0 text-center px-2 flex items-center justify-center gap-2">
-              <div className="inline-flex items-center justify-center gap-2 max-w-full bg-slate-950/80 backdrop-blur-xl border-2 border-cyan-400/50 rounded-xl sm:rounded-2xl px-4 sm:px-8 py-1.5 sm:py-2 shadow-[0_0_20px_rgba(6,182,212,0.3)]">
-                <h2 className="text-xs sm:text-sm md:text-base font-black text-white uppercase tracking-wider truncate drop-shadow-md">
+            <div className="flex-1 min-w-0 text-center px-1.5 flex items-center justify-center gap-1.5">
+              <div className="inline-flex items-center justify-center gap-1.5 max-w-full bg-slate-950/85 backdrop-blur-xl border border-cyan-400/50 rounded-xl px-3 sm:px-6 py-1 shadow-[0_0_16px_rgba(6,182,212,0.3)]">
+                <h2 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider break-words drop-shadow-md">
                   {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || ''}
                 </h2>
                 <img 
                   src={getGradeIconForTopic(currentTopic, selectedGrade)} 
                   alt="Sınıf" 
-                  className="h-5 sm:h-6 md:h-7 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
+                  className="h-4 sm:h-5 w-auto object-contain shrink-0 filter drop-shadow-sm ml-1" 
                 />
               </div>
-
-              {/* MULTI-PLAYER TIMER BADGE */}
-              {(isTimedMode || isTimedTopic(currentTopic)) && (
-                <div className={`backdrop-blur-xl border-2 rounded-xl sm:rounded-2xl px-2.5 sm:px-4 py-1.5 flex items-center gap-1.5 font-black text-xs sm:text-base transition-all shrink-0 ${
-                  questionTimeLeft <= 3 
-                    ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-3 ring-rose-500/60 scale-105 shadow-[0_0_20px_rgba(244,63,94,0.9)] animate-pulse' 
-                    : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
-                }`}>
-                  <span className={`text-sm sm:text-lg ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
-                  <span className="font-mono text-xs sm:text-base font-black tracking-wider">
-                    {questionTimeLeft}s
-                  </span>
-                </div>
-              )}
             </div>
-            <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-[0_0_15px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
+            <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
               🎯 HEDEF: 10 PUAN
             </span>
           </div>
 
+          {/* BASKETBALL RACE TRACK: 2 VE 3 KİŞİLİK YARIŞ PARKURU */}
+          <BasketballRaceTrack
+            players={players}
+            playerCountMode={playerCountMode}
+            targetScore={10}
+          />
+
           {/* SPLIT SCREEN GRID FOR 2 OR 3 PLAYERS */}
-          <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
+          <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3 w-full min-h-0 overflow-y-auto no-scrollbar`}>
             {players.map((p, pIdx) => {
               // Group color schemes based on user reference: 1 = Blue/Cyan, 2 = Pink/Magenta, 3 = Emerald/Green
               const groupTheme = pIdx === 0 
@@ -5300,26 +5539,38 @@ export default function App() {
                   className={`relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
                 >
                   {/* PLAYER HEADER BAR */}
-                  <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+                  <div className="flex items-center justify-between z-10 shrink-0 w-full mb-0.5 sm:mb-1">
                     {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
-                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-sm sm:text-base flex items-center justify-center shrink-0`}>
+                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
                       {pIdx + 1}
                     </div>
 
-                    {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
-                    <div className="flex-1 ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl sm:rounded-2xl px-3 py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
-                      <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
+                    {/* CONNECTED GLASS CAPSULE FOR GROUP NAME, INDIVIDUAL TIMER & SCORE */}
+                    <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
+                      <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
                         {pIdx + 1}. GRUP
                       </span>
 
+                      {/* INDIVIDUAL PLAYER COUNTDOWN TIMER */}
+                      {isTimedTopic(currentTopic) && p.lives > 0 && (
+                        <div className={`px-1.5 sm:px-2 py-0.5 rounded-lg border font-mono font-black text-[11px] sm:text-xs flex items-center gap-1 shrink-0 transition-all ${
+                          (p.timeLeft ?? 10) <= 3
+                            ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/80 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]'
+                            : 'bg-slate-900/90 border-amber-400/80 text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                        }`}>
+                          <span className={`text-[11px] sm:text-xs ${(p.timeLeft ?? 10) <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
+                          <span>{p.timeLeft ?? 10}s</span>
+                        </div>
+                      )}
+
                       {/* RIGHT: SCORE & HEARTS */}
-                      <div className="flex items-center gap-2 shrink-0">
-                        <span className="bg-white/15 text-white font-black text-[11px] sm:text-xs px-2 py-0.5 rounded-lg shadow-sm">
+                      <div className="flex items-center gap-1.5 shrink-0">
+                        <span className="bg-white/15 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
                           {p.score} / 10
                         </span>
                         <div className="flex items-center gap-0.5">
                           {Array.from({ length: 3 }).map((_, i) => (
-                            <span key={i} className={`text-xs sm:text-sm transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
+                            <span key={i} className={`text-[11px] sm:text-xs transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
                               ❤️
                             </span>
                           ))}
@@ -5329,7 +5580,7 @@ export default function App() {
                   </div>
 
                   {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
-                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-2 sm:p-3.5 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[135px] sm:min-h-[165px]">
+                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-1.5 sm:p-2.5 my-0.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0">
                     {/* Top glare effect */}
                     <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
@@ -5344,17 +5595,12 @@ export default function App() {
                         </div>
                       </div>
                     ) : (
-                      <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-y-auto no-scrollbar">
-                        {p.currentQuestionData?.questionHTML ? (
-                          <div 
-                            dangerouslySetInnerHTML={{ __html: p.currentQuestionData.questionHTML }} 
-                            className={`question-visual-box multi-player-${playerCountMode} drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white w-full flex flex-col items-center justify-center min-h-0 ${getDynamicQuestionFontClass(p.currentQuestionData.question || '', true, playerCountMode)}`} 
-                          />
-                        ) : (
-                          <div className={`my-auto text-white tracking-wide drop-shadow-[0_4px_10px_rgba(0,0,0,0.95)] [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)] px-1 py-0.5 max-w-full text-center ${getDynamicQuestionFontClass(p.currentQuestionData?.question || '', false, playerCountMode)}`}>
-                            {p.currentQuestionData?.question}
-                          </div>
-                        )}
+                      <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
+                        <AutoFitQuestionBox
+                          questionHTML={p.currentQuestionData?.questionHTML}
+                          questionText={p.currentQuestionData?.question}
+                          mode={playerCountMode}
+                        />
                       </div>
                     )}
                   </div>
@@ -5365,8 +5611,8 @@ export default function App() {
                       {(() => {
                         const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode);
                         const optHeightClasses = playerCountMode === 3
-                          ? "py-3 sm:py-4 px-1.5 min-h-[55px] sm:min-h-[67px]"
-                          : "py-3.5 sm:py-5 px-2 min-h-[65px] sm:min-h-[78px]";
+                          ? "py-1 px-1 min-h-[34px] sm:min-h-[38px]"
+                          : "py-1.5 px-1.5 min-h-[37px] sm:min-h-[42px]";
 
                         return p.shuffledOptions.map((opt, oIdx) => {
                           const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
@@ -5730,6 +5976,8 @@ export default function App() {
             statsData={statsData}
             groupStatsData={groupStatsData}
             topics={topics}
+            topic3DIcons={TOPIC_3D_ICONS}
+            activeGrade={selectedGrade || 2}
             openedTopics={openedTopics}
             unlockedBadges={unlockedBadges}
             badgeCounts={badgeCounts}
@@ -5789,13 +6037,27 @@ export default function App() {
 
 
       {/* 3D GEOMETRY INTERACTIVE LAB MODAL */}
-      {show3DLab && <Geometry3DLab onClose={() => setShow3DLab(false)} />}
+      {show3DLab && (
+        <Geometry3DLab
+          onClose={() => {
+            setShow3DLab(false);
+            if (openedFromOtherGamesModal || selectedGrade === null) {
+              setShowOtherGamesModal(true);
+            }
+          }}
+        />
+      )}
 
       {/* GEOBOARD ACTIVITY MODAL */}
       {showGeoboard && (
         <GeoboardActivity
           grade={selectedGrade === 1 ? 1 : 2}
-          onClose={() => setShowGeoboard(false)}
+          onClose={() => {
+            setShowGeoboard(false);
+            if (openedFromOtherGamesModal || selectedGrade === null) {
+              setShowOtherGamesModal(true);
+            }
+          }}
           playMp3={playMp3}
         />
       )}
@@ -5803,33 +6065,83 @@ export default function App() {
       {/* DİĞER OYUNLAR ANA SEÇİM HUB MODAL */}
       {showOtherGamesModal && !showXOXGame && !wordGameType && !show3DLab && !showGeoboard && (
         <OtherGamesHub
-          onClose={() => setShowOtherGamesModal(false)}
-          onOpenXOX={() => setShowXOXGame(true)}
-          onOpenZitAnlam={() => {
+          onClose={() => {
             setShowOtherGamesModal(false);
+            setOpenedFromOtherGamesModal(false);
+          }}
+          onOpenXOX={() => {
+            setOpenedFromOtherGamesModal(true);
+            setShowXOXGame(true);
+          }}
+          onOpenZitAnlam={() => {
+            setOpenedFromOtherGamesModal(true);
             setWordGameType('zit_anlam');
           }}
           onOpenEsAnlam={() => {
-            setShowOtherGamesModal(false);
+            setOpenedFromOtherGamesModal(true);
             setWordGameType('es_anlam');
           }}
-          onOpen3DLab={() => setShow3DLab(true)}
+          onOpen3DLab={() => {
+            setOpenedFromOtherGamesModal(true);
+            setShow3DLab(true);
+          }}
           onOpenGeoboard={() => {
-            setShowOtherGamesModal(false);
+            setOpenedFromOtherGamesModal(true);
             setShowGeoboard(true);
           }}
           playMp3={playMp3}
         />
       )}
 
+      {/* İNGİLİZCE OYUNLAR ANA SEÇİM HUB MODAL */}
+      {showEnglishGamesModal && !wordGameType && (
+        <EnglishGamesHub
+          onClose={() => {
+            setShowEnglishGamesModal(false);
+          }}
+          onOpenWordGame={() => {
+            setWordGameType('ingilizce');
+          }}
+          playMp3={playMp3}
+        />
+      )}
+
       {/* XOX GAME MODAL */}
-      {showXOXGame && <XOXGame onClose={() => setShowXOXGame(false)} playMp3={playMp3} />}
+      {showXOXGame && (
+        <XOXGame
+          onClose={() => {
+            setShowXOXGame(false);
+            if (openedFromOtherGamesModal || selectedGrade === null) {
+              setShowOtherGamesModal(true);
+            }
+          }}
+          playMp3={playMp3}
+        />
+      )}
 
       {/* ZIT ANLAM, EŞ ANLAM & İNGİLİZCE KELİME OYUNU MODAL */}
       {wordGameType !== null && (
         <WordGameModal
           gameType={wordGameType}
-          onClose={() => setWordGameType(null)}
+          onClose={() => {
+            const isEnglish = wordGameType === 'ingilizce';
+            const wasOtherGame = openedFromOtherGamesModal || wordGameType === 'zit_anlam' || wordGameType === 'es_anlam';
+            setWordGameType(null);
+            if (isEnglish) {
+              setShowEnglishGamesModal(true);
+            } else if (wasOtherGame) {
+              setShowOtherGamesModal(true);
+            }
+          }}
+          onGoHome={() => {
+            setWordGameType(null);
+            setShowEnglishGamesModal(false);
+            setShowOtherGamesModal(false);
+            setOpenedFromOtherGamesModal(false);
+            setSelectedGrade(null);
+            setSelectedCategoryId(null);
+            setGameState('welcome');
+          }}
           playMp3={playMp3}
           playerCountMode={playerCountMode}
           onSwitchPlayerCountMode={switchPlayerCountMode}
