@@ -57,6 +57,22 @@ export const AutoFitQuestionBox: React.FC<AutoFitQuestionBoxProps> = ({
       }
     });
 
+    // Check horizontal flex containers or multi-child rows for true physical span
+    const flexContainers = measureEl.querySelectorAll('.flex-nowrap, [class*="flex-nowrap"], .flex');
+    flexContainers.forEach((containerEl) => {
+      const children = Array.from(containerEl.children).filter(
+        c => (c as HTMLElement).offsetWidth > 0 || (c as HTMLElement).getBoundingClientRect().width > 0
+      );
+      if (children.length > 1) {
+        const firstRect = children[0].getBoundingClientRect();
+        const lastRect = children[children.length - 1].getBoundingClientRect();
+        const rowSpan = (lastRect.right - firstRect.left) / currentScale;
+        if (rowSpan > trueNaturalWidth) {
+          trueNaturalWidth = rowSpan;
+        }
+      }
+    });
+
     if (trueNaturalWidth <= 0 || trueNaturalHeight <= 0) return;
 
     // Margins based on user instruction:
@@ -76,16 +92,16 @@ export const AutoFitQuestionBox: React.FC<AutoFitQuestionBoxProps> = ({
     // User directive: In multiplayer (mode 2 & 3), keep font size consistent across player groups
     // Avoid wildly enlarging simple questions while shrinking adjacent players
     const maxEnlargeScale = mode === 1 ? 1.35 : mode === 2 ? 1.1 : 1.05;
-    const minShrinkScale = mode === 3 ? 0.6 : mode === 2 ? 0.55 : 0.6;
+    const minShrinkScale = mode === 3 ? 0.45 : mode === 2 ? 0.5 : 0.55;
 
     if (computedScale > 1.02) {
       // Content has surplus room: gently enlarge if allowed, but keep player groups consistent
       computedScale = Math.min(computedScale, maxEnlargeScale);
-    } else if (computedScale >= 0.88) {
-      // Comfortably fits natural size: do NOT shrink! Keep at 100% for uniform readability
+    } else if (computedScale >= 0.99) {
+      // Fits natural size comfortably without any overflow: keep at 100% natural size
       computedScale = 1;
     } else {
-      // Content overflows the frame: shrink gracefully down to minShrinkScale
+      // Content overflows the frame (computedScale < 0.99): shrink gracefully so it never spills past borders
       computedScale = Math.max(minShrinkScale, computedScale * 0.985);
     }
 

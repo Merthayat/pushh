@@ -189,7 +189,10 @@ function getDynamicOptionFontClass(
   options: (string | number)[] = [],
   mode: 1 | 2 | 3 = 1
 ): string {
-  const maxLen: number = options.reduce<number>((max, opt) => Math.max(max, String(opt ?? '').trim().length), 0);
+  const maxLen: number = options.reduce<number>((max, opt) => {
+    const clean = String(opt ?? '').replace(/<[^>]*>/g, '').trim();
+    return Math.max(max, clean.length);
+  }, 0);
 
   if (mode === 1) {
     if (maxLen <= 2) return "text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black";
@@ -5556,9 +5559,16 @@ export default function App() {
                   >
                     {/* Subtle top glare in button */}
                     <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
-                    <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
-                      {opt}
-                    </span>
+                    {typeof opt === 'string' && opt.includes('<') ? (
+                      <span
+                        className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
+                        dangerouslySetInnerHTML={{ __html: opt }}
+                      />
+                    ) : (
+                      <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
+                        {opt}
+                      </span>
+                    )}
                   </button>
                 );
               });
@@ -5719,9 +5729,16 @@ export default function App() {
                           >
                             {/* Inner top glare */}
                             <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                            <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                              {opt}
-                            </span>
+                            {typeof opt === 'string' && opt.includes('<') ? (
+                              <span
+                                className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
+                                dangerouslySetInnerHTML={{ __html: opt }}
+                              />
+                            ) : (
+                              <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                                {opt}
+                              </span>
+                            )}
                           </button>
                         );
                       })}

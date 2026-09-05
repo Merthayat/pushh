@@ -191,12 +191,32 @@
   flex-wrap: nowrap !important;
   justify-content: center !important;
   gap: 0.25rem !important;
+  max-width: 98% !important;
 }
 .question-visual-box.multi-player-3 .flex-nowrap {
-  gap: 0.15rem 0.25rem !important;
+  gap: 0.12rem 0.18rem !important;
+  max-width: 98% !important;
+}
+.question-visual-box.multi-player-3 .flex-nowrap > span,
+.question-visual-box.multi-player-3 .flex-nowrap > div {
+  padding-left: 0.35rem !important;
+  padding-right: 0.35rem !important;
+  padding-top: 0.15rem !important;
+  padding-bottom: 0.15rem !important;
+  font-size: 0.78rem !important;
+  line-height: 1.1 !important;
 }
 .question-visual-box.multi-player-2 .flex-nowrap {
-  gap: 0.25rem 0.35rem !important;
+  gap: 0.2rem 0.28rem !important;
+  max-width: 98% !important;
+}
+.question-visual-box.multi-player-2 .flex-nowrap > span,
+.question-visual-box.multi-player-2 .flex-nowrap > div {
+  padding-left: 0.45rem !important;
+  padding-right: 0.45rem !important;
+  padding-top: 0.2rem !important;
+  padding-bottom: 0.2rem !important;
+  font-size: 0.88rem !important;
 }
 
 /* Formula & Math Banner auto-fit across multi-player modes */

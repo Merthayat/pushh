@@ -887,9 +887,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `6'şar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -967,9 +967,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `7'şer ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -1047,9 +1047,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `8'er ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -1127,9 +1127,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `9'ar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -1206,9 +1206,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `10'ar ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -1295,9 +1295,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           question: `100'er ${isGeri ? 'geriye' : 'ileriye'} ritmik saymada [${gorunum.join(' - ')}] soru işareti yerine hangi sayı gelmelidir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+              <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
                 ${gorunum.map(item => `
-                  <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                  <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                     ${item}
                   </span>
                 `).join('')}
@@ -1367,9 +1367,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         question: `Ritmik saymada soru işareti yerine hangi sayı gelmelidir? [${gorunum.join(' - ')}]`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
               ${gorunum.map(item => `
-                <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-lg sm:rounded-xl ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-xs xs:text-sm sm:text-base md:text-lg whitespace-nowrap shrink-0">
+                <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1 rounded-lg ${item === '❓' ? 'bg-amber-400 text-slate-950 font-black scale-105 shadow-[0_4px_10px_rgba(0,0,0,0.5)] border-2 border-white' : 'bg-slate-900/90 text-white font-black border border-slate-600 shadow-md'} text-[11px] xs:text-xs sm:text-sm md:text-base whitespace-nowrap shrink-0">
                   ${item}
                 </span>
               `).join('')}
@@ -1545,9 +1545,9 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         question: `Örüntüde sıradaki sayı kaçtır? [${dizi.join(', ')}, ?]`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5 text-center">
-            <div class="flex items-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap justify-center max-w-full overflow-hidden my-0.5">
-              ${dizi.map(n => `<span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-blue-900 text-white font-black text-xs xs:text-sm sm:text-base border border-blue-400 shadow-md shrink-0">${n}</span>`).join('')}
-              <span class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base border-2 border-white shadow-md animate-pulse shrink-0">?</span>
+            <div class="flex items-center gap-1 xs:gap-1.5 flex-nowrap justify-center max-w-full my-0.5">
+              ${dizi.map(n => `<span class="px-1.5 py-0.5 xs:px-2 xs:py-1 rounded-lg bg-blue-900 text-white font-black text-[11px] xs:text-xs sm:text-sm border border-blue-400 shadow-md shrink-0">${n}</span>`).join('')}
+              <span class="px-1.5 py-0.5 xs:px-2 xs:py-1 rounded-lg bg-amber-400 text-slate-950 font-black text-[11px] xs:text-xs sm:text-sm border-2 border-white shadow-md animate-pulse shrink-0">?</span>
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
               Kuralı keşfederek <span class="text-amber-300 underline decoration-amber-400 font-black">soru işareti (?)</span> yerine gelecek sayıyı bulunuz:

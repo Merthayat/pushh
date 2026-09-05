@@ -153,6 +153,41 @@ export const MISSIONS: ShapeMission[] = [
   }
 ];
 
+export const MISSIONS_GRADE_1: ShapeMission[] = [
+  MISSIONS[0], // Kare Oluştur
+  MISSIONS[1], // Üçgen Oluştur
+  MISSIONS[2], // Dikdörtgen Oluştur
+  MISSIONS[3], // Sivri Üçgen Oluştur
+  MISSIONS[4], // Küçük Kare
+  MISSIONS[5], // Dikey Dikdörtgen
+  MISSIONS[6], // Büyük Kare
+  MISSIONS[7], // Geniş Çadır Üçgen
+  {
+    id: 9,
+    targetType: 'dikdortgen',
+    title: 'Geniş Dikdörtgen',
+    instruction: 'Noktaları birleştirerek geniş bir DİKDÖRTGEN çiz!',
+    speechText: 'Noktaları birleştirerek geniş bir dikdörtgen çiz!',
+    icon: '🟨',
+    color: 'from-violet-500 to-fuchsia-600',
+    sampleGhostPoints: [
+      { x: 0, y: 1 }, { x: 4, y: 1 }, { x: 4, y: 3 }, { x: 0, y: 3 }, { x: 0, y: 1 }
+    ]
+  },
+  {
+    id: 10,
+    targetType: 'herhangi',
+    title: 'Serbest Çizim Ustası',
+    instruction: 'İstediğin geometrik şekli (kare, üçgen veya dikdörtgen) özgürce tahta üzerine çiz!',
+    speechText: 'İstediğin geometrik şekli tahta üzerine çiz!',
+    icon: '🎨',
+    color: 'from-fuchsia-500 to-pink-600',
+    sampleGhostPoints: [
+      { x: 1, y: 1 }, { x: 3, y: 1 }, { x: 3, y: 3 }, { x: 1, y: 3 }, { x: 1, y: 1 }
+    ]
+  }
+];
+
 export const COLOR_PALETTE = [
   { name: 'Sarı', hex: '#fbbf24', glow: 'rgba(251,191,36,0.7)', bg: 'from-amber-400 to-yellow-500' },
   { name: 'Yeşil', hex: '#22c55e', glow: 'rgba(34,197,94,0.7)', bg: 'from-emerald-400 to-green-600' },
@@ -338,7 +373,8 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   const [isGameCompleted, setIsGameCompleted] = useState<boolean>(false);
 
   const boardRef = useRef<HTMLDivElement | null>(null);
-  const currentMission = MISSIONS[missionIndex] || MISSIONS[0];
+  const activeMissions = grade === 1 ? MISSIONS_GRADE_1 : MISSIONS;
+  const currentMission = activeMissions[missionIndex] || activeMissions[0];
   const selectedColor = COLOR_PALETTE[selectedColorIndex] || COLOR_PALETTE[0];
 
   // TTS Sesli Okuma
@@ -545,7 +581,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
 
       // 1.8 sn sonra sonraki göreve geç
       setTimeout(() => {
-        if (missionIndex < MISSIONS.length - 1) {
+        if (missionIndex < activeMissions.length - 1) {
           setMissionIndex(m => m + 1);
         } else {
           setIsGameCompleted(true);
@@ -625,7 +661,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
             <span className="text-2xl">{currentMission.icon}</span>
             <div>
               <div className="text-xs font-extrabold text-amber-300 flex items-center gap-1">
-                <span>GÖREV {missionIndex + 1}/{MISSIONS.length}</span>
+                <span>GÖREV {missionIndex + 1}/{activeMissions.length}</span>
                 {completedMissions.includes(currentMission.id) && (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline" />
                 )}

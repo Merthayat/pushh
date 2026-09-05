@@ -363,9 +363,9 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         question: `${karisik.map(n => n.toLocaleString('tr-TR')).join(', ')} sayılarının ${buyuktenKucuge ? 'büyükten küçüğe' : 'küçükten büyüğe'} doğru sıralanışı hangisidir?`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+            <div class="flex flex-wrap items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 max-w-full my-0.5 px-1">
               ${karisik.map(n => `
-                <span class="px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-slate-900/90 border border-amber-400 text-amber-300 font-black text-[11px] xs:text-xs sm:text-sm md:text-base shadow-sm shrink-0 whitespace-nowrap">
+                <span class="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-slate-900/90 border border-amber-400 text-amber-300 font-black text-[11px] xs:text-xs sm:text-sm shadow-sm shrink-0 whitespace-nowrap">
                   ${n.toLocaleString('tr-TR')}
                 </span>
               `).join('')}
@@ -468,9 +468,9 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
       const sequenceHTML = dizi.map((val, idx) => {
         if (idx === boslukIndex) {
-          return `<div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-11 sm:h-11 rounded-lg sm:rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 border-2 border-white text-blue-950 font-black flex items-center justify-center shadow-lg animate-pulse text-sm xs:text-base sm:text-xl ring-2 ring-amber-300 shrink-0">❓</div>`;
+          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-orange-500 border-2 border-white text-blue-950 font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-base shrink-0">❓</div>`;
         }
-        return `<div class="px-1.5 py-0.5 xs:px-2 xs:py-1 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl bg-slate-900/90 border border-cyan-400 text-cyan-300 font-black text-[11px] xs:text-xs sm:text-sm md:text-base shadow-sm shrink-0 text-center">${val.toLocaleString('tr-TR')}</div>`;
+        return `<div class="px-1 py-0.5 xs:px-1.5 xs:py-0.5 sm:px-2 sm:py-1 rounded-lg bg-slate-900/90 border border-cyan-400 text-cyan-300 font-black text-[10px] xs:text-[11px] sm:text-xs md:text-sm shadow-sm shrink-0 text-center">${val.toLocaleString('tr-TR')}</div>`;
       }).join('');
 
       const yanlislar = [
@@ -484,7 +484,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         question: `Ritmik sayma zincirinde soru işareti (❓) yerine hangi sayı gelmelidir?`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
               ${sequenceHTML}
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
@@ -518,9 +518,9 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
       const sequenceHTML = dizi.map((val, idx) => {
         if (idx === boslukIndex) {
-          return `<div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl bg-gradient-to-tr from-pink-500 to-rose-600 border-2 border-white text-white font-black flex items-center justify-center shadow-lg animate-pulse text-sm xs:text-base sm:text-xl shrink-0">❓</div>`;
+          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-pink-500 to-rose-600 border-2 border-white text-white font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-base shrink-0">❓</div>`;
         }
-        return `<div class="px-2 py-1 xs:px-2.5 xs:py-1.5 rounded-lg sm:rounded-xl bg-slate-800 border border-white/60 text-white font-black text-xs xs:text-sm sm:text-base shadow-md shrink-0">${val}</div>`;
+        return `<div class="px-1.5 py-0.5 xs:px-2 xs:py-1 rounded-lg bg-slate-800 border border-white/60 text-white font-black text-[11px] xs:text-xs sm:text-sm shadow-md shrink-0">${val}</div>`;
       }).join('');
 
       const yanlislar = [dogru + artis, dogru - artis, dogru + artis * 2, dogru - 1].filter(y => y !== dogru && y > 0).slice(0, 3);
@@ -529,7 +529,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         question: `Örüntüde soru işareti yerine hangi sayı gelmelidir?`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden my-0.5">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 flex-nowrap max-w-full my-0.5">
               ${sequenceHTML}
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
