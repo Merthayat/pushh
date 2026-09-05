@@ -69,19 +69,21 @@ function getNesneIyelik(nesne: string): string {
 }
 
 function benzersizYanlislar(correct: number, adaylar: number[], minVal = 0): number[] {
+  // İlkokul müfredatında eksi sayı kavramı yoktur: adaylar ve sonuçlar daima pozitif olmalıdır!
+  const safeMin = Math.max(0, minVal);
   const sonuc: number[] = [];
   const gorulen = new Set<number>([correct]);
   for (const aday of adaylar) {
     if (sonuc.length === 3) break;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
   }
   let ek = 1;
   while (sonuc.length < 3) {
-    const aday = correct + ek;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    const aday = Math.max(safeMin, correct) + ek;
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
@@ -1332,8 +1334,21 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         dogru = elma + muz;
         soru = `Elma ve Muz seven çocukların toplamı kaçtır?`;
       } else {
-        dogru = elma - muz;
-        soru = `Elma sevenler, Muz sevenlerden kaç fazladır?`;
+        // Her zaman çok olandan az olanı çıkarıyoruz ki fark daima pozitif olsun (eksi sayı kavramı yok)
+        let meyve1 = "Elma";
+        let meyve2 = "Muz";
+        let sayi1 = elma;
+        let sayi2 = muz;
+        if (muz > elma) {
+          meyve1 = "Muz";
+          meyve2 = "Elma";
+          sayi1 = muz;
+          sayi2 = elma;
+        } else if (elma === muz) {
+          sayi1 = elma + 2;
+        }
+        dogru = sayi1 - sayi2;
+        soru = `${meyve1} sevenler, ${meyve2} sevenlerden kaç fazladır?`;
       }
 
       return {
@@ -1351,7 +1366,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
           </div>
         `,
         correct: dogru,
-        wrong: benzersizYanlislar(dogru, [dogru + 1, dogru - 1, dogru + 2, dogru - 2], 0),
+        wrong: benzersizYanlislar(dogru, [dogru + 1, dogru - 1, dogru + 2, dogru + 3].filter(n => n > 0), 1),
         isLong: false
       };
     }
@@ -1506,8 +1521,74 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const eklenen = Math.floor(Math.random() * 4) + 1; // 1..4
       const sonuc = merkez + eklenen;
 
+      // 8 dilimli renkli matematik çarkı SVG tasarımı
+      const slices = [
+        { label: `+${eklenen}`, color: '#EF4444' },
+        { label: '+1', color: '#F59E0B' },
+        { label: '+2', color: '#10B981' },
+        { label: '+3', color: '#06B6D4' },
+        { label: '+4', color: '#3B82F6' },
+        { label: '+5', color: '#6366F1' },
+        { label: '+6', color: '#8B5CF6' },
+        { label: '+7', color: '#EC4899' },
+      ];
+
+      const wheelSVG = `
+        <svg viewBox="0 0 200 200" class="w-28 h-28 xs:w-32 xs:h-32 sm:w-36 sm:h-36 filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.7)] mx-auto">
+          <defs>
+            <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#1E293B" />
+              <stop offset="100%" stop-color="#020617" />
+            </radialGradient>
+          </defs>
+          <!-- Outer Wheel Rim -->
+          <circle cx="100" cy="100" r="96" fill="#0F172A" stroke="#FBBF24" stroke-width="4" />
+          <!-- 8 Wheel Wedges -->
+          <!-- Top Slice: -112.5 deg to -67.5 deg (Center at -90 deg, Top pointer) -->
+          <path d="M 100 100 L 64.4 11.8 A 94 94 0 0 1 135.6 11.8 Z" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 135.6 11.8 A 94 94 0 0 1 188.2 64.4 Z" fill="#F59E0B" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 188.2 64.4 A 94 94 0 0 1 188.2 135.6 Z" fill="#10B981" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 188.2 135.6 A 94 94 0 0 1 135.6 188.2 Z" fill="#06B6D4" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 135.6 188.2 A 94 94 0 0 1 64.4 188.2 Z" fill="#3B82F6" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 64.4 188.2 A 94 94 0 0 1 11.8 135.6 Z" fill="#6366F1" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 11.8 135.6 A 94 94 0 0 1 11.8 64.4 Z" fill="#8B5CF6" stroke="#FFFFFF" stroke-width="1.5" />
+          <path d="M 100 100 L 11.8 64.4 A 94 94 0 0 1 64.4 11.8 Z" fill="#EC4899" stroke="#FFFFFF" stroke-width="1.5" />
+          <!-- Labels on Wedges -->
+          <text x="100" y="44" text-anchor="middle" fill="#FFFFFF" font-size="15" font-weight="900" filter="drop-shadow(0 2px 3px rgba(0,0,0,0.9))">+${eklenen}</text>
+          <text x="146" y="62" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+1</text>
+          <text x="162" y="106" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+2</text>
+          <text x="146" y="148" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+3</text>
+          <text x="100" y="166" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+4</text>
+          <text x="54" y="148" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+5</text>
+          <text x="38" y="106" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+6</text>
+          <text x="54" y="62" text-anchor="middle" fill="#FFFFFF" font-size="12" font-weight="bold">+7</text>
+          <!-- Center Wheel Hub -->
+          <circle cx="100" cy="100" r="32" fill="url(#hubGrad)" stroke="#FBBF24" stroke-width="3.5" />
+          <text x="100" y="93" text-anchor="middle" fill="#94A3B8" font-size="9" font-weight="800" letter-spacing="1">MERKEZ</text>
+          <text x="100" y="113" text-anchor="middle" fill="#FDE047" font-size="20" font-weight="900">${merkez}</text>
+          <!-- Pointer / İbre (Arrow pointing to top slice) -->
+          <polygon points="100,24 88,4 112,4" fill="#FACC15" stroke="#000000" stroke-width="2" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.8))" />
+          <circle cx="100" cy="6" r="4" fill="#EF4444" stroke="#FFFFFF" stroke-width="1.5" />
+        </svg>
+      `;
+
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 my-auto w-full px-1 text-center">
+          ${wheelSVG}
+          <div class="flex items-center justify-center gap-2 my-0.5">
+            <span class="px-3.5 py-1 rounded-xl bg-slate-900/95 border-2 border-amber-400 text-amber-300 font-black text-sm xs:text-base sm:text-lg shadow-md whitespace-nowrap">
+              ${merkez} + ${eklenen} = ❓
+            </span>
+          </div>
+          <div class="text-xs xs:text-sm sm:text-base font-black text-white text-center leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] px-2">
+            🎡 Çarkın ortasındaki <span class="text-amber-300 font-black">${merkez}</span> sayısına ibrenin gösterdiği <span class="text-cyan-300 font-black">+${eklenen}</span> eklenirse ibre kaçı gösterir?
+          </div>
+        </div>
+      `;
+
       return {
         question: `🎡 Çarkın ortasındaki ${merkez} sayısına ${eklenen} eklenirse ibre kaçı gösterir?`,
+        questionHTML,
         correct: sonuc,
         wrong: benzersizYanlislar(sonuc, [sonuc + 1, sonuc - 1, sonuc + 2], 1),
         isLong: true
@@ -1538,12 +1619,32 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
     generate: () => {
       const adim = Math.random() < 0.5 ? 2 : 5;
       const baslangic = adim * 2;
-      const sira = [baslangic, baslangic + adim, baslangic + adim * 2, baslangic + adim * 3];
-      const eksik = sira[2];
-      sira[2] = "?" as any;
+      const eksik: number = baslangic + adim * 2;
+      const sira: (number | string)[] = [baslangic, baslangic + adim, "?", baslangic + adim * 3];
+
+      const questionHTML = `
+        <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto w-full px-1">
+          <div class="text-sm xs:text-base sm:text-lg font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+            🌀 <span class="text-cyan-300 underline decoration-cyan-400 font-extrabold text-base xs:text-lg sm:text-xl">${adim}'şer</span> ritmik sayarak labirentte ilerliyoruz:
+          </div>
+          <!-- FARKLI RENKTE VE AYRI BİR SATIRDAKİ RİTMİK ADIM KUTULARI -->
+          <div class="flex items-center justify-center gap-2 sm:gap-3 my-1.5 flex-wrap">
+            ${sira.map((item) => {
+              if (item === "?") {
+                return `<div class="px-3.5 py-1.5 xs:px-4 xs:py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-rose-500 via-rose-600 to-pink-600 border-2 border-white text-white font-black text-xl xs:text-2xl sm:text-3xl shadow-[0_4px_16px_rgba(244,63,94,0.7)] animate-pulse ring-2 ring-rose-400/50 shrink-0">?</div>`;
+              }
+              return `<div class="px-3.5 py-1.5 xs:px-4 xs:py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-400 to-amber-500 border-2 border-white text-slate-950 font-black text-xl xs:text-2xl sm:text-3xl shadow-[0_4px_14px_rgba(245,158,11,0.5)] shrink-0">${item}</div>`;
+            }).join('')}
+          </div>
+          <div class="text-xs xs:text-sm sm:text-base font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] mt-0.5">
+            Soru işareti (<span class="text-rose-400 font-black">?</span>) yerine hangi adım gelmelidir?
+          </div>
+        </div>
+      `;
 
       return {
         question: `🌀 ${adim}'şer ritmik sayarak labirentte ilerliyoruz:\n\n[ ${sira.join("  -  ")} ]\n\nSoru işareti (?) yerine hangi adım gelmelidir?`,
+        questionHTML,
         correct: eksik,
         wrong: benzersizYanlislar(eksik, [eksik + adim, eksik - adim, eksik + 1], 1),
         isLong: true
@@ -1556,15 +1657,15 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
     desc: "Şekil ve cisim eşleştirmesi yapma.",
     generate: () => {
       const eslesmeler = [
-        { sekil: "3 Kenarı ve 3 Köşesi olan şekil", dogru: "Üçgen 🔺", yanlis: ["Kare 🟦", "Daire 🔴", "Dikdörtgen 🟪"], emoji: "🔺" },
-        { sekil: "4 Eşit Kenarı ve 4 Köşesi olan şekil", dogru: "Kare 🟦", yanlis: ["Üçgen 🔺", "Daire 🔴", "Silindir 🥫"], emoji: "🟦" },
-        { sekil: "Hiç kenarı ve köşesi olmayan yuvarlak şekil", dogru: "Daire / Çember 🔴", yanlis: ["Kare 🟦", "Üçgen 🔺", "Dikdörtgen 🟪"], emoji: "🔴" },
-        { sekil: "Karşılıklı kenarları eşit 4 kenarlı şekil", dogru: "Dikdörtgen 🟪", yanlis: ["Üçgen 🔺", "Daire 🔴", "Küre ⚽"], emoji: "🟪" }
+        { sekil: "3 Kenarı ve 3 Köşesi olan şekil", dogru: "Üçgen", yanlis: ["Kare", "Daire / Çember", "Dikdörtgen"], emoji: "🔺" },
+        { sekil: "4 Eşit Kenarı ve 4 Köşesi olan şekil", dogru: "Kare", yanlis: ["Üçgen", "Daire / Çember", "Silindir"], emoji: "🟦" },
+        { sekil: "Hiç kenarı ve köşesi olmayan yuvarlak şekil", dogru: "Daire / Çember", yanlis: ["Kare", "Üçgen", "Dikdörtgen"], emoji: "🔴" },
+        { sekil: "Karşılıklı kenarları eşit 4 kenarlı şekil", dogru: "Dikdörtgen", yanlis: ["Üçgen", "Daire / Çember", "Küre"], emoji: "🟪" }
       ];
       const secilen = eslesmeler[Math.floor(Math.random() * eslesmeler.length)];
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="text-5xl xs:text-6xl sm:text-7xl filter drop-shadow-xl animate-pulse">${secilen.emoji}</div>
+          <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow-xl my-1 animate-pulse">📐✨</div>
           <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             <b>${secilen.sekil}</b> hangisidir?
           </div>

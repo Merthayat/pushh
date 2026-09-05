@@ -426,19 +426,21 @@ function generateClockSVG(hour: number, minute: number): string {
 }
 
 function benzersizYanlislar(correct: number, adaylar: number[], minVal = 0): number[] {
+  // İlkokul müfredatında eksi sayı kavramı yoktur: adaylar ve sonuçlar daima pozitif olmalıdır!
+  const safeMin = Math.max(0, minVal);
   const sonuc: number[] = [];
   const gorulen = new Set<number>([correct]);
   for (const aday of adaylar) {
     if (sonuc.length === 3) break;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
   }
   let ek = 1;
   while (sonuc.length < 3) {
-    const aday = correct + 10 + ek;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    const aday = Math.max(safeMin, correct) + 10 + ek;
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
@@ -1867,15 +1869,26 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const dizi = Array(adet).fill(sayi);
         const correct = sayi * adet;
         const secilenKare = RITMIK_KARE_RENKLERI[Math.floor(Math.random() * RITMIK_KARE_RENKLERI.length)];
+        const ikonlar = ["🍎", "⭐", "🎈", "🍬", "🧁"];
+        const nesneIkon = ikonlar[Math.floor(Math.random() * ikonlar.length)];
 
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1">
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
           <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug">
             İşlemde <span class="text-amber-300 underline decoration-amber-400 font-black">${secilenKare.ad}</span> yerine hangi sayı gelmelidir?
           </div>
-          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 text-lg xs:text-xl sm:text-2xl md:text-3xl font-black text-white flex-nowrap max-w-full overflow-hidden px-1 my-1">
-            ${dizi.map(n => `<span class="px-2.5 py-1 xs:px-3.5 xs:py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-blue-900/90 border-2 border-blue-400/80 shadow-md shrink-0 text-center min-w-[28px] xs:min-w-[34px]">${n}</span>`).join('<span class="text-amber-400 shrink-0 text-base sm:text-xl md:text-2xl">+</span>')}
-            <span class="text-amber-400 shrink-0 text-base sm:text-xl md:text-2xl">=</span>
-            <div class="w-9 h-9 xs:w-11 xs:h-11 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-gradient-to-tr ${secilenKare.bgClass} border-2 border-white text-white font-black flex items-center justify-center shadow-lg animate-pulse text-base xs:text-lg sm:text-xl ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>
+          <!-- Yan yana taşmayan, görsel ve sayıyı birlikte gösteren esnek bloklar -->
+          <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2.5 text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white flex-wrap max-w-full px-1 my-1">
+            ${dizi.map(n => `
+              <div class="flex flex-col items-center justify-center px-2 py-1 xs:px-2.5 xs:py-1.5 sm:px-3 sm:py-2 rounded-xl bg-blue-900/95 border-2 border-blue-400/90 shadow-md shrink-0 text-center min-w-[32px]">
+                <div class="text-[11px] xs:text-xs sm:text-sm tracking-tighter leading-none mb-0.5 select-none">${Array(n).fill(nesneIkon).join('')}</div>
+                <div class="text-sm xs:text-base sm:text-lg font-black text-amber-300 leading-tight">${n}</div>
+              </div>
+            `).join('<span class="text-amber-400 shrink-0 text-base sm:text-xl font-black">+</span>')}
+            <span class="text-amber-400 shrink-0 text-base sm:text-xl font-black">=</span>
+            <div class="flex flex-col items-center justify-center px-2.5 py-1 xs:px-3 xs:py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-gradient-to-tr ${secilenKare.bgClass} border-2 border-white text-white font-black shadow-lg animate-pulse text-base xs:text-lg sm:text-xl ring-2 ring-white/30 shrink-0 min-w-[36px]">
+              <span class="text-xs sm:text-sm leading-none mb-0.5">${secilenKare.emoji}</span>
+              <span class="text-amber-300 font-black text-sm xs:text-base sm:text-lg leading-tight">?</span>
+            </div>
           </div>
         </div>`;
 
@@ -1960,8 +1973,25 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const bolen = [2, 3, 4, 5, 10][Math.floor(Math.random() * 5)];
         const bolum = Math.floor(Math.random() * 8) + 1;
         const bolunen = bolen * bolum;
+
+        const questionHTML = `
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+            <div class="formula-box w-full max-w-[94%] mx-auto py-2.5 px-3 xs:py-3 xs:px-4 sm:py-3.5 sm:px-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-700 via-indigo-700 to-cyan-700 text-white font-black text-2xl xs:text-3xl sm:text-4xl border-2 sm:border-3 border-white/90 shadow-[0_6px_20px_rgba(0,0,0,0.5)] flex items-center justify-center gap-2 xs:gap-2.5 sm:gap-3.5 whitespace-nowrap tracking-wide">
+              <span class="text-amber-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">${bolunen}</span>
+              <span class="text-cyan-300 font-mono">÷</span>
+              <span class="text-emerald-300 drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">${bolen}</span>
+              <span class="text-amber-300 font-mono">=</span>
+              <span class="text-yellow-300 font-black animate-pulse">?</span>
+            </div>
+            <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug mt-1">
+              Bölme işleminin sonucu kaçtır?
+            </div>
+          </div>
+        `;
+
         return {
           question: `${bolunen} ÷ ${bolen} = ?`,
+          questionHTML,
           correct: bolum,
           wrong: benzersizYanlislar(bolum, [bolum + 1, bolum - 1, bolum + 2, bolum * 2], 1),
           isLong: false
@@ -2993,12 +3023,12 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
             question: questionText,
             questionHTML: `
               <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
-                <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2.5 flex-nowrap max-w-full overflow-hidden my-0.5">
-                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">${k1} kg ${m1}</span>
+                <div class="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap max-w-full my-0.5">
+                  <span class="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">${k1} kg ${m1}</span>
                   <span class="text-amber-300 font-black text-xs xs:text-sm sm:text-base shrink-0">+</span>
-                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">${k2} kg ${m2}</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">${k2} kg ${m2}</span>
                   <span class="text-amber-300 font-black text-xs xs:text-sm sm:text-base shrink-0">=</span>
-                  <span class="px-2 py-1 rounded-lg bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">❓ kg</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">❓ kg</span>
                 </div>
                 <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug">
                   ${questionText}
@@ -3022,10 +3052,10 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
             question: questionText,
             questionHTML: `
               <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
-                <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full my-0.5">
-                  <span class="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">🛒 ${k1} kg ${m}</span>
-                  <span class="px-2 py-1 rounded-lg bg-rose-950/90 border border-rose-600 text-rose-300 font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">-${k2} kg</span>
-                  <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">Kalan: ❓ kg</span>
+                <div class="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap max-w-full my-0.5">
+                  <span class="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">🛒 ${k1} kg ${m}</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-rose-950/90 border border-rose-600 text-rose-300 font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">-${k2} kg</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm whitespace-nowrap">Kalan: ❓ kg</span>
                 </div>
                 <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug">
                   ${questionText}
@@ -3054,214 +3084,78 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
       }
     },
     veri_grafik: {
-      title: "Veri İşleme (Nesne Grafiği)",
-      desc: "3 nesneli nesne grafiklerini okuma, sayma ve karşılaştırma soruları.",
+      title: "Veri Toplama ve Grafik Okuma",
+      desc: "Nesne grafiği ve çetele tablolarını okuyup soruları cevaplama.",
       generate: () => {
-        const temalar = [
-          {
-            baslik: "Sevilen Meyveler",
-            birim: "öğrenci",
-            nesneler: [
-              { ad: "Elma", simge: "🍎" },
-              { ad: "Muz", simge: "🍌" },
-              { ad: "Çilek", simge: "🍓" }
-            ]
-          },
-          {
-            baslik: "Yaz Meyveleri",
-            birim: "kilo",
-            nesneler: [
-              { ad: "Karpuz", simge: "🍉" },
-              { ad: "Şeftali", simge: "🍑" },
-              { ad: "Kiraz", simge: "🍒" }
-            ]
-          },
-          {
-            baslik: "Manavdaki Meyveler",
-            birim: "kasa",
-            nesneler: [
-              { ad: "Portakal", simge: "🍊" },
-              { ad: "Üzüm", simge: "🍇" },
-              { ad: "Ananas", simge: "🍍" }
-            ]
-          },
-          {
-            baslik: "Oyun Alanındaki Oyuncaklar",
-            birim: "oyuncak",
-            nesneler: [
-              { ad: "Araba", simge: "🚗" },
-              { ad: "Bebek", simge: "🪆" },
-              { ad: "Top", simge: "⚽" }
-            ]
-          },
-          {
-            baslik: "Sınıftaki Balon Sayıları",
-            birim: "balon",
-            nesneler: [
-              { ad: "Kırmızı Balon", simge: "🔴" },
-              { ad: "Mavi Balon", simge: "🔵" },
-              { ad: "Sarı Balon", simge: "🟡" }
-            ]
-          },
-          {
-            baslik: "Çiftlikteki Hayvanlar",
-            birim: "hayvan",
-            nesneler: [
-              { ad: "İnek", simge: "🐮" },
-              { ad: "Koyun", simge: "🐑" },
-              { ad: "Tavuk", simge: "🐔" }
-            ]
-          },
-          {
-            baslik: "En Sevilen Sporlar",
-            birim: "öğrenci",
-            nesneler: [
-              { ad: "Futbol", simge: "⚽" },
-              { ad: "Basketbol", simge: "🏀" },
-              { ad: "Yüzme", simge: "🏊" }
-            ]
-          },
-          {
-            baslik: "Kırtasiye Malzemeleri",
-            birim: "malzeme",
-            nesneler: [
-              { ad: "Kalem", simge: "✏️" },
-              { ad: "Defter", simge: "📖" },
-              { ad: "Cetvel", simge: "📐" }
-            ]
-          }
-        ];
+        const elma = Math.floor(Math.random() * 5) + 3; // 3..7
+        const muz = Math.floor(Math.random() * 4) + 2; // 2..5
+        const cilek = Math.floor(Math.random() * 4) + 3; // 3..6
 
-        // 1 tema seç
-        const tema = temalar[Math.floor(Math.random() * temalar.length)];
-
-        // 3 nesne için benzersiz rastgele sayılar üret (2 ile 7 arasında)
-        const olasiSayilar = [2, 3, 4, 5, 6, 7];
-        const secilenSayilar = rastgeleSec(olasiSayilar, 3) as number[];
-
-        const grafikData = tema.nesneler.map((item, idx) => ({
-          ...item,
-          count: secilenSayilar[idx]
-        }));
-
-        // Kat çarpanı: Her nesne 1 veya 2 birim temsil eder
-        const factor = Math.random() < 0.25 ? 2 : 1;
-
-        // Görsel 3 Nesneli Grafik HTML Tasarımı
-        const grafikHTML = `
-          <div class="bg-slate-950/75 backdrop-blur-xs border border-amber-300/80 rounded-xl p-2 sm:p-3 text-left shadow-lg w-full max-w-sm sm:max-w-md mx-auto flex flex-col justify-center shrink-0 my-auto">
-            <div class="flex items-center justify-between border-b border-amber-300/40 pb-1 mb-1.5">
-              <span class="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                📊 NESNE GRAFİĞİ: ${tema.baslik}
-              </span>
-            </div>
-            <div class="space-y-1 sm:space-y-1.5">
-              ${grafikData.map(item => `
-                <div class="flex items-center justify-between bg-black/60 rounded-lg px-2 sm:px-2.5 py-1 sm:py-1.5 border border-white/15 shadow-2xs">
-                  <span class="font-black text-xs sm:text-sm text-amber-200 w-22 sm:w-28 shrink-0 flex items-center gap-1.5">
-                    <span class="text-sm sm:text-lg">${item.simge}</span>
-                    <span class="truncate">${item.ad}</span>
-                  </span>
-                  <div class="flex items-center gap-1 flex-wrap justify-end flex-1">
-                    ${Array.from({ length: item.count }).map(() => `<span class="text-base sm:text-xl drop-shadow-xs">${item.simge}</span>`).join('')}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-            <div class="mt-1.5 pt-1 border-t border-white/20 text-[10px] sm:text-xs text-amber-200 font-bold text-center bg-amber-400/20 rounded-md py-0.5 px-2">
-              📌 Not: Grafikteki her 1 nesne <b>${factor} ${tema.birim}</b> göstermektedir.
-            </div>
-          </div>
-        `;
-
-        // Helper function for Question presentation without cluttered background frame
-        const wrapQuestionBanner = (metin: string) => `
-          <div class="w-full flex flex-col justify-center items-center gap-1.5 sm:gap-2 my-auto">
-            ${grafikHTML}
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-xl px-2 mt-0.5">
-              ${metin}
-            </div>
-          </div>
-        `;
-
-        // 5 Soru Tipinden Birini Seç
-        const soruTuru = Math.floor(Math.random() * 5);
+        const soruTuru = Math.floor(Math.random() * 3);
+        let soru = "";
+        let dogru = 0;
 
         if (soruTuru === 0) {
-          // Tip 1: Belirli bir nesnenin sayısını sorma
-          const hedefItem = grafikData[Math.floor(Math.random() * grafikData.length)];
-          const dogruCevap = hedefItem.count * factor;
-          const wrong = benzersizYanlislar(dogruCevap, [dogruCevap + factor, dogruCevap - factor, dogruCevap + 2 * factor, dogruCevap + 1], 0);
-
-          const soruMetni = `Grafiğe göre <b>${hedefItem.ad} ${hedefItem.simge}</b> sayısı kaçtır?`;
+          soru = "Grafiğe göre en çok sevilen meyve hangisidir?";
+          const enCok = Math.max(elma, muz, cilek);
+          const meyve = elma === enCok ? "Elma" : muz === enCok ? "Muz" : "Çilek";
           return {
-            question: `Grafiğe göre ${hedefItem.ad} sayısı kaçtır?`,
-            questionHTML: wrapQuestionBanner(soruMetni),
-            correct: dogruCevap,
-            wrong,
+            question: `Grafiğe göre: Elma(${elma}), Muz(${muz}), Çilek(${cilek}). En çok sevilen meyve hangisidir?`,
+            questionHTML: `
+              <div class="flex flex-col items-center justify-center gap-2 sm:gap-2.5 text-center my-auto">
+                <div class="p-2 sm:p-3 rounded-2xl bg-slate-900/85 border-2 border-amber-300 text-left text-sm xs:text-base sm:text-lg font-black text-white space-y-1">
+                  <div>🍎 Elma: ${"🟥".repeat(elma)} (${elma})</div>
+                  <div>🍌 Muz: ${"🟨".repeat(muz)} (${muz})</div>
+                  <div>🍓 Çilek: ${"🟩".repeat(cilek)} (${cilek})</div>
+                </div>
+                <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-0.5">
+                  Grafiğe göre en çok sevilen meyve hangisidir?
+                </div>
+              </div>
+            `,
+            correct: meyve,
+            wrong: ["Elma", "Muz", "Çilek", "Portakal"].filter(m => m !== meyve).slice(0, 3),
             isLong: false
           };
         } else if (soruTuru === 1) {
-          // Tip 2: En çok olan nesneyi sorma
-          const maxItem = [...grafikData].sort((a, b) => b.count - a.count)[0];
-          const dogruCevap = `${maxItem.ad} ${maxItem.simge}`;
-          const wrong = grafikData.filter(i => i.ad !== maxItem.ad).map(i => `${i.ad} ${i.simge}`);
-          if (wrong.length < 3) wrong.push("Hepsi Eşittir");
-
-          const soruMetni = `Nesne grafiğine göre sayısı <b>EN FAZLA (en çok)</b> olan nesne hangisidir?`;
-          return {
-            question: `Nesne grafiğine göre sayısı EN FAZLA olan nesne hangisidir?`,
-            questionHTML: wrapQuestionBanner(soruMetni),
-            correct: dogruCevap,
-            wrong,
-            isLong: true
-          };
-        } else if (soruTuru === 2) {
-          // Tip 3: En az olan nesneyi sorma
-          const minItem = [...grafikData].sort((a, b) => a.count - b.count)[0];
-          const dogruCevap = `${minItem.ad} ${minItem.simge}`;
-          const wrong = grafikData.filter(i => i.ad !== minItem.ad).map(i => `${i.ad} ${i.simge}`);
-          if (wrong.length < 3) wrong.push("Hepsi Eşittir");
-
-          const soruMetni = `Nesne grafiğine göre sayısı <b>EN AZ</b> olan nesne hangisidir?`;
-          return {
-            question: `Nesne grafiğine göre sayısı EN AZ olan nesne hangisidir?`,
-            questionHTML: wrapQuestionBanner(soruMetni),
-            correct: dogruCevap,
-            wrong,
-            isLong: true
-          };
-        } else if (soruTuru === 3) {
-          // Tip 4: Toplam miktar sorma
-          const toplamNesne = grafikData.reduce((acc, curr) => acc + curr.count, 0);
-          const dogruCevap = toplamNesne * factor;
-          const wrong = benzersizYanlislar(dogruCevap, [dogruCevap + factor, dogruCevap - factor, dogruCevap + 2 * factor, dogruCevap - 2 * factor], 1);
-
-          const soruMetni = `Grafikte <b>TOPLAM</b> kaç ${tema.birim} vardır?`;
-          return {
-            question: `Grafikte TOPLAM kaç ${tema.birim} vardır?`,
-            questionHTML: wrapQuestionBanner(soruMetni),
-            correct: dogruCevap,
-            wrong,
-            isLong: false
-          };
+          dogru = elma + muz;
+          soru = `Elma ve Muz seven çocukların toplamı kaçtır?`;
         } else {
-          // Tip 5: İki nesne arasındaki farkı sorma
-          const sorted = [...grafikData].sort((a, b) => b.count - a.count);
-          const itemFazla = sorted[0];
-          const itemAz = sorted[1];
-          const fark = (itemFazla.count - itemAz.count) * factor;
-          const wrong = benzersizYanlislar(fark, [fark + 1, fark + 2, itemFazla.count * factor, itemAz.count * factor], 0);
-
-          const soruMetni = `<b>${itemFazla.ad} ${itemFazla.simge}</b> sayısı, <b>${itemAz.ad} ${itemAz.simge}</b> sayısından kaç FAZLADIR?`;
-          return {
-            question: `${itemFazla.ad} sayısı, ${itemAz.ad} sayısından kaç fazladır?`,
-            questionHTML: wrapQuestionBanner(soruMetni),
-            correct: fark,
-            wrong,
-            isLong: false
-          };
+          // Her zaman çok olandan az olanı çıkarıyoruz ki fark daima pozitif olsun (eksi sayı kavramı yok)
+          let meyve1 = "Elma";
+          let meyve2 = "Muz";
+          let sayi1 = elma;
+          let sayi2 = muz;
+          if (muz > elma) {
+            meyve1 = "Muz";
+            meyve2 = "Elma";
+            sayi1 = muz;
+            sayi2 = elma;
+          } else if (elma === muz) {
+            sayi1 = elma + 2;
+          }
+          dogru = sayi1 - sayi2;
+          soru = `${meyve1} sevenler, ${meyve2} sevenlerden kaç fazladır?`;
         }
+
+        return {
+          question: `Grafiğe göre: Elma(${elma}), Muz(${muz}), Çilek(${cilek}). ${soru}`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center gap-2 sm:gap-2.5 text-center my-auto">
+              <div class="p-2 sm:p-3 rounded-2xl bg-slate-900/85 border-2 border-amber-300 text-left text-sm xs:text-base sm:text-lg font-black text-white space-y-1">
+                <div>🍎 Elma: ${"🟥".repeat(elma)} (${elma})</div>
+                <div>🍌 Muz: ${"🟨".repeat(muz)} (${muz})</div>
+                <div>🍓 Çilek: ${"🟩".repeat(cilek)} (${cilek})</div>
+              </div>
+              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] mt-0.5">
+                ${soru}
+              </div>
+            </div>
+          `,
+          correct: dogru,
+          wrong: benzersizYanlislar(dogru, [dogru + 1, dogru - 1, dogru + 2, dogru + 3].filter(n => n > 0), 1),
+          isLong: false
+        };
       }
     }
   

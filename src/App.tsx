@@ -617,19 +617,21 @@ function generateClockSVG(hour: number, minute: number): string {
 }
 
 function benzersizYanlislar(correct: number, adaylar: number[], minVal = 0): number[] {
+  // İlkokul müfredatında eksi sayı kavramı yoktur: adaylar ve sonuçlar daima pozitif olmalıdır!
+  const safeMin = Math.max(0, minVal);
   const sonuc: number[] = [];
   const gorulen = new Set<number>([correct]);
   for (const aday of adaylar) {
     if (sonuc.length === 3) break;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
   }
   let ek = 1;
   while (sonuc.length < 3) {
-    const aday = correct + 10 + ek;
-    if (!gorulen.has(aday) && aday >= minVal) {
+    const aday = Math.max(safeMin, correct) + 10 + ek;
+    if (!gorulen.has(aday) && aday >= safeMin) {
       gorulen.add(aday);
       sonuc.push(aday);
     }
