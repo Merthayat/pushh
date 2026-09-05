@@ -742,11 +742,11 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const isCoin = p.img.includes('madeni');
         const questionText = "Görseldeki paranın değeri nedir?";
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
-            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0">
-              <img src="${p.img}" alt="${p.name}" class="${isCoin ? 'h-14 sm:h-18 md:h-20 w-14 sm:w-18 md:w-20' : 'h-12 sm:h-16 md:h-18 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto w-full px-1">
+            <div class="para-container flex items-center justify-center my-0.5 max-w-full">
+              <img src="${p.img}" alt="${p.name}" class="${isCoin ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${questionText}
             </div>
           </div>
@@ -806,13 +806,13 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         ];
         const s = toplamSorulari[Math.floor(Math.random() * toplamSorulari.length)];
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
-            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
+          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto w-full px-1">
+            <div class="para-container flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-wrap max-w-full my-0.5">
               ${s.images.map(img => `
-                <img src="${img}" class="${s.isCoin ? 'h-10 sm:h-14 md:h-16 w-10 sm:w-14 md:w-16' : 'h-10 sm:h-14 md:h-16 max-w-[130px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
+                <img src="${img}" alt="Para" class="${s.isCoin ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
               `).join('')}
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>
@@ -860,13 +860,13 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         ];
         const s = karisikSorular[Math.floor(Math.random() * karisikSorular.length)];
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
-            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
+          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto w-full px-1">
+            <div class="para-container flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-wrap max-w-full my-0.5">
               ${s.images.map(img => `
-                <img src="${img}" class="${img.includes('madeni') ? 'h-10 sm:h-14 w-10 sm:w-14' : 'h-10 sm:h-14 max-w-[130px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
+                <img src="${img}" alt="Para" class="${img.includes('madeni') ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
               `).join('')}
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>
@@ -909,11 +909,11 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         const s = genelSorular[Math.floor(Math.random() * genelSorular.length)];
         const isCoin = s.img.includes('madeni');
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto w-full px-1">
-            <div class="p-1 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 shadow-lg shrink-0">
-              <img src="${s.img}" class="${isCoin ? 'h-14 sm:h-18 md:h-20 w-14 sm:w-18 md:w-20' : 'h-12 sm:h-16 md:h-18 max-w-[170px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]" />
+          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto w-full px-1">
+            <div class="para-container flex items-center justify-center my-0.5 max-w-full">
+              <img src="${s.img}" alt="Para" class="${isCoin ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)]" />
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
               ${s.text}
             </div>
           </div>

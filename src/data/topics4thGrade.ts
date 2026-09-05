@@ -409,7 +409,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-md">
-                ${sayi.toLocaleString('tr-TR')} ➔ ?
+                <span class="text-white">${sayi.toLocaleString('tr-TR')}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 <span class="text-amber-300 font-black">${sayi.toLocaleString('tr-TR')}</span> sayısı <span class="text-cyan-300 underline decoration-cyan-400 font-black">en yakın onluğa</span> yuvarlandığında kaç olur?
@@ -436,7 +436,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-md">
-                ${sayi.toLocaleString('tr-TR')} ➔ ?
+                <span class="text-white">${sayi.toLocaleString('tr-TR')}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 <span class="text-amber-300 font-black">${sayi.toLocaleString('tr-TR')}</span> sayısı <span class="text-yellow-300 underline decoration-yellow-400 font-black">en yakın yüzlüğe</span> yuvarlandığında kaç olur?

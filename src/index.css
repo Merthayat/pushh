@@ -80,8 +80,8 @@
 /* 1-Player generous natural dimensions (AutoFitQuestionBox scales down smoothly if needed) */
 .question-visual-box img,
 .question-visual-box svg {
-  max-height: clamp(80px, 26vh, 185px) !important;
-  max-width: min(92%, 290px) !important;
+  max-height: clamp(85px, 28vh, 195px) !important;
+  max-width: min(94%, 300px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -92,8 +92,8 @@
 }
 
 .question-visual-box .geo-cisim-img {
-  max-height: clamp(85px, 28vh, 195px) !important;
-  max-width: min(92%, 290px) !important;
+  max-height: clamp(90px, 30vh, 205px) !important;
+  max-width: min(94%, 300px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -106,8 +106,8 @@
 /* 2-PLAYER OPTIMIZED SIZING */
 .question-visual-box.multi-player-2 img,
 .question-visual-box.multi-player-2 svg {
-  max-height: clamp(75px, 22vh, 160px) !important;
-  max-width: min(90%, 230px) !important;
+  max-height: clamp(80px, 24vh, 175px) !important;
+  max-width: min(96%, 260px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -118,8 +118,8 @@
 }
 
 .question-visual-box.multi-player-2 .geo-cisim-img {
-  max-height: clamp(80px, 24vh, 170px) !important;
-  max-width: min(90%, 230px) !important;
+  max-height: clamp(85px, 26vh, 185px) !important;
+  max-width: min(96%, 260px) !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -129,11 +129,11 @@
   flex-shrink: 1 !important;
 }
 
-/* 3-PLAYER PROPORTIONAL COMPACT SIZING */
+/* 3-PLAYER PROPORTIONAL COMPACT SIZING - FULL FRAME USAGE */
 .question-visual-box.multi-player-3 img,
 .question-visual-box.multi-player-3 svg {
-  max-height: clamp(65px, 18vh, 125px) !important;
-  max-width: min(88%, 160px) !important;
+  max-height: clamp(75px, 22vh, 150px) !important;
+  max-width: 98% !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -144,8 +144,8 @@
 }
 
 .question-visual-box.multi-player-3 .geo-cisim-img {
-  max-height: clamp(70px, 20vh, 135px) !important;
-  max-width: min(88%, 160px) !important;
+  max-height: clamp(80px, 24vh, 160px) !important;
+  max-width: 98% !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
@@ -164,7 +164,7 @@
 
 .question-visual-box.multi-player-3 table {
   font-size: 0.78rem !important;
-  max-width: 95% !important;
+  max-width: 98% !important;
 }
 
 /* MULTI-PLAYER QUESTION TEXT & LAYOUT OPTIMIZATION */
@@ -177,6 +177,123 @@
 .question-visual-box.multi-player-2 .max-w-lg,
 .question-visual-box.multi-player-3 .max-w-lg {
   max-width: 100% !important;
+}
+
+/* Never clip children inside question visual box with inner overflow-hidden divs */
+.question-visual-box div,
+.question-visual-box span,
+.question-visual-box [class*="overflow-hidden"] {
+  overflow: visible !important;
+}
+
+/* Tighten spacing between numbers and shapes in sequences */
+.question-visual-box .flex-nowrap {
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  gap: 0.25rem !important;
+}
+.question-visual-box.multi-player-3 .flex-nowrap {
+  gap: 0.15rem 0.25rem !important;
+}
+.question-visual-box.multi-player-2 .flex-nowrap {
+  gap: 0.25rem 0.35rem !important;
+}
+
+/* ========================================================================= */
+/* MONEY / PARALARIMIZ RESPONSIVE STYLING (1, 2 & 3 PLAYER MODES)           */
+/* ========================================================================= */
+.question-visual-box .para-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem 0.5rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 0.15rem !important;
+  margin-bottom: 0.15rem !important;
+  padding: 0 0.15rem !important;
+}
+
+/* Clear forced auto margins on money images so they sit side by side naturally */
+.question-visual-box .para-container img,
+.question-visual-box img.para-kagit,
+.question-visual-box img.para-madeni,
+.question-visual-box img[src*="kagit_para"],
+.question-visual-box img[src*="madeni_para"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  display: inline-block !important;
+  object-fit: contain !important;
+  vertical-align: middle !important;
+}
+
+/* 1-Player Mode Money Sizing */
+.question-visual-box img.para-kagit,
+.question-visual-box img[src*="kagit_para"] {
+  height: clamp(40px, 9vh, 62px) !important;
+  max-height: 62px !important;
+  max-width: clamp(80px, 20vw, 125px) !important;
+  width: auto !important;
+  flex-shrink: 1 !important;
+}
+
+.question-visual-box img.para-madeni,
+.question-visual-box img[src*="madeni_para"] {
+  height: clamp(34px, 7vh, 48px) !important;
+  width: clamp(34px, 7vh, 48px) !important;
+  max-height: 48px !important;
+  max-width: 48px !important;
+  flex-shrink: 0 !important;
+}
+
+/* 2-Player Mode Money Sizing (Compact side-by-side, wrap gracefully if multiple) */
+.question-visual-box.multi-player-2 .para-container {
+  gap: 0.25rem 0.35rem !important;
+}
+
+.question-visual-box.multi-player-2 img.para-kagit,
+.question-visual-box.multi-player-2 img[src*="kagit_para"] {
+  height: clamp(28px, 5.2vh, 38px) !important;
+  max-height: 38px !important;
+  max-width: 78px !important;
+  width: auto !important;
+  flex-shrink: 1 !important;
+}
+
+.question-visual-box.multi-player-2 img.para-madeni,
+.question-visual-box.multi-player-2 img[src*="madeni_para"] {
+  height: clamp(24px, 4.6vh, 34px) !important;
+  width: clamp(24px, 4.6vh, 34px) !important;
+  max-height: 34px !important;
+  max-width: 34px !important;
+  flex-shrink: 0 !important;
+}
+
+/* 3-Player Mode Money Sizing (Ultra-compact side-by-side, wraps cleanly if 2+ bills) */
+.question-visual-box.multi-player-3 .para-container {
+  gap: 0.15rem 0.25rem !important;
+}
+
+.question-visual-box.multi-player-3 img.para-kagit,
+.question-visual-box.multi-player-3 img[src*="kagit_para"] {
+  height: clamp(22px, 4.2vh, 30px) !important;
+  max-height: 30px !important;
+  max-width: 60px !important;
+  width: auto !important;
+  flex-shrink: 1 !important;
+}
+
+.question-visual-box.multi-player-3 img.para-madeni,
+.question-visual-box.multi-player-3 img[src*="madeni_para"] {
+  height: clamp(20px, 3.6vh, 26px) !important;
+  width: clamp(20px, 3.6vh, 26px) !important;
+  max-height: 26px !important;
+  max-width: 26px !important;
+  flex-shrink: 0 !important;
 }
 
 /* Ensure questions with single-sentence text don't wrap single words onto new lines when space exists */

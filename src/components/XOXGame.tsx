@@ -496,11 +496,12 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
         </div>
 
         {/* Bottom Game Action Buttons */}
-        <div className="flex items-center gap-2.5 shrink-0 mt-0.5">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 shrink-0 mt-0.5 z-10 w-full px-2">
           {history.length > 0 && !winner && (
             <button
               onClick={undoMove}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] sm:text-xs border border-white/20 transition-all flex items-center gap-1 cursor-pointer shadow-md"
+              className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-[11px] sm:text-xs border border-white/20 transition-all flex items-center gap-1 cursor-pointer shadow-md"
+              title="Son hamleyi geri al"
             >
               <RotateCcw size={14} />
               <span>Geri Al</span>
@@ -508,11 +509,46 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
           )}
 
           <button
-            onClick={resetRound}
-            className="px-4 py-1.5 sm:px-5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 hover:from-emerald-400 hover:to-cyan-500 text-white font-black text-xs sm:text-sm border-2 border-emerald-300 shadow-[0_4px_12px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5"
+            onClick={() => {
+              resetRound();
+              triggerSound('click');
+            }}
+            className="px-3.5 py-1.5 sm:px-5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 hover:from-emerald-400 hover:to-cyan-500 text-white font-black text-xs sm:text-sm border-2 border-emerald-300 shadow-[0_4px_12px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0"
           >
-            <Sparkles size={15} />
-            <span>{winner ? 'Yeni Tur Başlat' : 'Yeniden Dağıt'}</span>
+            <RotateCcw size={15} />
+            <span>Yeniden Oyna</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setGameMode('pve');
+              resetRound();
+              triggerSound('click');
+            }}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-black text-xs sm:text-sm border-2 transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              gameMode === 'pve'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-cyan-300 shadow-[0_0_14px_rgba(37,99,235,0.6)]'
+                : 'bg-slate-900/85 hover:bg-slate-800 text-slate-300 hover:text-white border-white/20 shadow-md'
+            }`}
+          >
+            <Bot size={15} />
+            <span>Robota Karşı</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setGameMode('pvp');
+              resetRound();
+              triggerSound('click');
+            }}
+            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl font-black text-xs sm:text-sm border-2 transition-all transform hover:scale-105 active:scale-95 cursor-pointer flex items-center gap-1.5 shrink-0 ${
+              gameMode === 'pvp'
+                ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white border-amber-300 shadow-[0_0_14px_rgba(245,158,11,0.6)]'
+                : 'bg-slate-900/85 hover:bg-slate-800 text-slate-300 hover:text-white border-white/20 shadow-md'
+            }`}
+          >
+            <Users size={15} />
+            <span>2 Kişilik</span>
           </button>
         </div>
       </div>

@@ -586,7 +586,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-indigo-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
-                ${sayi} ➔ ?
+                <span class="text-white">${sayi}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 <span class="text-amber-300 font-black">${sayi}</span> sayısını <span class="text-cyan-300 underline decoration-cyan-400 font-black">en yakın onluğa</span> yuvarladığımızda hangi sayı olur?
@@ -670,7 +670,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-indigo-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
-                ${sayi} ➔ ?
+                <span class="text-white">${sayi}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 <span class="text-amber-300 font-black">${sayi}</span> sayısını <span class="text-cyan-300 underline decoration-cyan-400 font-black">en yakın onluğa</span> yuvarladığımızda hangi sayıyı elde ederiz?
@@ -775,7 +775,7 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-emerald-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
-                ${sayi} ➔ ?
+                <span class="text-white">${sayi}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 <span class="text-amber-300 font-black">${sayi}</span> sayısını <span class="text-cyan-300 underline decoration-cyan-400 font-black">en yakın yüzlüğe</span> yuvarladığımızda hangi sayıyı elde ederiz?
@@ -1973,12 +1973,12 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${ogrenci} ${fiyat} TL tutan kitabı almak için satıcıya ${verilen} TL verdi. Kaç TL para üstü alır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
-              <div class="flex items-center justify-center gap-2 flex-nowrap max-w-full overflow-hidden">
-                <span class="px-2.5 py-1 bg-rose-600 text-white font-black text-[11px] xs:text-xs sm:text-sm rounded-lg sm:rounded-xl border border-white shadow-md shrink-0 whitespace-nowrap">Ürün: ${fiyat} TL</span>
-                <img src="${secilenVerilen.img}" class="h-10 sm:h-14 md:h-16 max-w-[140px] object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1 sm:gap-2 py-0.5 text-center">
+              <div class="para-container flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-wrap max-w-full my-0.5">
+                <span class="px-2 py-0.5 bg-rose-600 text-white font-black text-[10px] xs:text-xs sm:text-sm rounded-lg border border-white shadow-md shrink-0 whitespace-nowrap">Ürün: ${fiyat} TL</span>
+                <img src="${secilenVerilen.img}" alt="Para" class="para-kagit object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${ogrenci} satıcıya görseldeki <span class="text-amber-300 font-black">${verilen} TL</span>'yi verirse kaç TL <span class="text-emerald-300 underline font-black">para üstü</span> alır?
               </div>
             </div>
@@ -2018,13 +2018,13 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: k.text,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
-              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1 sm:gap-2 py-0.5 text-center">
+              <div class="para-container flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-wrap max-w-full my-0.5">
                 ${k.images.map(img => `
-                  <img src="${img}" class="${img.includes('madeni') ? 'h-9 sm:h-13 w-9 sm:w-13' : 'h-9 sm:h-13 max-w-[120px]'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)] shrink-0" />
+                  <img src="${img}" alt="Para" class="${img.includes('madeni') ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" />
                 `).join('')}
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-1">
                 ${k.text}
               </div>
             </div>

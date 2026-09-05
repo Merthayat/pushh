@@ -11,6 +11,17 @@ interface BasketballRaceTrackProps {
   players: RaceTrackPlayer[];
   playerCountMode: number;
   targetScore?: number;
+  orientation?: 'vertical' | 'horizontal';
+  className?: string;
+  showVictoryVideo?: boolean;
+  victoryVideoSrc?: string;
+  winnerTitle?: string;
+  winnerImg?: string;
+  winnerBadgeBg?: string;
+  winnerBorderColor?: string;
+  winnerGlowColor?: string;
+  onVictoryVideoEnd?: () => void;
+  soundEnabled?: boolean;
 }
 
 interface MascotConfig {
@@ -21,59 +32,91 @@ interface MascotConfig {
   badgeBg: string;
   borderColor: string;
   glowColor: string;
-  centerYPercent: number; // Exact optical lane center in par2.png / par3.png
+  centerPercent: number; // In vertical: X center percent (horizontal position in lane)
 }
 
 export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
   players,
   playerCountMode,
-  targetScore = 10
+  targetScore = 10,
+  orientation = 'vertical',
+  className = '',
+  showVictoryVideo = false,
+  victoryVideoSrc = '/kap.mp4',
+  winnerTitle = '1. GRUP ŞAMPİYON! 🏆',
+  winnerImg = '/kap.png',
+  winnerBadgeBg = 'from-blue-600 via-cyan-500 to-indigo-600',
+  winnerBorderColor = 'border-cyan-400',
+  winnerGlowColor = 'shadow-[0_0_35px_rgba(6,182,212,0.95)]',
+  onVictoryVideoEnd,
+  soundEnabled = true
 }) => {
   const activeCount = Math.min(playerCountMode, players.length, 3);
+  const videoRef = React.useRef<HTMLVideoElement>(null);
+
+  React.useEffect(() => {
+    if (showVictoryVideo && videoRef.current) {
+      videoRef.current.currentTime = 0;
+      videoRef.current.muted = !soundEnabled;
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.catch((err) => {
+          console.log('Autoplay with sound prevented, falling back to muted:', err);
+          if (videoRef.current) {
+            videoRef.current.muted = true;
+            videoRef.current.play().catch(() => {});
+          }
+        });
+      }
+    }
+  }, [showVictoryVideo, soundEnabled, victoryVideoSrc]);
+
+  React.useEffect(() => {
+    if (showVictoryVideo) {
+      // Victory videos are ~2-4s. Safety fallback to advance after 6.0s
+      const timer = setTimeout(() => {
+        onVictoryVideoEnd?.();
+      }, 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [showVictoryVideo, onVictoryVideoEnd]);
+
   if (activeCount <= 1) return null;
 
-  // Exact lane centers calculated directly from user's par2.png and par3.png (1792 x 592):
-  // par2.png (2 Players):
-  // - Lane 1 (Top - 2. GRUP): y center = 204.5px (34.5%)
-  // - Lane 2 (Bottom - 1. GRUP): y center = 386.5px (65.3%)
-  //
-  // par3.png (3 Players):
-  // - Lane 1 (Top - 3. GRUP): y center = 175px (29.5%)
-  // - Lane 2 (Middle - 2. GRUP): y center = 296.5px (50.1%)
-  // - Lane 3 (Bottom - 1. GRUP): y center = 417.5px (70.5%)
+  // Lane configurations matching player groups left-to-right (1. GRUP, 2. GRUP, 3. GRUP)
   const laneConfigs: MascotConfig[] = activeCount === 2
     ? [
         {
-          playerIndex: 1, // 2. GRUP (Top Lane - Red/Ejderha)
-          groupName: '2. GRUP',
-          character: 'EJDERHA',
-          img: '/ejd.png',
-          badgeBg: 'from-rose-500 to-pink-600',
-          borderColor: 'border-pink-300',
-          glowColor: 'shadow-[0_0_8px_rgba(244,63,94,0.7)]',
-          centerYPercent: 34.5
-        },
-        {
-          playerIndex: 0, // 1. GRUP (Bottom Lane - Blue/Kaplan)
+          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplan)
           groupName: '1. GRUP',
           character: 'KAPLAN',
           img: '/kap.png',
           badgeBg: 'from-blue-500 to-indigo-600',
           borderColor: 'border-cyan-300',
-          glowColor: 'shadow-[0_0_8px_rgba(6,182,212,0.7)]',
-          centerYPercent: 65.3
+          glowColor: 'shadow-[0_0_10px_rgba(6,182,212,0.8)]',
+          centerPercent: 30.0
+        },
+        {
+          playerIndex: 1, // 2. GRUP (Right Lane - Red/Ejderha)
+          groupName: '2. GRUP',
+          character: 'EJDERHA',
+          img: '/ejd.png',
+          badgeBg: 'from-rose-500 to-pink-600',
+          borderColor: 'border-pink-300',
+          glowColor: 'shadow-[0_0_10px_rgba(244,63,94,0.8)]',
+          centerPercent: 70.0
         }
       ]
     : [
         {
-          playerIndex: 2, // 3. GRUP (Top Lane - Green/Savaşçı)
-          groupName: '3. GRUP',
-          character: 'SAVAŞÇI',
-          img: '/balta.png',
-          badgeBg: 'from-emerald-500 to-teal-600',
-          borderColor: 'border-emerald-300',
-          glowColor: 'shadow-[0_0_8px_rgba(16,185,129,0.7)]',
-          centerYPercent: 29.5
+          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplan)
+          groupName: '1. GRUP',
+          character: 'KAPLAN',
+          img: '/kap.png',
+          badgeBg: 'from-blue-500 to-indigo-600',
+          borderColor: 'border-cyan-300',
+          glowColor: 'shadow-[0_0_10px_rgba(6,182,212,0.8)]',
+          centerPercent: 21.3
         },
         {
           playerIndex: 1, // 2. GRUP (Middle Lane - Red/Ejderha)
@@ -82,35 +125,156 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           img: '/ejd.png',
           badgeBg: 'from-rose-500 to-pink-600',
           borderColor: 'border-pink-300',
-          glowColor: 'shadow-[0_0_8px_rgba(244,63,94,0.7)]',
-          centerYPercent: 50.1
+          glowColor: 'shadow-[0_0_10px_rgba(244,63,94,0.8)]',
+          centerPercent: 50.0
         },
         {
-          playerIndex: 0, // 1. GRUP (Bottom Lane - Blue/Kaplan)
-          groupName: '1. GRUP',
-          character: 'KAPLAN',
-          img: '/kap.png',
-          badgeBg: 'from-blue-500 to-indigo-600',
-          borderColor: 'border-cyan-300',
-          glowColor: 'shadow-[0_0_8px_rgba(6,182,212,0.7)]',
-          centerYPercent: 70.5
+          playerIndex: 2, // 3. GRUP (Right Lane - Green/Savaşçı)
+          groupName: '3. GRUP',
+          character: 'SAVAŞÇI',
+          img: '/balta.png',
+          badgeBg: 'from-emerald-500 to-teal-600',
+          borderColor: 'border-emerald-300',
+          glowColor: 'shadow-[0_0_10px_rgba(16,185,129,0.8)]',
+          centerPercent: 78.7
         }
       ];
 
-  const trackSrc = activeCount === 2 ? '/par2.png' : '/par3.png';
+  if (orientation === 'vertical') {
+    const verticalTrackSrc = activeCount === 2 ? '/park2.png' : '/park3.png';
+    const trackAspectRatio = activeCount === 2 ? '567 / 1208' : '883 / 1415';
 
+    return (
+      <div className={`h-full flex flex-col items-center justify-center shrink-0 select-none ${className}`}>
+        {/* VERTICAL COURT CONTAINER - Direct image at full frame height without background frame */}
+        <div 
+          style={{ aspectRatio: trackAspectRatio }}
+          className="relative h-full max-h-full w-auto"
+        >
+          {/* TRACK BACKGROUND IMAGE (Hoop at Top, Start at Bottom) */}
+          <img
+            key={`track-v-${activeCount}`}
+            src={verticalTrackSrc}
+            alt={activeCount === 2 ? '2 Kişilik Dikey Parkur' : '3 Kişilik Dikey Parkur'}
+            className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none filter drop-shadow-xl"
+            loading="eager"
+            decoding="async"
+          />
+
+          {/* OVERLAY WITH ASCENDING MASCOTS TOWARDS TOP BASKET */}
+          <div className="absolute inset-0 z-20 pointer-events-none">
+            {laneConfigs.map((cfg) => {
+              const player = players[cfg.playerIndex];
+              const currentScore = Math.max(0, Math.min(targetScore, player?.score || 0));
+              const progressRatio = currentScore / targetScore;
+              const isWinner = currentScore >= targetScore;
+
+              // Mascot sizing without circular frame (larger and arcade-like)
+              const mascotSize = activeCount === 2 
+                ? 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14' 
+                : 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';
+
+              return (
+                <div
+                  key={cfg.groupName}
+                  className="absolute flex items-center justify-center transition-all duration-700 ease-out z-30"
+                  style={{
+                    // Travels upward from bottom start chevron (~87%) to top basket hoop (~13%)
+                    left: `${cfg.centerPercent}%`,
+                    top: `calc(87% - ${progressRatio} * 74%)`,
+                    transform: 'translate(-50%, -50%)',
+                  }}
+                >
+                  <div className="relative flex flex-col items-center">
+                    {/* WINNER SLAM DUNK BADGE AT HOOP */}
+                    {isWinner && (
+                      <div className="absolute -top-6 sm:-top-7 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 text-slate-950 font-black text-[7px] sm:text-[8px] px-1.5 py-0.5 rounded-full border border-white shadow-md animate-bounce uppercase tracking-wider z-40">
+                        BASKET! 🎯
+                      </div>
+                    )}
+
+                    {/* CHARACTER IMAGE (FRAMELSS & ENLARGED) */}
+                    <div
+                      className={`relative ${mascotSize} flex items-center justify-center shrink-0 transition-transform ${
+                        isWinner ? 'scale-125 animate-pulse' : ''
+                      }`}
+                    >
+                      <img
+                        src={cfg.img}
+                        alt={cfg.character}
+                        className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]"
+                        loading="eager"
+                        decoding="async"
+                      />
+
+                      {/* SCORE BADGE */}
+                      <span className="absolute -top-1.5 -right-1.5 bg-amber-400 text-slate-950 font-black text-[8px] sm:text-[9px] px-1.5 py-0.5 rounded-full border border-white leading-none shadow-md z-10">
+                        {currentScore}
+                      </span>
+                    </div>
+
+                    {/* STATIC BASKETBALL (SABİT TOP) */}
+                    <div className="text-[11px] sm:text-[13px] filter drop-shadow-md select-none -mt-1.5">
+                      🏀
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* GROUP VICTORY VIDEO (kap.mp4 for Kaplan, ejd.mp4 for Ejderha, sog.mp4 for Balta) */}
+          {showVictoryVideo && (
+            <div 
+              id="track-victory-video"
+              className={`absolute inset-0 z-50 flex flex-col items-center justify-center rounded-2xl overflow-hidden ${winnerGlowColor} border-2 ${winnerBorderColor} bg-black pointer-events-auto animate-in zoom-in-95 duration-300`}
+            >
+              <video
+                ref={videoRef}
+                key={victoryVideoSrc}
+                src={victoryVideoSrc}
+                autoPlay
+                playsInline
+                className="w-full h-full object-cover"
+                onEnded={onVictoryVideoEnd}
+                onError={() => {
+                  console.log('Video load/play error, advancing to results');
+                  onVictoryVideoEnd?.();
+                }}
+              />
+
+              {/* TOP CELEBRATION BADGE */}
+              <div className={`absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r ${winnerBadgeBg} text-white font-black text-[9px] sm:text-[11px] px-2.5 py-0.5 rounded-full border border-white/60 shadow-lg flex items-center gap-1 z-30 pointer-events-none`}>
+                <img src={winnerImg} alt="Şampiyon" className="w-4 h-4 object-contain" />
+                <span>{winnerTitle}</span>
+              </div>
+
+              {/* SKIP / VIEW RESULTS BUTTON */}
+              {onVictoryVideoEnd && (
+                <button
+                  type="button"
+                  onClick={onVictoryVideoEnd}
+                  className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-[10px] sm:text-xs px-3 py-1 rounded-full border border-white shadow-xl transition cursor-pointer z-30 flex items-center gap-1"
+                >
+                  <span>Sonuçları Gör</span>
+                  <span>⏩</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback Horizontal Track
+  const trackSrc = activeCount === 2 ? '/park2.png' : '/park3.png';
   return (
-    <div className="w-full flex justify-center mb-0.5 shrink-0 select-none px-1">
-      {/* 
-        BASKETBALL COURT CONTAINER:
-        - Kompakt genişlik (max-w-[360px] sm:max-w-[390px]) ile dikey yükseklik sadece ~65-75px kaplar.
-        - Soru metinleri ve görseller için dikey alan genişletilmiştir.
-      */}
+    <div className={`w-full flex justify-center mb-1 shrink-0 select-none px-1 ${className}`}>
       <div 
         style={{ aspectRatio: '1792 / 592' }}
         className="relative w-full max-w-[360px] sm:max-w-[390px] rounded-lg overflow-hidden bg-transparent"
       >
-        {/* PAR2.PNG (2 Players) OR PAR3.PNG (3 Players) */}
         <img
           key={`track-img-${activeCount}`}
           src={trackSrc}
@@ -119,63 +283,34 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           loading="eager"
           decoding="async"
         />
-
-        {/* OVERLAY WITH RUNNING MASCOTS AND DRIBBLING BASKETBALL */}
         <div className="absolute inset-0 z-20 pointer-events-none">
           {laneConfigs.map((cfg) => {
             const player = players[cfg.playerIndex];
             const currentScore = Math.max(0, Math.min(targetScore, player?.score || 0));
             const progressRatio = currentScore / targetScore;
             const isWinner = currentScore >= targetScore;
-
-            // Compact mascot sizing to match half-width track
-            const mascotSize = activeCount === 2 
-              ? 'w-5 h-5 sm:w-6 sm:h-6' 
-              : 'w-4 h-4 sm:w-5 sm:h-5';
+            const mascotSize = activeCount === 2 ? 'w-8 h-8 sm:w-10 sm:h-10' : 'w-7 h-7 sm:w-9 sm:h-9';
 
             return (
               <div
                 key={cfg.groupName}
                 className="absolute flex items-center transition-all duration-700 ease-out z-30"
                 style={{
-                  // Travels from start chevron (~13%) to basket hoop (~87%)
                   left: `calc(13% + ${progressRatio} * 74%)`,
-                  top: `${cfg.centerYPercent}%`,
+                  top: `${cfg.centerPercent}%`,
                   transform: 'translate(-50%, -50%)',
                 }}
               >
                 <div className="relative flex items-center">
-                  {/* MASCOT CIRCLE */}
-                  <div
-                    className={`relative ${mascotSize} rounded-full bg-slate-900/90 p-0.5 border border-white/90 ${cfg.glowColor} shadow-sm flex items-center justify-center shrink-0 ${
-                      isWinner ? 'scale-125 animate-bounce ring-2 ring-amber-300' : ''
-                    }`}
-                  >
-                    <img
-                      src={cfg.img}
-                      alt={cfg.character}
-                      className="w-full h-full object-contain filter drop-shadow-sm"
-                      loading="eager"
-                      decoding="async"
-                    />
-
-                    {/* SCORE BADGE */}
-                    <span className="absolute -top-1 -right-1 bg-amber-400 text-blue-950 font-black text-[6px] sm:text-[7px] px-0.5 rounded-full border border-white leading-none shadow-xs">
+                  <div className={`relative ${mascotSize} flex items-center justify-center shrink-0 ${isWinner ? 'scale-125 animate-pulse' : ''}`}>
+                    <img src={cfg.img} alt={cfg.character} className="w-full h-full object-contain filter drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]" loading="eager" decoding="async" />
+                    <span className="absolute -top-1 -right-1 bg-amber-400 text-blue-950 font-black text-[7px] sm:text-[8px] px-1 py-0.5 rounded-full border border-white leading-none shadow-xs">
                       {currentScore}
                     </span>
                   </div>
-
-                  {/* BOUNCING BASKETBALL 🏀 */}
-                  <div className="relative -ml-0.5 -mt-0.5 text-[8px] sm:text-[9px] animate-bounce duration-300 filter drop-shadow-sm select-none">
+                  <div className="relative -ml-1 text-[10px] sm:text-[12px] filter drop-shadow-sm select-none">
                     🏀
                   </div>
-
-                  {/* WINNER SLAM DUNK BADGE */}
-                  {isWinner && (
-                    <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 text-blue-950 font-black text-[7px] sm:text-[8px] px-1 py-0.2 rounded-full border border-white shadow-sm animate-pulse uppercase tracking-wider">
-                      BASKET! 🎯
-                    </div>
-                  )}
                 </div>
               </div>
             );

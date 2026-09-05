@@ -14,6 +14,7 @@ interface WordGameModalProps {
   playMp3?: (src: string, onEnded?: () => void) => void;
   playerCountMode?: 1 | 2 | 3;
   onSwitchPlayerCountMode?: (mode: 1 | 2 | 3) => void;
+  soundEnabled?: boolean;
 }
 
 type GameMode = 'duel2' | 'duel3' | 'quiz1' | 'matching';
@@ -132,13 +133,45 @@ const getWordOptionFontSize = (options: string[], mode: 1 | 2 | 3 = 1) => {
   return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
 };
 
+const getWinnerVideoConfig = (winnerIdx: number | null) => {
+  if (winnerIdx === 0) {
+    return {
+      videoSrc: '/kap.mp4',
+      title: '1. GRUP ŞAMPİYON! 🏆',
+      img: '/kap.png',
+      badgeBg: 'from-blue-600 via-cyan-500 to-indigo-600',
+      borderColor: 'border-cyan-400',
+      glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.95)]'
+    };
+  }
+  if (winnerIdx === 1) {
+    return {
+      videoSrc: '/ejd.mp4',
+      title: '2. GRUP ŞAMPİYON! 🏆',
+      img: '/ejd.png',
+      badgeBg: 'from-rose-600 via-pink-500 to-red-700',
+      borderColor: 'border-rose-400',
+      glowColor: 'shadow-[0_0_35px_rgba(244,63,94,0.95)]'
+    };
+  }
+  return {
+    videoSrc: '/sog.mp4',
+    title: '3. GRUP ŞAMPİYON! 🏆',
+    img: '/balta.png',
+    badgeBg: 'from-emerald-600 via-teal-500 to-green-700',
+    borderColor: 'border-emerald-400',
+    glowColor: 'shadow-[0_0_35px_rgba(16,185,129,0.95)]'
+  };
+};
+
 export const WordGameModal: React.FC<WordGameModalProps> = ({
   gameType,
   onClose,
   onGoHome,
   playMp3,
   playerCountMode = 2,
-  onSwitchPlayerCountMode
+  onSwitchPlayerCountMode,
+  soundEnabled = true
 }) => {
   const isZit = gameType === 'zit_anlam';
   const isEs = gameType === 'es_anlam';
@@ -373,12 +406,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   // ==========================================
   // 3. MULTIPLAYER DUEL: 2 & 3 PLAYER LOGIC
   // ==========================================
-  const [duelPlayers, setDuelPlayers] = useState<DuelPlayer[]>([]);
-  const [duelWinnerIndex, setDuelWinnerIndex] = useState<number | null>(null);
-  const [isDuelFinished, setIsDuelFinished] = useState(false);
-  const duelTargetScore = 10;
-
-  const initMultiplayerGame = useCallback((numPlayers: 2 | 3) => {
+  const createInitialPlayers = useCallback((numPlayers: number, data: WordPair[]): DuelPlayer[] => {
     const initialized: DuelPlayer[] = [];
     for (let i = 0; i < numPlayers; i++) {
       initialized.push({
@@ -389,16 +417,29 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         colorTheme: PLAYER_THEMES[i],
         score: 0,
         lives: 3,
-        currentQuestion: generateWordQuestion(rawData),
+        currentQuestion: generateWordQuestion(data),
         selectedOption: null,
         feedback: 'none',
         isEliminated: false
       });
     }
-    setDuelPlayers(initialized);
+    return initialized;
+  }, []);
+
+  const [duelPlayers, setDuelPlayers] = useState<DuelPlayer[]>(() =>
+    createInitialPlayers(playerCountMode === 3 ? 3 : 2, rawData)
+  );
+  const [duelWinnerIndex, setDuelWinnerIndex] = useState<number | null>(null);
+  const [isDuelFinished, setIsDuelFinished] = useState(false);
+  const [trackVictoryVideoActive, setTrackVictoryVideoActive] = useState(false);
+  const duelTargetScore = 10;
+
+  const initMultiplayerGame = useCallback((numPlayers: 2 | 3) => {
+    setDuelPlayers(createInitialPlayers(numPlayers, rawData));
     setDuelWinnerIndex(null);
+    setTrackVictoryVideoActive(false);
     setIsDuelFinished(false);
-  }, [rawData]);
+  }, [rawData, createInitialPlayers]);
 
   useEffect(() => {
     if (activeMode === 'duel2') {
@@ -433,7 +474,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         if (nextScore >= duelTargetScore) {
           setTimeout(() => {
             setDuelWinnerIndex(pIdx);
-            setIsDuelFinished(true);
+            setTrackVictoryVideoActive(true);
             playSound('win');
             try {
               confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
@@ -474,7 +515,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             const winner = activeRemaining[0];
             setTimeout(() => {
               setDuelWinnerIndex(winner.id);
-              setIsDuelFinished(true);
+              setTrackVictoryVideoActive(true);
               playSound('win');
               try {
                 confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
@@ -487,7 +528,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
             });
             setTimeout(() => {
               setDuelWinnerIndex(maxScorer.id);
-              setIsDuelFinished(true);
+              setTrackVictoryVideoActive(true);
               playSound('win');
             }, 500);
           } else {
@@ -533,10 +574,153 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
   const restartCurrentGame = () => {
     playSound('click');
+    setTrackVictoryVideoActive(false);
+    setDuelWinnerIndex(null);
+    setIsDuelFinished(false);
     if (activeMode === 'matching') initMatchingGame();
     else if (activeMode === 'quiz1') initQuiz1();
     else if (activeMode === 'duel2') initMultiplayerGame(2);
     else initMultiplayerGame(3);
+  };
+
+  const renderDuelPlayerCard = (p: DuelPlayer | undefined, pIdx: number) => {
+    if (!p) return null;
+
+    const groupTheme = pIdx === 0 
+      ? {
+          badgeBg: "from-blue-700 via-indigo-800 to-blue-950",
+          badgeBorder: "border-cyan-300",
+          badgeShadow: "shadow-[0_0_16px_rgba(6,182,212,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+          containerBorder: "border-cyan-400",
+          buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800 text-white shadow-[0_4px_14px_rgba(37,99,235,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+        }
+      : pIdx === 1
+      ? {
+          badgeBg: "from-rose-700 via-pink-800 to-rose-950",
+          badgeBorder: "border-pink-300",
+          badgeShadow: "shadow-[0_0_16px_rgba(244,63,94,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+          containerBorder: "border-pink-400",
+          buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800 text-white shadow-[0_4px_14px_rgba(225,29,72,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+        }
+      : {
+          badgeBg: "from-emerald-700 via-teal-800 to-emerald-950",
+          badgeBorder: "border-emerald-300",
+          badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
+          containerBorder: "border-emerald-400",
+          buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+        };
+
+    const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], activeMode === 'duel3' ? 3 : 2);
+    const optHeightClasses = activeMode === 'duel3' 
+      ? "py-1.5 sm:py-2 px-1 sm:px-1.5 min-h-[38px] sm:min-h-[46px]" 
+      : "py-2 sm:py-2.5 px-2 min-h-[44px] sm:min-h-[54px]";
+
+    return (
+      <div
+        key={p.id}
+        className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+      >
+        {/* PLAYER HEADER BAR */}
+        <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+          {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
+          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
+            {pIdx + 1}
+          </div>
+
+          {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
+          <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
+            <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
+              {pIdx + 1}. GRUP ({p.avatar})
+            </span>
+
+            {/* RIGHT: SCORE & HEARTS */}
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="bg-white/15 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
+                {p.score} / {duelTargetScore}
+              </span>
+              <div className="flex items-center gap-0.5">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <span key={i} className={`text-[11px] sm:text-xs transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
+                    ❤️
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
+        <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] ${activeMode === 'duel3' ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
+          {/* Top glare effect */}
+          <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+
+          {p.isEliminated || p.lives <= 0 ? (
+            <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
+              <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
+              <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
+                ELENDİ!
+              </div>
+              <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
+                Diğer oyuncular yarışıyor...
+              </div>
+            </div>
+          ) : p.currentQuestion ? (
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-hidden">
+              <div className="text-[10px] sm:text-xs font-black uppercase text-amber-300 tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
+                {isIng ? 'TÜRKÇE ANLAMI:' : `${gameConcept.toUpperCase()} ANLAMLISI:`}
+              </div>
+
+              {/* TARGET WORD DISPLAY */}
+              <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 border-white flex items-center justify-center gap-1.5 max-w-full truncate">
+                {p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
+                <span className="truncate">{p.currentQuestion.word}</span>
+              </div>
+            </div>
+          ) : null}
+        </div>
+
+        {/* 4 CHOICES GRID UNDER THE QUESTION */}
+        {!p.isEliminated && p.lives > 0 && p.currentQuestion && (
+          <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${activeMode === 'duel2' ? 'max-w-[340px]' : 'max-w-[280px]'} mx-auto shrink-0 z-10`}>
+            {p.currentQuestion.options.map((opt, oIdx) => {
+              const isSelected = p.selectedOption === opt;
+              const isCorrectOpt = opt === p.currentQuestion?.correct;
+              
+              let btnClass = groupTheme.buttonDefault;
+              if (p.feedback !== 'none') {
+                if (isCorrectOpt) {
+                  btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse text-emerald-100";
+                } else if (isSelected) {
+                  btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80 text-rose-100";
+                } else {
+                  btnClass = "opacity-35 border-slate-700 bg-slate-900/60";
+                }
+              }
+
+              return (
+                <button
+                  key={oIdx}
+                  disabled={p.feedback !== 'none' || p.isEliminated || p.lives <= 0}
+                  onClick={() => handleMultiplayerAnswer(pIdx, opt)}
+                  className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                >
+                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                  <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                    {opt}
+                  </span>
+                  {p.feedback !== 'none' && isCorrectOpt && (
+                    <CheckCircle2 size={16} className="absolute right-2 text-emerald-400 shrink-0 filter drop-shadow-md" />
+                  )}
+                  {p.feedback !== 'none' && isSelected && !isCorrectOpt && (
+                    <XCircle size={16} className="absolute right-2 text-rose-400 shrink-0 filter drop-shadow-md" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -723,7 +907,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           <>
             {/* MULTIPLAYER DUEL: 2 & 3 PLAYERS */}
             {(activeMode === 'duel2' || activeMode === 'duel3') && (
-              <div className="flex-1 flex flex-col w-full h-full min-h-0">
+              <div className="flex-1 flex flex-col w-full h-full min-h-0 overflow-hidden">
                 {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
                 <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
                   <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
@@ -746,154 +930,79 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                   </span>
                 </div>
 
-                {/* BASKETBALL RACE TRACK: 2 VE 3 KİŞİLİK YARIŞ PARKURU */}
-                <BasketballRaceTrack
-                  players={duelPlayers}
-                  playerCountMode={activeMode === 'duel2' ? 2 : 3}
-                  targetScore={duelTargetScore}
-                />
+                {/* GAMEPLAY CONTAINER: SIDE-BY-SIDE WITH VERTICAL BASKETBALL TRACK */}
+                {activeMode === 'duel2' ? (
+                  /* 2 OYUNCU MODU: 1. OYUNCU (SOL) - DİKEY BASKETBOL PARKURU (ORTA) - 2. OYUNCU (SAĞ) */
+                  <div className="flex-1 flex flex-row items-stretch justify-center gap-2 sm:gap-3.5 w-full min-h-0 overflow-hidden">
+                    {renderDuelPlayerCard(duelPlayers[0], 0)}
 
-                {/* PLAYERS GRID */}
-                <div className={`flex-1 grid grid-cols-1 ${activeMode === 'duel2' ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3.5 w-full min-h-0 overflow-y-auto no-scrollbar`}>
-                  {duelPlayers.map((p, pIdx) => {
-                    const groupTheme = pIdx === 0 
-                      ? {
-                          badgeBg: "from-blue-700 via-indigo-800 to-blue-950",
-                          badgeBorder: "border-cyan-300",
-                          badgeShadow: "shadow-[0_0_16px_rgba(6,182,212,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          containerBorder: "border-cyan-400",
-                          buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800 text-white shadow-[0_4px_14px_rgba(37,99,235,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
-                        }
-                      : pIdx === 1
-                      ? {
-                          badgeBg: "from-rose-700 via-pink-800 to-rose-950",
-                          badgeBorder: "border-pink-300",
-                          badgeShadow: "shadow-[0_0_16px_rgba(244,63,94,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          containerBorder: "border-pink-400",
-                          buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800 text-white shadow-[0_4px_14px_rgba(225,29,72,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
-                        }
-                      : {
-                          badgeBg: "from-emerald-700 via-teal-800 to-emerald-950",
-                          badgeBorder: "border-emerald-300",
-                          badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
-                          containerBorder: "border-emerald-400",
-                          buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
-                        };
+                    {/* DİKEY BASKETBOL PARKURU (TAM ORTADA) */}
+                    <div className="h-full flex items-center justify-center shrink-0">
+                      {(() => {
+                        const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+                        return (
+                          <BasketballRaceTrack
+                            players={duelPlayers}
+                            playerCountMode={2}
+                            targetScore={duelTargetScore}
+                            orientation="vertical"
+                            showVictoryVideo={trackVictoryVideoActive}
+                            victoryVideoSrc={winCfg.videoSrc}
+                            winnerTitle={winCfg.title}
+                            winnerImg={winCfg.img}
+                            winnerBadgeBg={winCfg.badgeBg}
+                            winnerBorderColor={winCfg.borderColor}
+                            winnerGlowColor={winCfg.glowColor}
+                            onVictoryVideoEnd={() => {
+                              setTrackVictoryVideoActive(false);
+                              setIsDuelFinished(true);
+                            }}
+                            soundEnabled={soundEnabled}
+                          />
+                        );
+                      })()}
+                    </div>
 
-                    return (
-                      <div
-                        key={p.id}
-                        className={`relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
-                      >
-                        {/* PLAYER HEADER BAR */}
-                        <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
-                          {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
-                          <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
-                            {pIdx + 1}
-                          </div>
+                    {renderDuelPlayerCard(duelPlayers[1], 1)}
+                  </div>
+                ) : (
+                  /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA) + 3 OYUNCU (SAĞDA YAN YANA) */
+                  <div className="flex-1 flex flex-row items-stretch justify-center gap-1.5 sm:gap-2.5 w-full min-h-0 overflow-hidden">
+                    {/* DİKEY BASKETBOL PARKURU (EN SOLDA) */}
+                    <div className="h-full flex items-center justify-center shrink-0">
+                      {(() => {
+                        const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+                        return (
+                          <BasketballRaceTrack
+                            players={duelPlayers}
+                            playerCountMode={3}
+                            targetScore={duelTargetScore}
+                            orientation="vertical"
+                            showVictoryVideo={trackVictoryVideoActive}
+                            victoryVideoSrc={winCfg.videoSrc}
+                            winnerTitle={winCfg.title}
+                            winnerImg={winCfg.img}
+                            winnerBadgeBg={winCfg.badgeBg}
+                            winnerBorderColor={winCfg.borderColor}
+                            winnerGlowColor={winCfg.glowColor}
+                            onVictoryVideoEnd={() => {
+                              setTrackVictoryVideoActive(false);
+                              setIsDuelFinished(true);
+                            }}
+                            soundEnabled={soundEnabled}
+                          />
+                        );
+                      })()}
+                    </div>
 
-                          {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
-                          <div className="flex-1 ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl sm:rounded-2xl px-2.5 sm:px-3 py-1 sm:py-1.5 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)]">
-                            <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wide truncate">
-                              {pIdx + 1}. GRUP ({p.avatar})
-                            </span>
-
-                            {/* RIGHT: SCORE & HEARTS */}
-                            <div className="flex items-center gap-2 shrink-0">
-                              <span className="bg-white/15 text-white font-black text-[11px] sm:text-xs px-2 py-0.5 rounded-lg shadow-sm">
-                                {p.score} / {duelTargetScore}
-                              </span>
-                              <div className="flex items-center gap-0.5">
-                                {Array.from({ length: 3 }).map((_, i) => (
-                                  <span key={i} className={`text-xs sm:text-sm transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
-                                    ❤️
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
-                        <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-2 sm:p-3 my-1 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[130px] sm:min-h-[155px]">
-                          {/* Top glare effect */}
-                          <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
-
-                          {p.isEliminated ? (
-                            <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
-                              <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
-                              <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
-                                ELENDİ!
-                              </div>
-                              <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
-                                Diğer oyuncular yarışıyor...
-                              </div>
-                            </div>
-                          ) : p.currentQuestion ? (
-                            <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-y-auto no-scrollbar">
-                              <div className="text-[10px] sm:text-xs font-black uppercase text-amber-300 tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
-                                {isIng ? 'TÜRKÇE ANLAMI:' : `${gameConcept.toUpperCase()} ANLAMLISI:`}
-                              </div>
-
-                              {/* TARGET WORD DISPLAY */}
-                              <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-sm sm:text-base md:text-lg tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 border-white flex items-center justify-center gap-1.5 max-w-full truncate">
-                                {p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
-                                <span className="truncate">{p.currentQuestion.word}</span>
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-
-                        {/* 4 CHOICES GRID UNDER THE QUESTION */}
-                        {!p.isEliminated && p.currentQuestion && (
-                          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0 z-10">
-                            {p.currentQuestion.options.map((opt, oIdx) => {
-                              const isSelected = p.selectedOption === opt;
-                              const isCorrectOpt = opt === p.currentQuestion?.correct;
-                              const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], activeMode === 'duel3' ? 3 : 2);
-                              
-                              let btnClass = groupTheme.buttonDefault;
-                              if (p.feedback !== 'none') {
-                                if (isCorrectOpt) {
-                                  btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse text-emerald-100";
-                                } else if (isSelected) {
-                                  btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80 text-rose-100";
-                                } else {
-                                  btnClass = "opacity-35 border-slate-700 bg-slate-900/60";
-                                }
-                              }
-
-                              const optHeightClasses = activeMode === 'duel3' 
-                                ? "py-2.5 sm:py-3.5 px-1.5 min-h-[50px] sm:min-h-[60px]" 
-                                : "py-3 sm:py-4.5 px-2 min-h-[58px] sm:min-h-[70px]";
-
-                              return (
-                                <button
-                                  key={oIdx}
-                                  disabled={p.feedback !== 'none' || p.isEliminated}
-                                  onClick={() => handleMultiplayerAnswer(pIdx, opt)}
-                                  className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
-                                >
-                                  {/* Inner top glare */}
-                                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                                  <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${optFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                                    {opt}
-                                  </span>
-                                  {p.feedback !== 'none' && isCorrectOpt && (
-                                    <CheckCircle2 size={16} className="absolute right-2 text-emerald-400 shrink-0 filter drop-shadow-md" />
-                                  )}
-                                  {p.feedback !== 'none' && isSelected && !isCorrectOpt && (
-                                    <XCircle size={16} className="absolute right-2 text-rose-400 shrink-0 filter drop-shadow-md" />
-                                  )}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                    {/* 3 OYUNCU SAĞDA YAN YANA 3 SÜTUN */}
+                    <div className="flex-1 grid grid-cols-3 gap-1.5 sm:gap-2.5 h-full min-h-0">
+                      {renderDuelPlayerCard(duelPlayers[0], 0)}
+                      {renderDuelPlayerCard(duelPlayers[1], 1)}
+                      {renderDuelPlayerCard(duelPlayers[2], 2)}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 

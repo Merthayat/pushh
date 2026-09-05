@@ -1101,19 +1101,19 @@ function ritmikIleriUret(adim: number, ustSinir: number): QuestionData {
       return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-lg ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>`;
     }
     return `<div class="px-1 py-0.5 xs:px-1.5 xs:py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-gradient-to-b from-blue-600/90 via-indigo-700/90 to-slate-800/90 border border-blue-300/80 text-white font-black text-[11px] xs:text-xs sm:text-sm md:text-base shadow-sm shrink-0 min-w-[22px] xs:min-w-[26px] sm:min-w-[32px] text-center">${val}</div>`;
-  }).join('<span class="text-amber-300 font-extrabold text-[9px] xs:text-[11px] sm:text-xs md:text-sm mx-0.5 shrink-0">-</span>');
+  }).join('');
 
   const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5">
     <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1.5 leading-snug sm:leading-normal">
       Aşağıdaki ritmik sayma zincirinde <span class="text-amber-300 underline decoration-amber-400 font-extrabold">${secilenKare.ad}</span> yerine hangi sayı gelmelidir?
     </div>
-    <div class="flex items-center justify-center gap-0.5 xs:gap-1 sm:gap-1.5 flex-nowrap max-w-full px-0.5">
+    <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full px-0.5">
       ${sequenceHTML}
     </div>
   </div>`;
 
   return {
-    question: `Aşağıdaki ritmik sayma zincirinde ${secilenKare.ad} (${secilenKare.emoji}) yerine hangi sayı gelmelidir?\n\n ${gosterilecek.join(" - ")}`,
+    question: `Aşağıdaki ritmik sayma zincirinde ${secilenKare.ad} (${secilenKare.emoji}) yerine hangi sayı gelmelidir?\n\n ${gosterilecek.join(" ")}`,
     questionHTML: soruHTML,
     correct: dogruCevap,
     wrong: benzersizYanlislar(dogruCevap, [dogruCevap + adim, dogruCevap - adim, dogruCevap + 1, dogruCevap - 1, dogruCevap + adim * 2], 1),
@@ -1138,13 +1138,13 @@ function ritmikGeriUret(adim: number): QuestionData {
       return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg sm:rounded-xl bg-gradient-to-tr ${secilenKare.bgClass} border text-white font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-lg ring-2 ring-white/30 shrink-0">${secilenKare.emoji}</div>`;
     }
     return `<div class="px-1 py-0.5 xs:px-1.5 xs:py-0.5 sm:px-2.5 sm:py-1 rounded-lg sm:rounded-xl bg-gradient-to-b from-blue-600/90 via-indigo-700/90 to-slate-800/90 border border-blue-300/80 text-white font-black text-[11px] xs:text-xs sm:text-sm md:text-base shadow-sm shrink-0 min-w-[22px] xs:min-w-[26px] sm:min-w-[32px] text-center">${val}</div>`;
-  }).join('<span class="text-amber-300 font-extrabold text-[9px] xs:text-[11px] sm:text-xs md:text-sm mx-0.5 shrink-0">-</span>');
+  }).join('');
 
   const soruHTML = `<div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5">
     <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)] px-1.5 leading-snug sm:leading-normal">
       Aşağıdaki geriye ritmik sayma zincirinde <span class="text-amber-300 underline decoration-amber-400 font-extrabold">${secilenKare.ad}</span> yerine hangi sayı gelmelidir?
     </div>
-    <div class="flex items-center justify-center gap-0.5 xs:gap-1 sm:gap-1.5 flex-nowrap max-w-full px-0.5">
+    <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full px-0.5">
       ${sequenceHTML}
     </div>
   </div>`;
@@ -1367,7 +1367,7 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
             questionHTML: `
               <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
                 <div class="px-6 py-2.5 sm:px-8 sm:py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide">
-                  ${sayi} ➔ ?
+                  <span class="text-white">${sayi}</span> <span class="text-amber-300 mx-1">=</span> <span class="text-yellow-300 font-black">?</span>
                 </div>
                 <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                   <span class="text-amber-300 font-black">${sayi}</span> sayısı <span class="text-cyan-300 underline decoration-cyan-400 font-black">en yakın onluğa</span> yuvarlandığında hangi sayı olur?
@@ -2361,13 +2361,20 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
 
         const renderMoneyQuestionHTML = (images: string[], questionText: string) => {
           return `
-            <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto max-h-full px-1">
-              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap my-0.5 max-w-full overflow-hidden">
-                ${images.map(imgSrc => `
-                  <img src="${imgSrc}" class="${imgSrc.includes('madeni') ? 'h-10 sm:h-14 md:h-16 w-10 sm:w-14 md:w-16' : 'h-10 sm:h-14 md:h-16 max-w-[130px]'} object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] shrink-0" />
-                `).join('')}
+            <div class="flex flex-col items-center justify-center w-full gap-1 sm:gap-2 my-auto max-h-full px-1">
+              <div class="para-container flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 flex-wrap my-0.5 max-w-full">
+                ${images.map(imgSrc => {
+                  const isCoin = imgSrc.includes('madeni');
+                  return `
+                    <img 
+                      src="${imgSrc}" 
+                      alt="Para" 
+                      class="${isCoin ? 'para-madeni' : 'para-kagit'} object-contain drop-shadow-[0_4px_10px_rgba(0,0,0,0.85)]" 
+                    />
+                  `;
+                }).join('')}
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug">
+              <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-1 leading-snug">
                 ${questionText}
               </div>
             </div>
@@ -3015,10 +3022,10 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
             question: questionText,
             questionHTML: `
               <div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2.5 my-auto px-1 text-center">
-                <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2.5 flex-nowrap max-w-full overflow-hidden my-0.5">
-                  <span class="px-2 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">🛒 ${k1} kg ${m}</span>
-                  <span class="text-rose-400 font-black text-xs xs:text-sm sm:text-base shrink-0">➔ -${k2} kg</span>
-                  <span class="px-2 py-1 rounded-lg bg-emerald-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">Kalan: ❓ kg</span>
+                <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full my-0.5">
+                  <span class="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">🛒 ${k1} kg ${m}</span>
+                  <span class="px-2 py-1 rounded-lg bg-rose-950/90 border border-rose-600 text-rose-300 font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">-${k2} kg</span>
+                  <span class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 whitespace-nowrap">Kalan: ❓ kg</span>
                 </div>
                 <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-2 leading-snug">
                   ${questionText}

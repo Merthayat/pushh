@@ -2245,6 +2245,69 @@ export default function App() {
   const [playerCountMode, setPlayerCountMode] = useState<1 | 2 | 3>(1);
   const [players, setPlayers] = useState<PlayerData[]>([]);
   const [duelWinnerIndex, setDuelWinnerIndex] = useState<number | null>(null);
+  const [trackVictoryVideoActive, setTrackVictoryVideoActive] = useState(false);
+  const [pendingGameResult, setPendingGameResult] = useState<{
+    reason: 'puan' | 'can';
+    score: number;
+    livesLeft: number;
+    streak?: number;
+    topicWinCount?: number;
+    isThreeStarWin?: boolean;
+  } | null>(null);
+  const [showPodiumVideoModal, setShowPodiumVideoModal] = useState(false);
+
+  // Winner specific celebration video config:
+  // kap.png (1. GRUP, idx 0) -> kap.mp4
+  // ejd.png (2. GRUP, idx 1) -> ejd.mp4
+  // balta.png (3. GRUP, idx 2) -> sog.mp4
+  const getWinnerVideoConfig = (winnerIdx: number | null) => {
+    if (winnerIdx === 0) {
+      return {
+        videoSrc: '/kap.mp4',
+        title: '1. GRUP (KAPLAN) ŞAMPİYON! 🏆',
+        img: '/kap.png',
+        badgeBg: 'from-blue-600 via-cyan-500 to-indigo-600',
+        borderColor: 'border-cyan-400',
+        glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.95)]'
+      };
+    }
+    if (winnerIdx === 1) {
+      return {
+        videoSrc: '/ejd.mp4',
+        title: '2. GRUP (EJDERHA) ŞAMPİYON! 🏆',
+        img: '/ejd.png',
+        badgeBg: 'from-rose-600 via-pink-500 to-red-600',
+        borderColor: 'border-pink-400',
+        glowColor: 'shadow-[0_0_35px_rgba(244,63,94,0.95)]'
+      };
+    }
+    if (winnerIdx === 2) {
+      return {
+        videoSrc: '/sog.mp4',
+        title: '3. GRUP (SAVAŞÇI) ŞAMPİYON! 🏆',
+        img: '/balta.png',
+        badgeBg: 'from-emerald-600 via-teal-500 to-green-600',
+        borderColor: 'border-emerald-400',
+        glowColor: 'shadow-[0_0_35px_rgba(16,185,129,0.95)]'
+      };
+    }
+    return {
+      videoSrc: '/kap.mp4',
+      title: 'ŞAMPİYON! 🏆',
+      img: '/kap.png',
+      badgeBg: 'from-blue-600 via-cyan-500 to-indigo-600',
+      borderColor: 'border-cyan-400',
+      glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.95)]'
+    };
+  };
+
+  const handleTrackVideoComplete = () => {
+    if (pendingGameResult) {
+      setGameResult(pendingGameResult);
+    }
+    setTrackVictoryVideoActive(false);
+    setGameState('gameover');
+  };
 
   const playSynthSound = (src: string) => {
     try {
@@ -2593,7 +2656,7 @@ export default function App() {
 
   // Multi-Player Independent Countdown Timers (Each player has their own 10-second timer, silent to avoid confusion)
   useEffect(() => {
-    if (gameState !== 'playing' || playerCountMode <= 1 || !isTimedTopic(currentTopic)) {
+    if (gameState !== 'playing' || playerCountMode <= 1 || !isTimedTopic(currentTopic) || trackVictoryVideoActive) {
       return;
     }
 
@@ -2653,12 +2716,21 @@ export default function App() {
             triggerFireworks();
             setDuelWinnerIndex(winnerIdx);
             kaydetGrupGalibiyet(winnerIdx);
-            setGameResult({
-              reason: 'can',
-              score: updated[winnerIdx]?.score || 0,
-              livesLeft: updated[winnerIdx]?.lives || 0
-            });
-            setGameState('gameover');
+            if (playerCountMode >= 2) {
+              setPendingGameResult({
+                reason: 'can',
+                score: updated[winnerIdx]?.score || 0,
+                livesLeft: updated[winnerIdx]?.lives || 0
+              });
+              setTrackVictoryVideoActive(true);
+            } else {
+              setGameResult({
+                reason: 'can',
+                score: updated[winnerIdx]?.score || 0,
+                livesLeft: updated[winnerIdx]?.lives || 0
+              });
+              setGameState('gameover');
+            }
             return updated;
           }
 
@@ -3010,6 +3082,9 @@ export default function App() {
     setSelectedOption(null);
     setFeedbackState('none');
     setDuelWinnerIndex(null);
+    setTrackVictoryVideoActive(false);
+    setPendingGameResult(null);
+    setShowPodiumVideoModal(false);
 
     // Initialize Players based on playerCountMode (1, 2, or 3)
     const initialPlayers: PlayerData[] = [];
@@ -3550,15 +3625,28 @@ export default function App() {
         triggerFireworks();
         setDuelWinnerIndex(pIndex);
         kaydetGrupGalibiyet(pIndex);
-        setTimeout(() => {
-          setGameResult({
+
+        if (playerCountMode >= 2) {
+          // 2'li veya 3'lü oyunda kazanan grup için parkur üzerinde şampiyonluk videosu oynat:
+          // kap.png -> kap.mp4, ejd.png -> ejd.mp4, balta.png -> sog.mp4
+          setPendingGameResult({
             reason: 'puan',
             score: newScore,
             livesLeft: targetPlayer.lives,
             streak: newStreak
           });
-          setGameState('gameover');
-        }, 700);
+          setTrackVictoryVideoActive(true);
+        } else {
+          setTimeout(() => {
+            setGameResult({
+              reason: 'puan',
+              score: newScore,
+              livesLeft: targetPlayer.lives,
+              streak: newStreak
+            });
+            setGameState('gameover');
+          }, 700);
+        }
         return;
       }
 
@@ -3617,12 +3705,21 @@ export default function App() {
             triggerFireworks();
             setDuelWinnerIndex(winnerIdx);
             kaydetGrupGalibiyet(winnerIdx);
-            setGameResult({
-              reason: 'can',
-              score: prev[winnerIdx]?.score || 0,
-              livesLeft: prev[winnerIdx]?.lives || 0
-            });
-            setGameState('gameover');
+            if (playerCountMode >= 2) {
+              setPendingGameResult({
+                reason: 'can',
+                score: prev[winnerIdx]?.score || 0,
+                livesLeft: prev[winnerIdx]?.lives || 0
+              });
+              setTrackVictoryVideoActive(true);
+            } else {
+              setGameResult({
+                reason: 'can',
+                score: prev[winnerIdx]?.score || 0,
+                livesLeft: prev[winnerIdx]?.lives || 0
+              });
+              setGameState('gameover');
+            }
             return prev;
           }
 
@@ -5341,57 +5438,52 @@ export default function App() {
 
       {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK - ŞEFFAF GLASSMORPHISM TASARIM) */}
       {gameState === 'playing' && playerCountMode === 1 && (
-        <div className="flex-1 flex flex-col p-2 sm:p-4 max-w-4xl mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10">
+        <div className="flex-1 flex flex-col p-1.5 sm:p-2.5 max-w-[360px] sm:max-w-[390px] mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10">
           {/* TOP BAR: GLASS CAPSULES */}
-          <div className="flex items-center justify-between gap-2 mb-2 shrink-0">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 sm:mb-1.5 shrink-0 w-full">
             {/* LEFT: GROUP BADGE & TOPIC */}
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-base sm:text-lg flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
                 1
               </div>
-              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center justify-between gap-2.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl px-2.5 sm:px-3 py-1 flex items-center justify-between gap-1.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
                 <div className="flex flex-col min-w-0">
-                  <span className="font-black text-xs sm:text-sm text-slate-100 uppercase tracking-wider">
+                  <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
                     1. GRUP
                   </span>
-                  <span className="text-[10px] sm:text-xs font-bold text-cyan-300 break-words">
+                  <span className="text-[10px] sm:text-[11px] font-bold text-cyan-300 truncate max-w-[110px] sm:max-w-[140px]">
                     {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || 'Etkinlik'}
                   </span>
                 </div>
                 <img 
                   src={getGradeIconForTopic(currentTopic, selectedGrade)} 
                   alt="Sınıf" 
-                  className="h-7 w-7 sm:h-8 sm:w-8 object-contain shrink-0 filter drop-shadow-md ml-1" 
+                  className="h-6 w-6 sm:h-7 sm:w-7 object-contain shrink-0 filter drop-shadow-md ml-1" 
                 />
               </div>
             </div>
 
             {/* CENTER: COUNTDOWN TIMER BADGE IF TIMED TOPIC (SINGLE PLAYER) */}
             {isTimedTopic(currentTopic) && (
-              <div className={`backdrop-blur-xl border-2 sm:border-3 rounded-2xl px-3 sm:px-4.5 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-2 font-black text-xs sm:text-base transition-all shrink-0 ${
+              <div className={`backdrop-blur-xl border rounded-xl px-2 sm:px-2.5 py-1 flex items-center gap-1 font-mono font-black text-xs shrink-0 transition-all ${
                 questionTimeLeft <= 3 
-                  ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-4 ring-rose-500/60 scale-105 shadow-[0_0_22px_rgba(244,63,94,0.9)] animate-pulse' 
-                  : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.4)]'
+                  ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/60 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]' 
+                  : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]'
               }`}>
-                <span className={`text-base sm:text-xl ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
-                <span className="font-mono text-sm sm:text-lg font-black tracking-wider">
-                  {questionTimeLeft}s
-                </span>
-                {questionTimeLeft <= 3 && (
-                  <span className="text-[10px] sm:text-xs font-black uppercase text-rose-300 animate-ping">⚠️</span>
-                )}
+                <span className={`text-xs ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
+                <span>{questionTimeLeft}s</span>
               </div>
             )}
 
             {/* RIGHT: SCORE & LIVES */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-2xl px-3 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
-                <span className="bg-amber-400 text-slate-950 font-black text-xs sm:text-sm px-2.5 py-1 rounded-xl shadow-md uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl px-2.5 sm:px-3 py-1 flex items-center gap-1.5 sm:gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+                <span className="bg-amber-400 text-slate-950 font-black text-[10px] sm:text-xs px-2 py-0.5 rounded-lg shadow-md uppercase tracking-wider">
                   PUAN: {score} / 10
                 </span>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-0.5">
                   {Array.from({ length: 3 }).map((_, i) => (
-                    <span key={i} className={`text-base sm:text-lg transition-all ${i < lives ? 'scale-110 drop-shadow-[0_0_8px_#ef4444]' : 'opacity-25 grayscale'}`}>
+                    <span key={i} className={`text-xs sm:text-sm transition-all ${i < lives ? 'scale-110 drop-shadow-[0_0_8px_#ef4444]' : 'opacity-25 grayscale'}`}>
                       ❤️
                     </span>
                   ))}
@@ -5401,23 +5493,23 @@ export default function App() {
           </div>
 
           {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER WITH AUTO-FIT SCALING */}
-          <div className="relative flex-1 rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-2 sm:p-4 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0">
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-2 sm:p-3 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0 w-full">
             {/* Glossy top-light reflection */}
-            <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-3xl" />
+            <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
             <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
               <AutoFitQuestionBox
                 questionHTML={currentQuestionData?.questionHTML}
                 questionText={currentQuestionData?.question}
-                mode={1}
+                mode={2}
               />
             </div>
           </div>
 
           {/* BOTTOM: 2x2 OPTIONS GRID WITH VIBRANT GLOSSY CANDY BUTTONS */}
-          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full shrink-0">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0">
             {(() => {
-              const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 1);
+              const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 2);
               const OPTION_COLOR_THEMES = [
                 {
                   border: 'border-cyan-400',
@@ -5475,7 +5567,7 @@ export default function App() {
 
       {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU - ŞEFFAF GLASSMORPHISM) */}
       {gameState === 'playing' && playerCountMode > 1 && (
-        <div className="flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 max-w-7xl mx-auto">
+        <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 ${playerCountMode === 2 ? 'max-w-5xl' : 'max-w-7xl'} mx-auto`}>
           {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
             <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
@@ -5498,17 +5590,9 @@ export default function App() {
             </span>
           </div>
 
-          {/* BASKETBALL RACE TRACK: 2 VE 3 KİŞİLİK YARIŞ PARKURU */}
-          <BasketballRaceTrack
-            players={players}
-            playerCountMode={playerCountMode}
-            targetScore={10}
-          />
-
-          {/* SPLIT SCREEN GRID FOR 2 OR 3 PLAYERS */}
-          <div className={`flex-1 grid grid-cols-1 ${playerCountMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-2 sm:gap-3 w-full min-h-0 overflow-y-auto no-scrollbar`}>
-            {players.map((p, pIdx) => {
-              // Group color schemes based on user reference: 1 = Blue/Cyan, 2 = Pink/Magenta, 3 = Emerald/Green
+          {/* DÜELLO ALANI VE DİKEY BASKETBOL PARKURU YERLEŞİMİ */}
+          {(() => {
+            const renderPlayerCard = (p: (typeof players)[0], pIdx: number) => {
               const groupTheme = pIdx === 0 
                 ? {
                     badgeBg: "from-blue-700 via-indigo-800 to-blue-950",
@@ -5533,10 +5617,15 @@ export default function App() {
                     buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                   };
 
+              const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode);
+              const optHeightClasses = playerCountMode === 3
+                ? "py-1.5 px-1.5 min-h-[38px] sm:min-h-[46px]"
+                : "py-2 sm:py-2.5 px-2 min-h-[46px] sm:min-h-[58px]";
+
               return (
                 <div
                   key={p.id}
-                  className={`relative flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all`}
+                  className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${playerCountMode === 2 ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
                 >
                   {/* PLAYER HEADER BAR */}
                   <div className="flex items-center justify-between z-10 shrink-0 w-full mb-0.5 sm:mb-1">
@@ -5579,8 +5668,8 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* QUESTION GLASS CONTAINER FOR THIS PLAYER */}
-                  <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] p-1.5 sm:p-2.5 my-0.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0">
+                  {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
+                  <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] ${playerCountMode === 3 ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
                     {/* Top glare effect */}
                     <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
@@ -5607,46 +5696,106 @@ export default function App() {
 
                   {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
                   {p.lives > 0 && (
-                    <div className="grid grid-cols-2 gap-1.5 sm:gap-2 w-full shrink-0 z-10">
-                      {(() => {
-                        const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode);
-                        const optHeightClasses = playerCountMode === 3
-                          ? "py-1 px-1 min-h-[34px] sm:min-h-[38px]"
-                          : "py-1.5 px-1.5 min-h-[37px] sm:min-h-[42px]";
+                    <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${playerCountMode === 2 ? 'max-w-[300px] sm:max-w-[340px]' : 'max-w-[240px] sm:max-w-[270px]'} mx-auto shrink-0 z-10`}>
+                      {p.shuffledOptions.map((opt, oIdx) => {
+                        const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
+                        const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
 
-                        return p.shuffledOptions.map((opt, oIdx) => {
-                          const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
-                          const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
+                        let btnClass = groupTheme.buttonDefault;
+                        if (isCorrect) {
+                          btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
+                        } else if (isWrong) {
+                          btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
+                        }
 
-                          let btnClass = groupTheme.buttonDefault;
-                          if (isCorrect) {
-                            btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
-                          } else if (isWrong) {
-                            btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
-                          }
-
-                          return (
-                            <button
-                              key={oIdx}
-                              onClick={() => handlePlayerAnswer(pIdx, opt)}
-                              disabled={p.feedbackState !== 'none'}
-                              className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
-                            >
-                              {/* Inner top glare */}
-                              <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                              <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                                {opt}
-                              </span>
-                            </button>
-                          );
-                        });
-                      })()}
+                        return (
+                          <button
+                            key={oIdx}
+                            onClick={() => handlePlayerAnswer(pIdx, opt)}
+                            disabled={p.feedbackState !== 'none'}
+                            className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                          >
+                            {/* Inner top glare */}
+                            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                            <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                              {opt}
+                            </span>
+                          </button>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
               );
-            })}
-          </div>
+            };
+
+            return playerCountMode === 2 ? (
+              /* 2 OYUNCU MODU: 1. OYUNCU (SOL) - DİKEY BASKETBOL PARKURU (ORTA) - 2. OYUNCU (SAĞ) */
+              <div className="flex-1 flex flex-row items-stretch justify-center gap-2 sm:gap-3.5 w-full min-h-0 overflow-hidden">
+                {/* 1. GRUP (SOLDA) */}
+                {renderPlayerCard(players[0], 0)}
+
+                {/* DİKEY BASKETBOL PARKURU (TAM ORTADA) */}
+                <div className="h-full flex items-center justify-center shrink-0">
+                  {(() => {
+                    const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+                    return (
+                      <BasketballRaceTrack
+                        players={players}
+                        playerCountMode={2}
+                        targetScore={10}
+                        orientation="vertical"
+                        showVictoryVideo={trackVictoryVideoActive}
+                        victoryVideoSrc={winCfg.videoSrc}
+                        winnerTitle={winCfg.title}
+                        winnerImg={winCfg.img}
+                        winnerBadgeBg={winCfg.badgeBg}
+                        winnerBorderColor={winCfg.borderColor}
+                        winnerGlowColor={winCfg.glowColor}
+                        onVictoryVideoEnd={handleTrackVideoComplete}
+                        soundEnabled={soundEnabled}
+                      />
+                    );
+                  })()}
+                </div>
+
+                {/* 2. GRUP (SAĞDA) */}
+                {renderPlayerCard(players[1], 1)}
+              </div>
+            ) : (
+              /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA) + 3 OYUNCU (SAĞDA YAN YANA) */
+              <div className="flex-1 flex flex-row items-stretch justify-center gap-1.5 sm:gap-2.5 w-full min-h-0 overflow-hidden">
+                {/* DİKEY BASKETBOL PARKURU (EN SOLDA) */}
+                <div className="h-full flex items-center justify-center shrink-0">
+                  {(() => {
+                    const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+                    return (
+                      <BasketballRaceTrack
+                        players={players}
+                        playerCountMode={3}
+                        targetScore={10}
+                        orientation="vertical"
+                        showVictoryVideo={trackVictoryVideoActive}
+                        victoryVideoSrc={winCfg.videoSrc}
+                        winnerTitle={winCfg.title}
+                        winnerImg={winCfg.img}
+                        winnerBadgeBg={winCfg.badgeBg}
+                        winnerBorderColor={winCfg.borderColor}
+                        winnerGlowColor={winCfg.glowColor}
+                        onVictoryVideoEnd={handleTrackVideoComplete}
+                        soundEnabled={soundEnabled}
+                      />
+                    );
+                  })()}
+                </div>
+
+                {/* 3 OYUNCU KARTLARI (SAĞDA YAN YANA) */}
+                <div className="flex-1 grid grid-cols-3 gap-1.5 sm:gap-2.5 min-h-0 h-full w-full">
+                  {players.slice(0, 3).map((p, pIdx) => renderPlayerCard(p, pIdx))}
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
 
@@ -5795,7 +5944,7 @@ export default function App() {
                 </div>
 
                 {/* 3. ACTION BUTTONS (INSIDE CREAM REGION, DIRECTLY UNDER PODIUM STANDS) */}
-                <div className="relative z-50 shrink-0 flex items-center justify-center gap-5 sm:gap-7 w-full max-w-xs mt-2.5 sm:mt-3.5">
+                <div className="relative z-50 shrink-0 flex items-center justify-center gap-4 sm:gap-6 w-full max-w-xs mt-2.5 sm:mt-3.5">
                   {/* REPLAY ICON BUTTON (tekrar.png) */}
                   <button
                     onClick={() => selectTopicAndStart(currentTopic)}
@@ -5808,6 +5957,17 @@ export default function App() {
                       className="w-full h-full object-contain pointer-events-none" 
                     />
                   </button>
+
+                  {/* REPLAY VICTORY VIDEO BUTTON (IF ANY GROUP WON IN MULTIPLAYER) */}
+                  {duelWinnerIndex !== null && (
+                    <button
+                      onClick={() => setShowPodiumVideoModal(true)}
+                      title="Şampiyonluk Videosunu İzle"
+                      className="group relative w-12 h-12 xs:w-14 xs:h-14 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.7)] shrink-0 bg-gradient-to-br from-amber-500 via-yellow-500 to-amber-600 hover:brightness-110 rounded-2xl border-2 border-yellow-200 shadow-xl"
+                    >
+                      <span className="text-xl sm:text-2xl filter drop-shadow">🎬</span>
+                    </button>
+                  )}
 
                   {/* MENU ICON BUTTON (menu.png) */}
                   <button
@@ -6145,6 +6305,7 @@ export default function App() {
           playMp3={playMp3}
           playerCountMode={playerCountMode}
           onSwitchPlayerCountMode={switchPlayerCountMode}
+          soundEnabled={soundEnabled}
         />
       )}
 
@@ -6188,6 +6349,45 @@ export default function App() {
                 className="h-16 sm:h-24 md:h-28 w-auto object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)] transition-transform group-hover:brightness-110"
               />
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* REPLAY CHAMPIONSHIP VIDEO MODAL */}
+      {showPodiumVideoModal && duelWinnerIndex !== null && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none"
+          onClick={() => setShowPodiumVideoModal(false)}
+        >
+          <div 
+            className="relative flex flex-col items-center justify-center h-full max-h-[90vh] w-auto animate-in zoom-in-95 duration-200"
+            style={{ aspectRatio: '720 / 1280' }}
+            onClick={e => e.stopPropagation()}
+          >
+            {(() => {
+              const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+              return (
+                <div className={`relative w-full h-full rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.9)] border-2 ${winCfg.borderColor} bg-black flex items-center justify-center`}>
+                  <video
+                    src={winCfg.videoSrc}
+                    autoPlay
+                    controls
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                  <div className={`absolute top-3 left-3 bg-gradient-to-r ${winCfg.badgeBg} text-white px-3 py-1 rounded-full text-xs font-black shadow-lg flex items-center gap-1.5 pointer-events-none border border-white/60`}>
+                    <img src={winCfg.img} alt="" className="w-4 h-4 object-contain" />
+                    <span>{winCfg.title}</span>
+                  </div>
+                  <button
+                    onClick={() => setShowPodiumVideoModal(false)}
+                    className="absolute top-3 right-3 bg-black/70 hover:bg-black text-white px-3 py-1 rounded-full text-xs font-bold border border-white/40 shadow-lg cursor-pointer z-30 flex items-center gap-1"
+                  >
+                    ✕ Kapat
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}
