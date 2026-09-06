@@ -5579,7 +5579,7 @@ export default function App() {
 
       {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU - ŞEFFAF GLASSMORPHISM) */}
       {gameState === 'playing' && playerCountMode > 1 && (
-        <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 ${playerCountMode === 2 ? 'max-w-5xl' : 'max-w-7xl'} mx-auto`}>
+        <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 ${playerCountMode === 2 ? 'max-w-[clamp(1024px,calc(512px+50vw),1800px)]' : 'max-w-[clamp(1200px,calc(500px+70vw),2200px)] w-full'} mx-auto`}>
           {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
             <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
@@ -5634,10 +5634,24 @@ export default function App() {
                 ? "py-1.5 px-1.5 min-h-[38px] sm:min-h-[46px]"
                 : "py-2 sm:py-2.5 px-2 min-h-[46px] sm:min-h-[58px]";
 
+              const cardAlignment = playerCountMode === 2
+                ? (pIdx === 0 ? 'mr-auto ml-0' : 'ml-auto mr-0')
+                : (playerCountMode === 3 
+                    ? (pIdx === 0 ? 'mr-auto ml-0' : pIdx === 1 ? 'mx-auto' : 'ml-auto mr-0') 
+                    : 'mx-auto');
+              const cardMaxWidth = playerCountMode === 2
+                ? 'max-w-[480px] lg:max-w-[520px]'
+                : (playerCountMode === 3 
+                    ? 'max-w-[420px] lg:max-w-[460px]' 
+                    : 'max-w-none');
+              const optionsMaxWidth = playerCountMode === 2
+                ? 'max-w-[320px] sm:max-w-[360px] md:max-w-[380px]'
+                : (playerCountMode === 3 ? 'max-w-[280px] sm:max-w-[320px] md:max-w-[360px]' : 'max-w-[300px] sm:max-w-[340px]');
+
               return (
                 <div
                   key={p.id}
-                  className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${playerCountMode === 2 ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+                  className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`}
                 >
                   {/* PLAYER HEADER BAR */}
                   <div className="flex items-center justify-between z-10 shrink-0 w-full mb-0.5 sm:mb-1">
@@ -5708,7 +5722,7 @@ export default function App() {
 
                   {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
                   {p.lives > 0 && (
-                    <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${playerCountMode === 2 ? 'max-w-[300px] sm:max-w-[340px]' : 'max-w-[240px] sm:max-w-[270px]'} mx-auto shrink-0 z-10`}>
+                    <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${optionsMaxWidth} mx-auto shrink-0 z-10`}>
                       {p.shuffledOptions.map((opt, oIdx) => {
                         const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
                         const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
@@ -5750,12 +5764,14 @@ export default function App() {
 
             return playerCountMode === 2 ? (
               /* 2 OYUNCU MODU: 1. OYUNCU (SOL) - DİKEY BASKETBOL PARKURU (ORTA) - 2. OYUNCU (SAĞ) */
-              <div className="flex-1 flex flex-row items-stretch justify-center gap-2 sm:gap-3.5 w-full min-h-0 overflow-hidden">
-                {/* 1. GRUP (SOLDA) */}
-                {renderPlayerCard(players[0], 0)}
+              <div className="flex-1 flex flex-row items-stretch justify-between gap-2 sm:gap-4 w-full min-h-0 overflow-hidden">
+                {/* 1. GRUP (SOLDA - SOL BOŞLUĞUN YARISI KADAR SOLA KAYDIRILDI) */}
+                <div className="flex-1 flex items-center justify-start h-full min-h-0 min-w-0">
+                  {renderPlayerCard(players[0], 0)}
+                </div>
 
                 {/* DİKEY BASKETBOL PARKURU (TAM ORTADA) */}
-                <div className="h-full flex items-center justify-center shrink-0">
+                <div className="h-full flex items-center justify-center shrink-0 px-1">
                   {(() => {
                     const winCfg = getWinnerVideoConfig(duelWinnerIndex);
                     return (
@@ -5778,14 +5794,16 @@ export default function App() {
                   })()}
                 </div>
 
-                {/* 2. GRUP (SAĞDA) */}
-                {renderPlayerCard(players[1], 1)}
+                {/* 2. GRUP (SAĞDA - SAĞ BOŞLUĞUN YARISI KADAR SAĞA KAYDIRILDI) */}
+                <div className="flex-1 flex items-center justify-end h-full min-h-0 min-w-0">
+                  {renderPlayerCard(players[1], 1)}
+                </div>
               </div>
             ) : (
-              /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA) + 3 OYUNCU (SAĞDA YAN YANA) */
-              <div className="flex-1 flex flex-row items-stretch justify-center gap-1.5 sm:gap-2.5 w-full min-h-0 overflow-hidden">
-                {/* DİKEY BASKETBOL PARKURU (EN SOLDA) */}
-                <div className="h-full flex items-center justify-center shrink-0">
+              /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA - %20 DARALTILMIŞ) + 3 OYUNCU (1 SOLDA, 2 ORTADA, 3 EN SAĞDA) */
+              <div className="flex-1 flex flex-row items-stretch justify-between gap-1 sm:gap-2.5 w-full min-h-0 overflow-hidden">
+                {/* DİKEY BASKETBOL PARKURU (EN SOLDA - GENİŞLİĞİ %20 DARALTILMIŞ, EN SOLA YASLI) */}
+                <div className="h-full flex items-center justify-start shrink-0 pl-0 pr-0.5 sm:pr-1">
                   {(() => {
                     const winCfg = getWinnerVideoConfig(duelWinnerIndex);
                     return (
@@ -5808,9 +5826,22 @@ export default function App() {
                   })()}
                 </div>
 
-                {/* 3 OYUNCU KARTLARI (SAĞDA YAN YANA) */}
-                <div className="flex-1 grid grid-cols-3 gap-1.5 sm:gap-2.5 min-h-0 h-full w-full">
-                  {players.slice(0, 3).map((p, pIdx) => renderPlayerCard(p, pIdx))}
+                {/* 3 OYUNCU KARTLARI: 1. GRUP SOLDA, 2. GRUP ORTADA, 3. GRUP EN SAĞDA - BOŞLUKLAR 1-2 VE 2-3 ARASINA EŞİT DAĞITILDI */}
+                <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6">
+                  {/* 1. GRUP (PARKURUN HEMEN YANINDA - SOLA YASLI) */}
+                  <div className="flex-1 flex items-center justify-start h-full min-h-0 min-w-0">
+                    {renderPlayerCard(players[0], 0)}
+                  </div>
+
+                  {/* 2. GRUP (TAM ORTADA) */}
+                  <div className="flex-1 flex items-center justify-center h-full min-h-0 min-w-0">
+                    {renderPlayerCard(players[1], 1)}
+                  </div>
+
+                  {/* 3. GRUP (EN SAĞA YASLI) */}
+                  <div className="flex-1 flex items-center justify-end h-full min-h-0 min-w-0">
+                    {renderPlayerCard(players[2], 2)}
+                  </div>
                 </div>
               </div>
             );

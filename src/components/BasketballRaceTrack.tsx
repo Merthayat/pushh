@@ -142,7 +142,8 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
 
   if (orientation === 'vertical') {
     const verticalTrackSrc = activeCount === 2 ? '/park2.png' : '/park3.png';
-    const trackAspectRatio = activeCount === 2 ? '567 / 1208' : '883 / 1415';
+    // 3 kişilik modda parkur görselinin genişliği %20 daraltıldı (883 * 0.8 = 706.4)
+    const trackAspectRatio = activeCount === 2 ? '567 / 1208' : `${883 * 0.8} / 1415`;
 
     return (
       <div className={`h-full flex flex-col items-center justify-center shrink-0 select-none ${className}`}>
@@ -156,7 +157,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
             key={`track-v-${activeCount}`}
             src={verticalTrackSrc}
             alt={activeCount === 2 ? '2 Kişilik Dikey Parkur' : '3 Kişilik Dikey Parkur'}
-            className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none filter drop-shadow-xl"
+            className={`absolute inset-0 w-full h-full ${activeCount === 3 ? 'object-fill' : 'object-contain'} pointer-events-none select-none filter drop-shadow-xl`}
             loading="eager"
             decoding="async"
           />
@@ -169,10 +170,10 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
               const progressRatio = currentScore / targetScore;
               const isWinner = currentScore >= targetScore;
 
-              // Mascot sizing without circular frame (larger and arcade-like)
+              // Mascot sizing without circular frame (larger and arcade-like, tailored for lane widths)
               const mascotSize = activeCount === 2 
                 ? 'w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14' 
-                : 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12';
+                : 'w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10';
 
               return (
                 <div

@@ -267,354 +267,276 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
   // 1. NESNELERİN GEOMETRİSİ
   uzamsal_iliskiler: {
     title: "Uzamsal İlişkiler (Konum)",
-    desc: "Altında, üstünde, içinde, dışında, önünde, arkasında, sağında, solunda kavramları.",
+    desc: "Görsellere göre altında, üstünde, içinde, dışında, önünde, arkasında, sağında, solunda kavramları.",
     generate: () => {
-      // 1. sınıf seviyesine özel, büyük görsel sahneleri ve kompakt soru metinleri
-      const sahneler = [
-        // 1. Ağaç (Üstünde / Altında)
-        () => {
-          const ustte = { ad: "Kuş", emoji: "🐦" };
-          const altta = { ad: "Kedi", emoji: "🐈" };
-          const soruUstte = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] gap-1 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-sky-900/40 via-slate-900/50 to-emerald-950/40 border border-cyan-300/30 shadow-md">
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-amber-400/20 border border-amber-300/60 shadow-sm">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🐦</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider">ÜSTTE: Kuş</span>
-              </div>
-              <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow -my-1">🌳</div>
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-emerald-400/20 border border-emerald-300/60 shadow-sm">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🐈</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-emerald-300 uppercase tracking-wider">ALTTA: Kedi</span>
-              </div>
-            </div>
-          `;
-          if (soruUstte) {
-            return {
-              soru: `Ağacın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> olan hangisidir?`,
-              dogru: `${ustte.emoji} ${ustte.ad}`,
-              yanlis: [`${altta.emoji} ${altta.ad}`, "🐶 Köpek", "🐰 Tavşan"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Ağacın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ALTINDA</span> olan hangisidir?`,
-              dogru: `${altta.emoji} ${altta.ad}`,
-              yanlis: [`${ustte.emoji} ${ustte.ad}`, "🐿️ Sincap", "🦋 Kelebek"],
-              visualHTML
-            };
-          }
+      // public/gorselsoru/ klasöründeki g1.jpeg - g9.jpeg görsellerine özel hazırlanmış uzamsal ilişki soruları
+      interface UzamsalSoruTanimi {
+        img: string;
+        soru: string;
+        dogru: string;
+        yanlis: string[];
+      }
+
+      const tumSorular: UzamsalSoruTanimi[] = [
+        // --- GÖRSEL 1: Taş ev, çatıda kedi, kapı önünde sarı çizmeler, sağda bank, solda çiçek bahçesi ---
+        {
+          img: "/gorselsoru/g1.jpeg",
+          soru: `Evin çatısının <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> hangi hayvan durmaktadır?`,
+          dogru: "🐱 Kedi",
+          yanlis: ["🐶 Köpek", "🐦 Kuş", "🐰 Tavşan"]
+        },
+        {
+          img: "/gorselsoru/g1.jpeg",
+          soru: `Mavi kapının hemen <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÖNÜNDE</span> ne durmaktadır?`,
+          dogru: "🥾 Sarı çizmeler",
+          yanlis: ["🪵 Ahşap bank", "🪴 Çiçek saksısı", "🚲 Yeşil bisiklet"]
+        },
+        {
+          img: "/gorselsoru/g1.jpeg",
+          soru: `Ahşap bank, evin hangi tarafında yer almaktadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Üstünde", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g1.jpeg",
+          soru: `Çitlerle çevrili çiçek bahçesi, evin neresindedir?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Arkasında", "Üstünde"]
         },
 
-        // 2. Kutu (İçinde / Dışında)
-        () => {
-          const icinde = { ad: "Top", emoji: "⚽" };
-          const disinda = { ad: "Araba", emoji: "🚗" };
-          const soruIcinde = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex items-center justify-center gap-2 xs:gap-3 sm:gap-4 w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] p-2 rounded-2xl bg-gradient-to-r from-slate-900/50 via-indigo-950/50 to-slate-900/50 border border-indigo-300/30 shadow-md">
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-amber-400/20 border-2 border-dashed border-amber-300/70 shadow-inner">
-                <span class="text-[10px] xs:text-xs font-black text-amber-300 uppercase tracking-wider">İÇİNDE</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">⚽</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-slate-200">📦 Kutu İçi</span>
-              </div>
-              <div class="text-base sm:text-lg font-black text-slate-400">↔️</div>
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-rose-400/20 border border-rose-300/60 shadow-sm">
-                <span class="text-[10px] xs:text-xs font-black text-rose-300 uppercase tracking-wider">DIŞINDA</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">🚗</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-slate-200">Dışarıda</span>
-              </div>
-            </div>
-          `;
-          if (soruIcinde) {
-            return {
-              soru: `Kutunun <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">İÇİNDE</span> olan hangisidir?`,
-              dogru: `${icinde.emoji} ${icinde.ad}`,
-              yanlis: [`${disinda.emoji} ${disinda.ad}`, "🧸 Ayıcık", "🚀 Roket"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Kutunun <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">DIŞINDA</span> olan hangisidir?`,
-              dogru: `${disinda.emoji} ${disinda.ad}`,
-              yanlis: [`${icinde.emoji} ${icinde.ad}`, "🎲 Zar", "🧩 Yapboz"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 2: Taş ev, kapı önünde köpek, solda yeşil bisiklet, sağda odun yığını, baca üstünde horoz rüzgar gülü ---
+        {
+          img: "/gorselsoru/g2.jpeg",
+          soru: `Köpek, evin kapısının neresinde uyumaktadır?`,
+          dogru: "Önünde",
+          yanlis: ["Arkasında", "Üstünde", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g2.jpeg",
+          soru: `Yeşil bisiklet, evin hangi tarafında durmaktadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Arkasında", "Üstünde"]
+        },
+        {
+          img: "/gorselsoru/g2.jpeg",
+          soru: `Odun yığını, evin neresinde durmaktadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Üstünde", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g2.jpeg",
+          soru: `Horoz figürlü rüzgar gülü, bacanın neresindedir?`,
+          dogru: "Üstünde",
+          yanlis: ["Altında", "İçinde", "Solunda"]
         },
 
-        // 3. Masa (Sağında / Solunda)
-        () => {
-          const solda = { ad: "Muz", emoji: "🍌" };
-          const sagda = { ad: "Elma", emoji: "🍎" };
-          const soruSagda = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex items-center justify-center gap-1.5 xs:gap-2.5 sm:gap-3 w-full max-w-[340px] xs:max-w-[380px] sm:max-w-[420px] p-2 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-slate-900/50 to-amber-950/40 border border-amber-300/30 shadow-md">
-              <div class="flex flex-col items-center px-2 py-1 rounded-xl bg-emerald-400/20 border border-emerald-400/50 shadow-sm">
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-black text-emerald-300 uppercase tracking-wider">⬅️ SOL</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl my-0.5 filter drop-shadow">🍌</span>
-                <span class="text-[10px] xs:text-xs font-black text-white">Muz</span>
-              </div>
-              <div class="flex flex-col items-center px-1">
-                <span class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow">🪑</span>
-                <span class="text-[9px] xs:text-[10px] font-black text-slate-300 uppercase">Masa</span>
-              </div>
-              <div class="flex flex-col items-center px-2 py-1 rounded-xl bg-amber-400/20 border border-amber-400/50 shadow-sm">
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-black text-amber-300 uppercase tracking-wider">SAĞ ➡️</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl my-0.5 filter drop-shadow">🍎</span>
-                <span class="text-[10px] xs:text-xs font-black text-white">Elma</span>
-              </div>
-            </div>
-          `;
-          if (soruSagda) {
-            return {
-              soru: `Masanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">SAĞINDA</span> olan hangisidir?`,
-              dogru: `${sagda.emoji} ${sagda.ad}`,
-              yanlis: [`${solda.emoji} ${solda.ad}`, "🍓 Çilek", "🍇 Üzüm"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Masanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">SOLUNDA</span> olan hangisidir?`,
-              dogru: `${solda.emoji} ${solda.ad}`,
-              yanlis: [`${sagda.emoji} ${sagda.ad}`, "🍊 Portakal", "🍉 Karpuz"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 3: Minyatür ev, baca üstünde kuş, kapı önünde turuncu kedi, solda posta kutusu, sağda saksılı çiçek ---
+        {
+          img: "/gorselsoru/g3.jpeg",
+          soru: `Bacanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> hangi hayvan durmaktadır?`,
+          dogru: "🐦 Kuş",
+          yanlis: ["🐱 Kedi", "🐶 Köpek", "🦋 Kelebek"]
+        },
+        {
+          img: "/gorselsoru/g3.jpeg",
+          soru: `Turuncu kedi, evin neresinde uyumaktadır?`,
+          dogru: "Kapının önünde",
+          yanlis: ["Çatının üstünde", "Evin arkasında", "Evin içinde"]
+        },
+        {
+          img: "/gorselsoru/g3.jpeg",
+          soru: `Kırmızı posta kutusu, evin hangi tarafındadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Arkasında", "Üstünde"]
+        },
+        {
+          img: "/gorselsoru/g3.jpeg",
+          soru: `Çiçek saksısı, evin neresinde durmaktadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "İçinde", "Altında"]
         },
 
-        // 4. Ev (Önünde / Arkasında)
-        () => {
-          const arkada = { ad: "Çam Ağacı", emoji: "🌲" };
-          const onde = { ad: "Araba", emoji: "🚗" };
-          const soruOnde = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] gap-1 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-indigo-950/40 via-slate-900/50 to-slate-950/50 border border-indigo-300/30 shadow-md">
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-slate-800/90 border border-white/20 shadow-sm opacity-90 scale-95">
-                <span class="text-2xl xs:text-3xl sm:text-4xl filter drop-shadow">🌲</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-slate-200">ARKADA: Çam Ağacı</span>
-              </div>
-              <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow -my-1">🏠</div>
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-rose-500/25 border-2 border-rose-400/70 shadow-md">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🚗</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-rose-200">ÖNDE: Araba</span>
-              </div>
-            </div>
-          `;
-          if (soruOnde) {
-            return {
-              soru: `Evin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÖNÜNDE</span> olan hangisidir?`,
-              dogru: `${onde.emoji} ${onde.ad}`,
-              yanlis: [`${arkada.emoji} ${arkada.ad}`, "🚲 Bisiklet", "🐕 Köpek"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Evin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ARKASINDA</span> olan hangisidir?`,
-              dogru: `${arkada.emoji} ${arkada.ad}`,
-              yanlis: [`${onde.emoji} ${onde.ad}`, "🚜 Traktör", "⛵ Gemi"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 4: Ağaç, dalda mavi kelebek, altta kaplumbağa, solda sulama kabı, sağda renkli plaj topu ---
+        {
+          img: "/gorselsoru/g4.jpeg",
+          soru: `Ağacın dalında, <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">YUKARIDA</span> ne durmaktadır?`,
+          dogru: "🦋 Mavi kelebek",
+          yanlis: ["🐢 Kaplumbağa", "⚽ Plaj topu", "🪣 Sulama kabı"]
+        },
+        {
+          img: "/gorselsoru/g4.jpeg",
+          soru: `Ağacın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ALTINDA</span> çimlerde hangi hayvan yürümektedir?`,
+          dogru: "🐢 Kaplumbağa",
+          yanlis: ["🦋 Mavi kelebek", "🐱 Kedi", "🐰 Tavşan"]
+        },
+        {
+          img: "/gorselsoru/g4.jpeg",
+          soru: `Metal sulama kabı, ağacın hangi tarafındadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Üstünde", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g4.jpeg",
+          soru: `Renkli plaj topu, ağacın neresinde durmaktadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Üstünde", "Altında"]
         },
 
-        // 5. Akvaryum (İçinde / Dışında)
-        () => {
-          const icinde = { ad: "Balık", emoji: "🐠" };
-          const disinda = { ad: "Kedi", emoji: "🐱" };
-          const soruIcinde = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex items-center justify-center gap-2 xs:gap-3 sm:gap-4 w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] p-2 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-slate-900/50 to-amber-950/40 border border-cyan-300/30 shadow-md">
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-cyan-500/20 border-2 border-cyan-300/70 shadow-inner">
-                <span class="text-[10px] xs:text-xs font-black text-cyan-200 uppercase tracking-wider">İÇİNDE</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">🐠</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-cyan-100">🫧 Akvaryum</span>
-              </div>
-              <div class="text-base sm:text-lg font-black text-slate-400">↔️</div>
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-amber-400/20 border border-amber-300/60 shadow-sm">
-                <span class="text-[10px] xs:text-xs font-black text-amber-300 uppercase tracking-wider">DIŞINDA</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">🐱</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-amber-100">Dışarıda</span>
-              </div>
-            </div>
-          `;
-          if (soruIcinde) {
-            return {
-              soru: `Akvaryumun <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">İÇİNDE</span> olan hangisidir?`,
-              dogru: `${icinde.emoji} ${icinde.ad}`,
-              yanlis: [`${disinda.emoji} ${disinda.ad}`, "🐶 Köpek", "🐰 Tavşan"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Akvaryumun <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">DIŞINDA</span> olan hangisidir?`,
-              dogru: `${disinda.emoji} ${disinda.ad}`,
-              yanlis: [`${icinde.emoji} ${icinde.ad}`, "🐢 Kaplumbağa", "🐙 Ahtapot"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 5: Ağaç, dalda kırmızı kuş, solda tavşan, sağda kırmızı top, solda sarı çiçek ---
+        {
+          img: "/gorselsoru/g5.jpeg",
+          soru: `Kırmızı kuş ağacın neresindedir?`,
+          dogru: "Yukarısında (dalında)",
+          yanlis: ["Aşağısında (kökünde)", "Topun arkasında", "Saksının içinde"]
+        },
+        {
+          img: "/gorselsoru/g5.jpeg",
+          soru: `Kırmızı top, ağacın neresinde durmaktadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Üstünde", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g5.jpeg",
+          soru: `Gri tavşan, ağacın hangi tarafında durmaktadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "En tepesinde", "Arkasında"]
+        },
+        {
+          img: "/gorselsoru/g5.jpeg",
+          soru: `Saksıdaki sarı çiçek, tavşanın neresindedir?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Üstünde", "Arkasında"]
         },
 
-        // 6. Köprü (Üstünde / Altında)
-        () => {
-          const ustte = { ad: "Araba", emoji: "🚗" };
-          const altta = { ad: "Gemi", emoji: "⛵" };
-          const soruUstte = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] gap-1 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-sky-950/40 via-slate-900/50 to-blue-950/50 border border-blue-300/30 shadow-md">
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-amber-400/20 border border-amber-300/60 shadow-sm">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🚗</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-amber-300 uppercase tracking-wider">ÜSTTE: Araba</span>
-              </div>
-              <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow -my-1">🌉</div>
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-blue-400/20 border border-blue-300/60 shadow-sm">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">⛵</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-blue-300 uppercase tracking-wider">ALTTA: Gemi</span>
-              </div>
-            </div>
-          `;
-          if (soruUstte) {
-            return {
-              soru: `Köprünün <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> olan hangisidir?`,
-              dogru: `${ustte.emoji} ${ustte.ad}`,
-              yanlis: [`${altta.emoji} ${altta.ad}`, "🦆 Ördek", "🐟 Balık"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Köprünün <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ALTINDA</span> olan hangisidir?`,
-              dogru: `${altta.emoji} ${altta.ad}`,
-              yanlis: [`${ustte.emoji} ${ustte.ad}`, "🚌 Otobüs", "🚂 Tren"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 6: Balkon/masa, üstte çiçekli vazo, altta kaplumbağa, solda çizmeler, sağda renkli top ---
+        {
+          img: "/gorselsoru/g6.jpeg",
+          soru: `Masanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> ne durmaktadır?`,
+          dogru: "🏺 Çiçekli vazo",
+          yanlis: ["🐢 Kaplumbağa", "⚽ Renkli top", "🥾 Çizmeler"]
+        },
+        {
+          img: "/gorselsoru/g6.jpeg",
+          soru: `Masanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ALTINDA</span> hangi canlı bulunmaktadır?`,
+          dogru: "🐢 Kaplumbağa",
+          yanlis: ["🏺 Çiçekli vazo", "⚽ Renkli top", "🐱 Kedi"]
+        },
+        {
+          img: "/gorselsoru/g6.jpeg",
+          soru: `Renkli top, masanın neresindedir?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Üstünde", "Altında"]
+        },
+        {
+          img: "/gorselsoru/g6.jpeg",
+          soru: `Mavi çizmeler, masanın hangi tarafındadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Üstünde", "İçinde"]
         },
 
-        // 7. Gökyüzü ve Zemin (Yukarıda / Aşağıda)
-        () => {
-          const yukarida = { ad: "Uçan Balon", emoji: "🎈" };
-          const asagida = { ad: "Tavşan", emoji: "🐰" };
-          const soruYukarida = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] gap-1 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-sky-900/50 via-slate-900/50 to-emerald-950/40 border border-sky-300/30 shadow-md">
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-sky-400/20 border border-sky-300/60 shadow-sm animate-bounce">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🎈</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-sky-200 uppercase tracking-wider">YUKARIDA: Balon</span>
-              </div>
-              <div class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow -my-1">☁️</div>
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-emerald-400/20 border border-emerald-300/60 shadow-sm">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🐰</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-emerald-300 uppercase tracking-wider">AŞAĞIDA: Tavşan</span>
-              </div>
-            </div>
-          `;
-          if (soruYukarida) {
-            return {
-              soru: `Havada <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">YUKARIDA</span> olan hangisidir?`,
-              dogru: `${yukarida.emoji} ${yukarida.ad}`,
-              yanlis: [`${asagida.emoji} ${asagida.ad}`, "🌸 Çiçek", "🐢 Kaplumbağa"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Yerde <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">AŞAĞIDA</span> olan hangisidir?`,
-              dogru: `${asagida.emoji} ${asagida.ad}`,
-              yanlis: [`${yukarida.emoji} ${yukarida.ad}`, "☁️ Bulut", "✈️ Uçak"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 7: Ahşap masa, üstte elma, altta kedi, solda saksı bitkisi, sağda sarı top ---
+        {
+          img: "/gorselsoru/g7.jpeg",
+          soru: `Kedi, masanın neresinde uyumaktadır?`,
+          dogru: "Altında",
+          yanlis: ["Üstünde", "İçinde", "Arkasında"]
+        },
+        {
+          img: "/gorselsoru/g7.jpeg",
+          soru: `Masanın <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÜSTÜNDE</span> hangi meyve durmaktadır?`,
+          dogru: "🍎 Kırmızı elma",
+          yanlis: ["🎾 Sarı top", "🪴 Saksı bitkisi", "🐱 Kedi"]
+        },
+        {
+          img: "/gorselsoru/g7.jpeg",
+          soru: `Sarı tenis topu, masanın neresindedir?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Altında", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g7.jpeg",
+          soru: `Saksıdaki bitki, masanın hangi tarafında durmaktadır?`,
+          dogru: "Solunda",
+          yanlis: ["Sağında", "Üstünde", "Altında"]
         },
 
-        // 8. Çit (Önünde / Arkasında)
-        () => {
-          const arkada = { ad: "Koyun", emoji: "🐑" };
-          const onde = { ad: "Köpek", emoji: "🐕" };
-          const soruArkada = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex flex-col items-center justify-center w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] gap-1 px-3 py-1.5 rounded-2xl bg-gradient-to-b from-amber-950/40 via-slate-900/50 to-emerald-950/40 border border-amber-300/30 shadow-md">
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-slate-800/90 border border-white/20 shadow-sm opacity-90 scale-95">
-                <span class="text-2xl xs:text-3xl sm:text-4xl filter drop-shadow">🐑</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-slate-200">ARKADA: Koyun</span>
-              </div>
-              <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow -my-1">🪵</div>
-              <div class="flex items-center gap-2 px-3 py-0.5 rounded-xl bg-amber-500/25 border-2 border-amber-400/70 shadow-md">
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow">🐕</span>
-                <span class="text-[10px] xs:text-xs sm:text-sm font-black text-amber-200">ÖNDE: Köpek</span>
-              </div>
-            </div>
-          `;
-          if (soruArkada) {
-            return {
-              soru: `Çitin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ARKASINDA</span> olan hangisidir?`,
-              dogru: `${arkada.emoji} ${arkada.ad}`,
-              yanlis: [`${onde.emoji} ${onde.ad}`, "🐈 Kedi", "🐔 Tavuk"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Çitin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">ÖNÜNDE</span> olan hangisidir?`,
-              dogru: `${onde.emoji} ${onde.ad}`,
-              yanlis: [`${arkada.emoji} ${arkada.ad}`, "🐎 At", "🐄 İnek"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 8: Ahşap oda, masa altında tavşan, üstünde kutu, sağdaki taburede kırmızı kuş ---
+        {
+          img: "/gorselsoru/g8.jpeg",
+          soru: `Gri tavşan, masanın neresindedir?`,
+          dogru: "Altında",
+          yanlis: ["Üstünde", "İçinde", "Arkasında"]
+        },
+        {
+          img: "/gorselsoru/g8.jpeg",
+          soru: `Kırmızı kuş nerede durmaktadır?`,
+          dogru: "Taburenin üstünde",
+          yanlis: ["Taburenin altında", "Masanın altında", "Kutunun içinde"]
+        },
+        {
+          img: "/gorselsoru/g8.jpeg",
+          soru: `Karton kutu, masanın neresindedir?`,
+          dogru: "Üstünde",
+          yanlis: ["Altında", "Arkasında", "İçinde"]
+        },
+        {
+          img: "/gorselsoru/g8.jpeg",
+          soru: `Kuşun durduğu tabure, masanın hangi tarafındadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Altında", "İçinde"]
         },
 
-        // 9. Sepet (İçinde / Dışında)
-        () => {
-          const icinde = { ad: "Çilek", emoji: "🍓" };
-          const disinda = { ad: "Havuç", emoji: "🥕" };
-          const soruIcinde = Math.random() < 0.5;
-          const visualHTML = `
-            <div class="flex items-center justify-center gap-2 xs:gap-3 sm:gap-4 w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] p-2 rounded-2xl bg-gradient-to-r from-red-950/40 via-slate-900/50 to-orange-950/40 border border-orange-300/30 shadow-md">
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-red-500/20 border-2 border-red-300/70 shadow-inner">
-                <span class="text-[10px] xs:text-xs font-black text-red-200 uppercase tracking-wider">İÇİNDE</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">🍓</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-red-100">🧺 Sepet İçi</span>
-              </div>
-              <div class="text-base sm:text-lg font-black text-slate-400">↔️</div>
-              <div class="flex flex-col items-center px-2.5 py-1 rounded-xl bg-orange-400/20 border border-orange-300/60 shadow-sm">
-                <span class="text-[10px] xs:text-xs font-black text-orange-300 uppercase tracking-wider">DIŞINDA</span>
-                <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow my-0.5">🥕</span>
-                <span class="text-[9px] xs:text-[10px] sm:text-xs font-bold text-orange-100">Dışarıda</span>
-              </div>
-            </div>
-          `;
-          if (soruIcinde) {
-            return {
-              soru: `Sepetin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">İÇİNDE</span> olan hangisidir?`,
-              dogru: `${icinde.emoji} ${icinde.ad}`,
-              yanlis: [`${disinda.emoji} ${disinda.ad}`, "🍌 Muz", "🥒 Salatalık"],
-              visualHTML
-            };
-          } else {
-            return {
-              soru: `Sepetin <span class="px-1.5 py-0.5 rounded-md bg-amber-400 text-slate-950 font-black text-xs xs:text-sm sm:text-base shadow">DIŞINDA</span> olan hangisidir?`,
-              dogru: `${disinda.emoji} ${disinda.ad}`,
-              yanlis: [`${icinde.emoji} ${icinde.ad}`, "🍎 Elma", "🍇 Üzüm"],
-              visualHTML
-            };
-          }
+        // --- GÖRSEL 9: Ahşap oda, sehpa altında kedi, üstünde vazo, sağdaki taburede uğur böceği ---
+        {
+          img: "/gorselsoru/g9.jpeg",
+          soru: `Gri kedi, ahşap sehpanın neresindedir?`,
+          dogru: "Altında",
+          yanlis: ["Üstünde", "İçinde", "Arkasında"]
+        },
+        {
+          img: "/gorselsoru/g9.jpeg",
+          soru: `Çiçek desenli vazo, sehpanın neresindedir?`,
+          dogru: "Üstünde",
+          yanlis: ["Altında", "İçinde", "Aşağısında"]
+        },
+        {
+          img: "/gorselsoru/g9.jpeg",
+          soru: `Sağ taraftaki taburenin üstünde hangi canlı durmaktadır?`,
+          dogru: "🐞 Uğur böceği",
+          yanlis: ["🐱 Gri kedi", "🐦 Kuş", "🦋 Kelebek"]
+        },
+        {
+          img: "/gorselsoru/g9.jpeg",
+          soru: `Uğur böceğinin durduğu tabure, sehpanın hangi tarafındadır?`,
+          dogru: "Sağında",
+          yanlis: ["Solunda", "Altında", "İçinde"]
         }
       ];
 
-      const secilenSahneUretici = sahneler[Math.floor(Math.random() * sahneler.length)];
-      const s = secilenSahneUretici();
+      const secilenSoru = tumSorular[Math.floor(Math.random() * tumSorular.length)];
 
       const questionHTML = `
         <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 text-center my-auto w-full max-w-full px-1 overflow-hidden">
-          ${s.visualHTML}
-          <div class="text-xs xs:text-sm sm:text-base font-black text-white px-1 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-            ${s.soru}
+          <div class="relative flex items-center justify-center max-w-full">
+            <img 
+              src="${secilenSoru.img}" 
+              alt="Uzamsal İlişki Görseli" 
+              class="max-h-28 xs:max-h-32 sm:max-h-40 md:max-h-44 w-auto max-w-[92%] object-contain rounded-xl border-2 border-amber-300/50 shadow-md bg-slate-900/60" 
+              referrerpolicy="no-referrer"
+            />
+          </div>
+          <div class="text-xs xs:text-sm sm:text-base font-black text-white px-1 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] max-w-[440px]">
+            ${secilenSoru.soru}
           </div>
         </div>
       `;
 
       return {
-        question: s.soru.replace(/<[^>]*>/g, ''),
+        question: secilenSoru.soru.replace(/<[^>]*>/g, ''),
         questionHTML,
-        correct: s.dogru,
-        wrong: s.yanlis,
+        correct: secilenSoru.dogru,
+        wrong: secilenSoru.yanlis,
+        signature: `${secilenSoru.img}-${secilenSoru.dogru}-${secilenSoru.soru.replace(/<[^>]*>/g, '')}`,
         isLong: false
       };
     }

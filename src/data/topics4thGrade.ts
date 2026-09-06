@@ -928,13 +928,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${s1.toLocaleString('tr-TR')} + ${s2.toLocaleString('tr-TR')} işleminin sonucu kaçtır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-                <span class="px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-xl sm:text-3xl md:text-4xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] shrink-0 whitespace-nowrap tracking-wide drop-shadow-lg">
-                  ${s1.toLocaleString('tr-TR')} + ${s2.toLocaleString('tr-TR')} = ?
-                </span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${s1.toLocaleString('tr-TR')} + ${s2.toLocaleString('tr-TR')} = ?
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
                 Yukarıdaki eldeli toplama işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
@@ -952,13 +950,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${s1.toLocaleString('tr-TR')} - ${s2.toLocaleString('tr-TR')} işleminin sonucu kaçtır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
-              <div class="flex items-center justify-center gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-                <span class="px-5 py-2.5 sm:px-7 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-xl sm:text-3xl md:text-4xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] shrink-0 whitespace-nowrap tracking-wide drop-shadow-lg">
-                  ${s1.toLocaleString('tr-TR')} - ${s2.toLocaleString('tr-TR')} = ?
-                </span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${s1.toLocaleString('tr-TR')} - ${s2.toLocaleString('tr-TR')} = ?
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
                 Yukarıdaki onluk bozmayı gerektiren çıkarma işleminin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
@@ -989,13 +985,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `${s1} x ${s2} çarpma işleminin sonucu kaçtır?`,
         questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-              <span class="px-3 py-1.5 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-violet-600 to-purple-700 text-white font-black text-sm xs:text-base sm:text-2xl md:text-3xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
-                ${s1} × ${s2} = ?
-              </span>
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+            <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+              ${s1} × ${s2} = ?
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
               Yukarıdaki çarpma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">doğru sonucu</span> hangisidir?
             </div>
           </div>
@@ -1026,13 +1020,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `${bolunen.toLocaleString('tr-TR')} ÷ ${bolen} işleminde bölüm kaçtır?`,
         questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-              <span class="px-3 py-1.5 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-sm xs:text-base sm:text-2xl md:text-3xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
-                ${bolunen.toLocaleString('tr-TR')} ÷ ${bolen} = ?
-              </span>
+          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+            <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+              ${bolunen.toLocaleString('tr-TR')} ÷ ${bolen} = ?
             </div>
-            <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
               Yukarıdaki bölme işleminde <span class="text-cyan-300 underline decoration-cyan-400 font-black">BÖLÜM</span> kaçtır? ${kalan > 0 ? `<span class="text-xs text-yellow-200 block mt-0.5">(Kalan: ${kalan})</span>` : ''}
             </div>
           </div>
@@ -1065,14 +1057,12 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${sayi} × ${carpan} zihinden çarpma işleminin sonucu kaçtır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-                <span class="px-3 py-1.5 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-sm xs:text-base sm:text-2xl md:text-3xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
-                  ${sayi} × ${carpan} = ?
-                </span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${sayi} × ${carpan} = ?
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                10, 100 veya 1000 ile kısa yoldan çarpma yaparken sayının sağına sıfır eklenir. <span class="text-amber-300 underline decoration-amber-400 font-black">Sonuç kaçtır</span>?
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                (10, 100, 1000 ile) Zihinden çarpma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
@@ -1093,14 +1083,12 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${sayi.toLocaleString('tr-TR')} ÷ ${carpan} zihinden bölme işleminin sonucu kaçtır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-              <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden my-0.5">
-                <span class="px-3 py-1.5 sm:px-5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 text-white font-black text-sm xs:text-base sm:text-2xl md:text-3xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
-                  ${sayi.toLocaleString('tr-TR')} ÷ ${carpan} = ?
-                </span>
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 to-emerald-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${sayi.toLocaleString('tr-TR')} ÷ ${carpan} = ?
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                10, 100 veya 1000'e kısa yoldan bölerken sayının sonundan sıfırlar silinir. <span class="text-cyan-300 underline decoration-cyan-400 font-black">Sonuç kaçtır</span>?
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                (10, 100, 1000 ile) Zihinden bölme işleminin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
