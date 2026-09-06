@@ -1,107 +1,129 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface TransparentVideoProps {
   src: string;
+  fallbackImg?: string;
+  alt: string;
+  isPaused?: boolean;
   className?: string;
-  threshold?: number; // 0 to 255 (brightness cutoff)
-  smoothness?: number; // range for soft edge alpha
 }
 
 export const TransparentVideo: React.FC<TransparentVideoProps> = ({
   src,
-  className = '',
-  threshold = 30,
-  smoothness = 20,
+  fallbackImg,
+  alt,
+  isPaused = false,
+  className = ''
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
 
-    let animationFrameId: number | null = null;
+    let animId: number;
     let isMounted = true;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
 
-    const processFrame = () => {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
+    const notifyReady = () => {
+      if (!isMounted) return;
+      setIsVideoReady(true);
+      if (!isPaused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    const handleEnded = () => {
+      if (!isMounted) return;
+      video.currentTime = 0;
+      if (!isPaused) {
+        video.play().catch(() => {});
+      }
+    };
+
+    video.addEventListener('loadeddata', notifyReady);
+    video.addEventListener('canplay', notifyReady);
+    video.addEventListener('canplaythrough', notifyReady);
+    video.addEventListener('playing', notifyReady);
+    video.addEventListener('ended', handleEnded);
+
+    // Initial check in case already loaded from cache
+    if (video.readyState >= 2) {
+      notifyReady();
+    }
+
+    // Frame processing loop to remove black background
+    const renderLoop = () => {
       if (!isMounted) return;
 
-      if (!video || video.paused || video.ended || video.readyState < 2) {
-        return;
-      }
+      if (video.readyState >= 2 && !video.paused && !video.ended) {
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+        ctx.drawImage(video, 0, 0, w, h);
 
-      try {
-        const width = video.videoWidth || 360;
-        const height = video.videoHeight || 640;
+        try {
+          const imgData = ctx.getImageData(0, 0, w, h);
+          const data = imgData.data;
+          const len = data.length;
 
-        if (width > 0 && height > 0) {
-          if (canvas.width !== width || canvas.height !== height) {
-            canvas.width = width;
-            canvas.height = height;
-          }
+          for (let i = 0; i < len; i += 4) {
+            const r = data[i];
+            const g = data[i + 1];
+            const b = data[i + 2];
 
-          if (ctx) {
-            ctx.drawImage(video, 0, 0, width, height);
-            const frame = ctx.getImageData(0, 0, width, height);
-            const l = frame.data.length;
-
-            for (let i = 0; i < l; i += 4) {
-              const r = frame.data[i];
-              const g = frame.data[i + 1];
-              const b = frame.data[i + 2];
-
-              // Calculate perceived brightness or max component
-              const brightness = Math.max(r, g, b);
-
-              if (brightness <= threshold) {
-                frame.data[i + 3] = 0; // Fully transparent
-              } else if (brightness < threshold + smoothness) {
-                // Smooth edge transition
-                const alpha = ((brightness - threshold) / smoothness) * 255;
-                frame.data[i + 3] = Math.min(255, Math.max(0, alpha));
-              }
+            // Black keying with smooth edge feathering
+            if (r < 25 && g < 25 && b < 25) {
+              data[i + 3] = 0;
+            } else if (r < 45 && g < 45 && b < 45) {
+              const maxC = Math.max(r, g, b);
+              data[i + 3] = Math.round(((maxC - 25) / 20) * 255);
             }
-
-            ctx.putImageData(frame, 0, 0);
           }
+
+          ctx.putImageData(imgData, 0, 0);
+        } catch {
+          // Fallback if canvas read fails
         }
-      } catch {
-        // Ignore canvas frame read errors silently
       }
 
-      if (isMounted && !video.paused && !video.ended) {
-        animationFrameId = requestAnimationFrame(processFrame);
-      }
+      animId = requestAnimationFrame(renderLoop);
     };
 
-    const handlePlay = () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-      animationFrameId = requestAnimationFrame(processFrame);
-    };
-
-    video.addEventListener('play', handlePlay);
-    video.addEventListener('loadeddata', processFrame);
-    video.addEventListener('canplay', processFrame);
-
-    // If video is already ready and playing
-    if (!video.paused) {
-      animationFrameId = requestAnimationFrame(processFrame);
-    }
+    animId = requestAnimationFrame(renderLoop);
 
     return () => {
       isMounted = false;
-      video.removeEventListener('play', handlePlay);
-      video.removeEventListener('loadeddata', processFrame);
-      video.removeEventListener('canplay', processFrame);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animId);
+      video.removeEventListener('loadeddata', notifyReady);
+      video.removeEventListener('canplay', notifyReady);
+      video.removeEventListener('canplaythrough', notifyReady);
+      video.removeEventListener('playing', notifyReady);
+      video.removeEventListener('ended', handleEnded);
     };
-  }, [threshold, smoothness, src]);
+  }, [isPaused]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isPaused) {
+      video.pause();
+    } else {
+      video.play().catch(() => {});
+    }
+  }, [isPaused]);
 
   return (
-    <div className={`relative inline-block ${className}`}>
-      {/* Hidden source video */}
+    <div className={`relative flex items-center justify-center overflow-hidden ${className}`}>
+      {/* Hidden Video Source */}
       <video
         ref={videoRef}
         src={src}
@@ -109,14 +131,26 @@ export const TransparentVideo: React.FC<TransparentVideoProps> = ({
         loop
         muted
         playsInline
-        aria-hidden="true"
-        className="hidden"
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-contain opacity-0 pointer-events-none"
       />
-      {/* Rendered transparent canvas */}
+
+      {/* Primary Transparent Canvas with Chroma Keyed Alpha */}
       <canvas
         ref={canvasRef}
-        className="w-full h-full object-contain pointer-events-none drop-shadow-md"
+        width={360}
+        height={640}
+        className="w-full h-full object-contain pointer-events-none filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.7)]"
       />
+
+      {/* Fallback Static Image while loading */}
+      {!isVideoReady && fallbackImg && (
+        <img
+          src={fallbackImg}
+          alt={alt}
+          className="absolute inset-0 w-full h-full object-contain filter drop-shadow-md animate-pulse pointer-events-none"
+        />
+      )}
     </div>
   );
 };

@@ -87,9 +87,9 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
   const laneConfigs: MascotConfig[] = activeCount === 2
     ? [
         {
-          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplan)
+          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplumbağa)
           groupName: '1. GRUP',
-          character: 'KAPLAN',
+          character: 'KAPLUMBAĞA',
           img: '/kap.png',
           badgeBg: 'from-blue-500 to-indigo-600',
           borderColor: 'border-cyan-300',
@@ -109,9 +109,9 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
       ]
     : [
         {
-          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplan)
+          playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplumbağa)
           groupName: '1. GRUP',
-          character: 'KAPLAN',
+          character: 'KAPLUMBAĞA',
           img: '/kap.png',
           badgeBg: 'from-blue-500 to-indigo-600',
           borderColor: 'border-cyan-300',
@@ -316,6 +316,117 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
               </div>
             );
           })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export interface SingleBasketballTrackProps {
+  playerIndex: number; // 0: 1. Grup (Kaplumbağa), 1: 2. Grup (Ejderha), 2: 3. Grup (Savaşçı)
+  score: number;
+  targetScore?: number;
+  isWinner?: boolean;
+  className?: string;
+}
+
+const SINGLE_TRACK_CONFIGS = [
+  {
+    trackSrc: '/p1.png',
+    groupName: '1. GRUP',
+    character: 'KAPLUMBAĞA',
+    img: '/kap.png',
+    badgeBg: 'from-blue-500 to-indigo-600',
+    borderColor: 'border-cyan-300',
+    glowColor: 'shadow-[0_0_12px_rgba(6,182,212,0.6)]',
+  },
+  {
+    trackSrc: '/p2.png',
+    groupName: '2. GRUP',
+    character: 'EJDERHA',
+    img: '/ejd.png',
+    badgeBg: 'from-rose-500 to-pink-600',
+    borderColor: 'border-pink-300',
+    glowColor: 'shadow-[0_0_12px_rgba(244,63,94,0.6)]',
+  },
+  {
+    trackSrc: '/p3.png',
+    groupName: '3. GRUP',
+    character: 'SAVAŞÇI',
+    img: '/balta.png',
+    badgeBg: 'from-emerald-500 to-teal-600',
+    borderColor: 'border-emerald-300',
+    glowColor: 'shadow-[0_0_12px_rgba(16,185,129,0.6)]',
+  },
+];
+
+export const SingleBasketballTrack: React.FC<SingleBasketballTrackProps> = ({
+  playerIndex,
+  score,
+  targetScore = 10,
+  isWinner = false,
+  className = '',
+}) => {
+  const cfg = SINGLE_TRACK_CONFIGS[playerIndex] || SINGLE_TRACK_CONFIGS[0];
+  const currentScore = Math.max(0, Math.min(targetScore, score));
+  const progressRatio = currentScore / targetScore;
+  const reachedGoal = currentScore >= targetScore || isWinner;
+
+  return (
+    <div className={`h-full flex flex-col items-center justify-center shrink-0 select-none ${className}`}>
+      {/* 271 / 1335 aspect ratio for single lane track */}
+      <div 
+        style={{ aspectRatio: '271 / 1335' }}
+        className="relative h-full max-h-full w-auto"
+      >
+        {/* Track Image */}
+        <img
+          src={cfg.trackSrc}
+          alt={`${cfg.groupName} Parkuru`}
+          className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none filter drop-shadow-xl"
+          loading="eager"
+          decoding="async"
+        />
+
+        {/* Mascot moving upwards towards basket */}
+        <div className="absolute inset-0 z-20 pointer-events-none">
+          <div
+            className="absolute flex flex-col items-center transition-all duration-700 ease-out z-30"
+            style={{
+              left: '50%',
+              top: `calc(87% - ${progressRatio} * 73%)`,
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            {/* Basket! indicator when target reached */}
+            {reachedGoal && (
+              <div className="animate-bounce -mb-1 px-1.5 py-0.5 rounded-full bg-yellow-400 border border-white text-slate-950 font-black text-[8px] sm:text-[9px] shadow-lg whitespace-nowrap">
+                BASKET! 🎯
+              </div>
+            )}
+
+            {/* Mascot Character with score pill */}
+            <div className="relative flex flex-col items-center">
+              <div className={`relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 ${reachedGoal ? 'scale-125 animate-pulse' : ''}`}>
+                <img
+                  src={cfg.img}
+                  alt={cfg.character}
+                  className="w-full h-full object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
+                  loading="eager"
+                  decoding="async"
+                />
+                {/* Score badge */}
+                <span className="absolute -top-1 -right-1 bg-amber-400 text-slate-950 font-black text-[8px] sm:text-[9px] px-1 py-0.5 rounded-full border border-white leading-none shadow-md z-10">
+                  {currentScore}
+                </span>
+              </div>
+
+              {/* Basketball emoji under mascot feet */}
+              <div className="text-[10px] sm:text-[12px] filter drop-shadow-sm select-none leading-none -mt-0.5">
+                🏀
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

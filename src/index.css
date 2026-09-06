@@ -67,92 +67,209 @@
 }
 
 /* AUTOMATIC RESPONSIVE IMAGE & SVG SIZING IN QUESTIONS (GUARANTEED NO OVERFLOW) */
+/* Çerçeve (.question-visual-box): sabit piksel yok, sadece width: 100% (mevcut kutunun tam genişliği neyse onu alır) */
 .question-visual-box {
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem;
+  width: 100% !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-/* 1-Player generous natural dimensions (AutoFitQuestionBox scales down smoothly if needed) */
+.question-visual-box.multi-player-2 {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.question-visual-box.multi-player-3 {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Görsel: width: 100% + height: auto + object-fit: contain → görsel her zaman kutunun tam genişliğine yayılır, hiçbir kenar kırpılmaz, yüksekliği kendi oranına göre otomatik ayarlanır */
 .question-visual-box img,
-.question-visual-box svg {
-  max-height: clamp(85px, 28vh, 195px) !important;
-  max-width: min(94%, 300px) !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block !important;
-  flex-shrink: 1 !important;
-}
-
+.question-visual-box svg,
 .question-visual-box .geo-cisim-img {
-  max-height: clamp(90px, 30vh, 205px) !important;
-  max-width: min(94%, 300px) !important;
-  width: auto !important;
+  width: 100% !important;
   height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
   display: block !important;
-  flex-shrink: 1 !important;
+  margin: 0 auto !important;
 }
 
-/* 2-PLAYER OPTIMIZED SIZING */
-.question-visual-box.multi-player-2 img,
-.question-visual-box.multi-player-2 svg {
-  max-height: clamp(80px, 24vh, 175px) !important;
-  max-width: min(96%, 260px) !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block !important;
-  flex-shrink: 1 !important;
+/* ==========================================================================
+   UZAMSAL İLİŞKİLER - 3 FARKLI OYUN STİLİNE ÖZEL BOYUTLANDIRMA VE GÖRÜNÜM
+   ========================================================================== */
+
+/* Ortak Temel Yapı */
+.question-visual-box .uzamsal-soru-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
-.question-visual-box.multi-player-2 .geo-cisim-img {
-  max-height: clamp(85px, 26vh, 185px) !important;
-  max-width: min(96%, 260px) !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block !important;
-  flex-shrink: 1 !important;
+.question-visual-box .uzamsal-soru-frame {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
-/* 3-PLAYER PROPORTIONAL COMPACT SIZING - FULL FRAME USAGE */
-.question-visual-box.multi-player-3 img,
-.question-visual-box.multi-player-3 svg {
-  max-height: clamp(75px, 22vh, 150px) !important;
-  max-width: 98% !important;
-  width: auto !important;
-  height: auto !important;
-  object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  display: block !important;
-  flex-shrink: 1 !important;
+/* --------------------------------------------------------------------------
+   1) 3 KİŞİLİK MOD (multi-player-3):
+   Kullanıcının beğendiği tam çerçeve, kenardan kenara dolduran büyük görsel
+   -------------------------------------------------------------------------- */
+.question-visual-box.multi-player-3 .uzamsal-soru-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
 }
 
-.question-visual-box.multi-player-3 .geo-cisim-img {
-  max-height: clamp(80px, 24vh, 160px) !important;
-  max-width: 98% !important;
+.question-visual-box.multi-player-3 .uzamsal-soru-frame {
+  width: 100% !important;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  border-radius: 12px !important;
+  border: 2px solid rgba(252, 211, 77, 0.9) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+  overflow: hidden !important;
+}
+
+.question-visual-box.multi-player-3 .uzamsal-soru-img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: cover !important;
+  object-position: center center !important;
+  display: block !important;
+  flex-shrink: 0 !important;
+}
+
+.question-visual-box.multi-player-3 .uzamsal-soru-text {
+  width: 100% !important;
+  font-size: clamp(0.75rem, 1.6vw, 0.88rem) !important;
+  line-height: 1.15 !important;
+  padding: 2px 4px !important;
+  margin-top: 3px !important;
+  flex-shrink: 0 !important;
+  text-align: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   2) 2 KİŞİLİK MOD (multi-player-2):
+   Çerçeve ölçüleri görselle birebir aynı - kenarlarda siyah boşluk oluşmaz
+   -------------------------------------------------------------------------- */
+.question-visual-box.multi-player-2 .uzamsal-soru-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+}
+
+.question-visual-box.multi-player-2 .uzamsal-soru-frame {
+  width: 100% !important;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.question-visual-box.multi-player-2 .uzamsal-soru-img {
+  max-width: 100% !important;
+  max-height: 100% !important;
   width: auto !important;
   height: auto !important;
   object-fit: contain !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
   display: block !important;
-  flex-shrink: 1 !important;
+  margin: 0 auto !important;
+  border-radius: 14px !important;
+  border: 2px solid rgba(252, 211, 77, 0.9) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55) !important;
+}
+
+.question-visual-box.multi-player-2 .uzamsal-soru-text {
+  width: 100% !important;
+  font-size: clamp(0.88rem, 1.8vw, 1.08rem) !important;
+  line-height: 1.2 !important;
+  padding: 3px 6px !important;
+  margin-top: 4px !important;
+  flex-shrink: 0 !important;
+  text-align: center !important;
+}
+
+/* --------------------------------------------------------------------------
+   3) TEK KİŞİLİK MOD (multi-player-1 / varsayılan):
+   Çerçeve ölçüleri görselle birebir aynı - kenarlarda siyah boşluk oluşmaz
+   -------------------------------------------------------------------------- */
+.question-visual-box.multi-player-1 .uzamsal-soru-container,
+.question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-container {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 0 !important;
+}
+
+.question-visual-box.multi-player-1 .uzamsal-soru-frame,
+.question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-frame {
+  width: 100% !important;
+  flex: 1 1 0% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.question-visual-box.multi-player-1 .uzamsal-soru-img,
+.question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-img {
+  max-width: 100% !important;
+  max-height: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+  margin: 0 auto !important;
+  border-radius: 16px !important;
+  border: 2.5px solid rgba(252, 211, 77, 0.95) !important;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6) !important;
+}
+
+.question-visual-box.multi-player-1 .uzamsal-soru-text,
+.question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-text {
+  width: 100% !important;
+  font-size: clamp(1.05rem, 2.2vw, 1.28rem) !important;
+  line-height: 1.25 !important;
+  padding: 4px 8px !important;
+  margin-top: 5px !important;
+  flex-shrink: 0 !important;
+  text-align: center !important;
 }
 
 .question-visual-box table {
@@ -220,13 +337,42 @@
 }
 
 /* Formula & Math Banner auto-fit across multi-player modes */
+.whitespace-nowrap,
+[class*="whitespace-nowrap"],
+.halat-islem-box,
+[class*="halat-islem-box"],
+.formula-box,
+[class*="formula-box"] {
+  white-space: nowrap !important;
+  text-wrap: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  flex-shrink: 0 !important;
+}
+
 .question-visual-box .formula-box,
 .question-visual-box.multi-player-2 .formula-box,
-.question-visual-box.multi-player-3 .formula-box {
-  width: 95% !important;
-  max-width: 95% !important;
+.question-visual-box.multi-player-3 .formula-box,
+.question-visual-box .halat-islem-box,
+.question-visual-box.multi-player-2 .halat-islem-box,
+.question-visual-box.multi-player-3 .halat-islem-box {
+  white-space: nowrap !important;
+  text-wrap: nowrap !important;
+  word-break: keep-all !important;
+  overflow-wrap: normal !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  max-width: 98% !important;
   margin-left: auto !important;
   margin-right: auto !important;
+}
+
+.question-visual-box.multi-player-2 .halat-islem-box,
+.question-visual-box.multi-player-3 .halat-islem-box {
+  font-size: clamp(1.2rem, 3.2vw, 2.2rem) !important;
+  line-height: 1.15 !important;
 }
 
 .question-visual-box.multi-player-3 [class*="text-7xl"],
@@ -361,9 +507,9 @@
   flex-shrink: 0 !important;
 }
 
-/* Ensure questions with single-sentence text don't wrap single words onto new lines when space exists */
-.question-visual-box.multi-player-2 p,
-.question-visual-box.multi-player-2 div {
+/* Ensure questions with single-sentence text don't wrap single words onto new lines when space exists, but never wrap formula or nowrap elements */
+.question-visual-box.multi-player-2 p:not(.whitespace-nowrap):not([class*="whitespace-nowrap"]),
+.question-visual-box.multi-player-2 div:not(.whitespace-nowrap):not([class*="whitespace-nowrap"]):not(.halat-islem-box):not(.formula-box):not([class*="halat-islem-box"]) {
   text-wrap: pretty;
 }
 

@@ -73,18 +73,42 @@ export const AutoFitQuestionBox: React.FC<AutoFitQuestionBoxProps> = ({
       }
     });
 
+    // Explicitly measure nowrap banners, halat boxes, and formula items to guarantee accurate span
+    const nowrapElements = measureEl.querySelectorAll('.halat-islem-box, .formula-box, .whitespace-nowrap, [class*="whitespace-nowrap"], [style*="nowrap"]');
+    nowrapElements.forEach((el) => {
+      const htmlEl = el as HTMLElement;
+      const scrollW = htmlEl.scrollWidth || 0;
+      const offsetW = htmlEl.offsetWidth || 0;
+      const rect = htmlEl.getBoundingClientRect();
+      const unscaledW = rect.width / currentScale;
+      const trueW = Math.max(scrollW, offsetW, unscaledW);
+      if (trueW > trueNaturalWidth) {
+        trueNaturalWidth = trueW;
+      }
+    });
+
     if (trueNaturalWidth <= 0 || trueNaturalHeight <= 0) return;
+
+    // Detect if content has full-width image container (such as uzamsal iliskiler)
+    const hasFullWidthImage = !!measureEl.querySelector('[data-full-width="true"], .uzamsal-soru-container');
 
     // Margins based on user instruction:
     // Mode 3: Use right up to the frame borders ("çerçevelerin çizgisine kadar kullan")
-    const marginX = mode === 3 ? 2 : mode === 2 ? 6 : 10;
-    const marginY = mode === 3 ? 2 : mode === 2 ? 4 : 8;
+    const marginX = hasFullWidthImage ? 0 : (mode === 3 ? 2 : mode === 2 ? 6 : 10);
+    const marginY = hasFullWidthImage ? 0 : (mode === 3 ? 2 : mode === 2 ? 4 : 8);
 
     const targetAvailW = Math.max(10, availWidth - marginX);
     const targetAvailH = Math.max(10, availHeight - marginY);
 
     const scaleX = targetAvailW / trueNaturalWidth;
     const scaleY = targetAvailH / trueNaturalHeight;
+
+    // For full-width image questions, let flexbox naturally fill 100% height and width
+    if (hasFullWidthImage) {
+      setScale(1);
+      setIsReady(true);
+      return;
+    }
 
     // Scale required so that neither width nor height overflows the card frame
     let computedScale = Math.min(scaleX, scaleY);
@@ -154,24 +178,29 @@ export const AutoFitQuestionBox: React.FC<AutoFitQuestionBoxProps> = ({
     ? 'text-base xs:text-lg sm:text-xl'
     : 'text-sm xs:text-base sm:text-lg';
 
+  // Detect if question contains a full-width/full-height visual container (like uzamsal iliskiler)
+  const isFullImageQuestion = Boolean(
+    questionHTML && (questionHTML.includes('uzamsal-soru-container') || questionHTML.includes('data-full-width="true"'))
+  );
+
   return (
     <div
       ref={containerRef}
-      className="w-full h-full flex items-center justify-center overflow-hidden min-h-0 relative select-none"
+      className={`w-full h-full flex ${isFullImageQuestion ? 'flex-col justify-between' : 'items-center justify-center'} overflow-hidden min-h-0 relative select-none`}
     >
       <div
         ref={measureRef}
         style={{
-          transform: `scale(${scale})`,
+          transform: isFullImageQuestion ? 'none' : `scale(${scale})`,
           transformOrigin: 'center center',
           opacity: isReady ? 1 : 0.95,
         }}
-        className={`w-full max-w-full flex flex-col items-center justify-center text-center transition-transform duration-100 ease-out will-change-transform ${className}`}
+        className={`w-full max-w-full ${isFullImageQuestion ? 'h-full flex flex-col justify-between' : 'flex flex-col items-center justify-center'} text-center transition-transform duration-100 ease-out will-change-transform ${className}`}
       >
         {questionHTML ? (
           <div
             dangerouslySetInnerHTML={{ __html: questionHTML }}
-            className={`question-visual-box multi-player-${mode} w-full flex flex-col items-center justify-center font-black tracking-wide leading-snug drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white ${fontClass}`}
+            className={`question-visual-box multi-player-${mode} w-full ${isFullImageQuestion ? 'h-full flex flex-col justify-between' : 'flex flex-col items-center justify-center'} font-black tracking-wide leading-snug drop-shadow-[0_4px_12px_rgba(0,0,0,0.95)] [text-shadow:0_2px_4px_#000] text-white ${fontClass}`}
           />
         ) : (
           <div

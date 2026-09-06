@@ -516,16 +516,16 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const secilenSoru = tumSorular[Math.floor(Math.random() * tumSorular.length)];
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 text-center my-auto w-full max-w-full px-1 overflow-hidden">
-          <div class="relative flex items-center justify-center max-w-full">
+        <div data-full-width="true" class="uzamsal-soru-container flex flex-col items-center justify-between w-full h-full max-w-full overflow-hidden min-h-0">
+          <div class="uzamsal-soru-frame relative flex items-center justify-center w-full flex-1 min-h-0">
             <img 
               src="${secilenSoru.img}" 
               alt="Uzamsal İlişki Görseli" 
-              class="max-h-28 xs:max-h-32 sm:max-h-40 md:max-h-44 w-auto max-w-[92%] object-contain rounded-xl border-2 border-amber-300/50 shadow-md bg-slate-900/60" 
+              class="uzamsal-soru-img block" 
               referrerpolicy="no-referrer"
             />
           </div>
-          <div class="text-xs xs:text-sm sm:text-base font-black text-white px-1 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] max-w-[440px]">
+          <div class="uzamsal-soru-text w-full text-center font-black text-white leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] shrink-0 z-10">
             ${secilenSoru.soru}
           </div>
         </div>

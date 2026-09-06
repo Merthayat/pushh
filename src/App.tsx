@@ -18,11 +18,13 @@ import { GlossyRoundButton, GlossyPillButton, GlossyCompleteCard, GlossyArrowIco
 import { ModernStatsView, Cute3DStarMascotSVG } from './components/ModernStatsView';
 import { ChromaKeyVideo } from './components/ChromaKeyVideo';
 import { AutoFitQuestionBox } from './components/AutoFitQuestionBox';
-import { BasketballRaceTrack } from './components/BasketballRaceTrack';
+import { BasketballRaceTrack, SingleBasketballTrack } from './components/BasketballRaceTrack';
+import { TugOfWarTrack } from './components/TugOfWarTrack';
 import { topics1stGrade } from './data/topics1stGrade';
 import { topics2ndGrade } from './data/topics2ndGrade';
 import { topics3rdGrade } from './data/topics3rdGrade';
 import { topics4thGrade } from './data/topics4thGrade';
+import { halatCekmeTopics, sureliExtraTopics } from './data/halatCekmeTopics';
 import { ZIT_ANLAM_DATA, ES_ANLAM_DATA, INGILIZCE_DATA } from './data/wordPairsData';
 
 // --- TOPICS FOR OTHER WORD GAMES (STANDARDIZED WITH ALL OTHER ACTIVITIES) ---
@@ -1500,8 +1502,12 @@ const CATEGORY_MAP = [
     shortName: "Diğer Oyunlar",
     icon: "/MENUIKON/grid_icon_17.png",
     keys: [
-      "sureli_toplama_cikarma",
-      "sureli_carpma_bolme",
+      "halat_toplama_1", "halat_cikarma_1",
+      "halat_toplama_2", "halat_cikarma_2", "halat_carpma_2", "halat_bolme_2",
+      "halat_toplama_3", "halat_cikarma_3", "halat_carpma_3", "halat_bolme_3",
+      "halat_toplama_4", "halat_cikarma_4", "halat_carpma_4", "halat_bolme_4",
+      "sureli_toplama_cikarma", "sureli_on_tamamlama", "sureli_carpma_bolme",
+      "sureli_carpma_3", "sureli_bolme_3", "sureli_carpma_4", "sureli_bolme_4",
       "balon_patlatma_mat",
       "matematik_hafiza",
       "hizli_islem_carki",
@@ -1683,12 +1689,15 @@ const getTopicIconVisual = (key: string) => {
 const getTopicEmoji = (key: string) => getTopicIconVisual(key).emoji;
 
 const getCategoryIdForTopic = (topicKey: string): string => {
+  if (topicKey.startsWith('halat_') || topicKey.startsWith('sureli_')) {
+    return 'diger_oyunlar';
+  }
   for (const cat of CATEGORY_MAP) {
     if (cat.keys.includes(topicKey)) {
       return cat.id;
     }
   }
-  return 'geometri';
+  return 'diger_oyunlar';
 };
 
 const getGradeIconForTopic = (topicKey: string, currentGrade: number | null): string => {
@@ -1700,13 +1709,14 @@ const getGradeIconForTopic = (topicKey: string, currentGrade: number | null): st
     topicKey === 'hizli_islem_carki' ||
     topicKey === 'sayi_dedektifi' ||
     topicKey === 'ritim_labirent' ||
-    topicKey === 'geometri_eslestirme' ||
-    topicKey.startsWith('sureli_')
+    topicKey === 'geometri_eslestirme'
   ) {
     return '/icon_5.png';
   }
-  if (topicKey.startsWith('g4_')) return '/icon_4.png';
-  if (topicKey.startsWith('g3_')) return '/icon_3.png';
+  if (topicKey.startsWith('g4_') || topicKey.endsWith('_4')) return '/icon_4.png';
+  if (topicKey.startsWith('g3_') || topicKey.endsWith('_3')) return '/icon_3.png';
+  if (topicKey.endsWith('_1')) return '/icon_1.png';
+  if (topicKey.endsWith('_2')) return '/icon_2.png';
   if (currentGrade === 1) return '/icon_1.png';
   if (currentGrade === 3) return '/icon_3.png';
   if (currentGrade === 4) return '/icon_4.png';
@@ -1802,7 +1812,27 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   geoboard: '/MENUIKON/grid_icon_29.png',
   sureli_toplama_cikarma: '/MENUIKON/grid_icon_22.png',
   sureli_on_tamamlama: '/MENUIKON/grid_icon_09.png',
+  sureli_carpma: '/MENUIKON/grid_icon_04.png',
+  sureli_bolme: '/MENUIKON/grid_icon_05.png',
   sureli_carpma_bolme: '/MENUIKON/grid_icon_04.png',
+  sureli_carpma_3: '/MENUIKON/grid_icon_04.png',
+  sureli_bolme_3: '/MENUIKON/grid_icon_05.png',
+  sureli_carpma_4: '/MENUIKON/grid_icon_04.png',
+  sureli_bolme_4: '/MENUIKON/grid_icon_05.png',
+  halat_toplama_1: '/MENUIKON/grid_icon_32.png',
+  halat_cikarma_1: '/MENUIKON/grid_icon_32.png',
+  halat_toplama_2: '/MENUIKON/grid_icon_32.png',
+  halat_cikarma_2: '/MENUIKON/grid_icon_32.png',
+  halat_carpma_2: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_2: '/MENUIKON/grid_icon_32.png',
+  halat_toplama_3: '/MENUIKON/grid_icon_32.png',
+  halat_cikarma_3: '/MENUIKON/grid_icon_32.png',
+  halat_carpma_3: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_3: '/MENUIKON/grid_icon_32.png',
+  halat_toplama_4: '/MENUIKON/grid_icon_32.png',
+  halat_cikarma_4: '/MENUIKON/grid_icon_32.png',
+  halat_carpma_4: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_4: '/MENUIKON/grid_icon_32.png',
   balon_patlatma_mat: '/MENUIKON/grid_icon_35.png',
   matematik_hafiza: '/MENUIKON/grid_icon_06.png',
   hizli_islem_carki: '/MENUIKON/grid_icon_10.png',
@@ -1890,7 +1920,10 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
 
 // Reference 3D Cartoon Game UI Style (Pill Buttons)
 const getTopicBadgeGradient = (topicKey: string) => {
-  if (topicKey === 'sureli_toplama_cikarma') {
+  if (topicKey.startsWith('halat_')) {
+    return 'from-amber-500 via-orange-500 to-amber-600';
+  }
+  if (topicKey.startsWith('sureli_')) {
     return 'from-rose-500 via-red-500 to-amber-500';
   }
   if (topicKey === 'sureli_on_tamamlama') {
@@ -2269,7 +2302,7 @@ export default function App() {
     if (winnerIdx === 0) {
       return {
         videoSrc: '/kap.mp4',
-        title: '1. GRUP (KAPLAN) ŞAMPİYON! 🏆',
+        title: '1. GRUP (KAPLUMBAĞA) ŞAMPİYON! 🏆',
         img: '/kap.png',
         badgeBg: 'from-blue-600 via-cyan-500 to-indigo-600',
         borderColor: 'border-cyan-400',
@@ -2475,6 +2508,11 @@ export default function App() {
       topicKey === 'sureli_carpma_bolme' ||
       topicKey === 'sureli_on_tamamlama'
     );
+  };
+
+  const isHalatCekmeTopic = (topicKey: string) => {
+    if (!topicKey) return false;
+    return topicKey.startsWith('halat_') || topicKey.includes('halat_cekme');
   };
 
   // End Game Info
@@ -2865,6 +2903,8 @@ export default function App() {
 
   // Topics configuration (1., 2., 3., 4. Sınıf Seviyeleri ve Diğer Oyunlar)
   const topics: Record<string, { title: string; desc: string; generate: () => QuestionData }> = {
+    ...halatCekmeTopics,
+    ...sureliExtraTopics,
     ...topicsWordGames,
     ...topics4thGrade,
     ...topics3rdGrade,
@@ -2891,6 +2931,8 @@ export default function App() {
 
   // Helper to get topic configuration based on active grade
   const getCurrentTopicInfo = (topicKey: string, grade?: number | null) => {
+    if (halatCekmeTopics[topicKey]) return halatCekmeTopics[topicKey];
+    if (sureliExtraTopics[topicKey]) return sureliExtraTopics[topicKey];
     const effectiveGrade = grade !== undefined && grade !== null ? grade : selectedGrade;
     if (topicsWordGames[topicKey]) return topicsWordGames[topicKey];
     if (effectiveGrade === 1 && topics1stGrade[topicKey]) return topics1stGrade[topicKey];
@@ -2912,7 +2954,7 @@ export default function App() {
       : effectiveGrade === 4
       ? topics4thGrade
       : topics2ndGrade;
-    const topicConfig = topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
+    const topicConfig = halatCekmeTopics[topicToUse] || sureliExtraTopics[topicToUse] || topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
     let data: QuestionData;
     let imza: string;
     let deneme = 0;
@@ -2936,7 +2978,7 @@ export default function App() {
       : effectiveGrade === 4
       ? topics4thGrade
       : topics2ndGrade;
-    const topicConfig = topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
+    const topicConfig = halatCekmeTopics[topicToUse] || sureliExtraTopics[topicToUse] || topicsWordGames[topicToUse] || (currentGradeTopics as Record<string, { title: string; desc: string; generate: () => QuestionData }>)[topicToUse] || topics[topicToUse] || topics['nesne_sayisi'] || topics['g4_sayi_okuma_yazma'] || topics['g3_uc_basamakli_okuma_yazma'];
     let data: QuestionData;
     let imza: string;
     let deneme = 0;
@@ -2977,6 +3019,9 @@ export default function App() {
   };
 
   const switchPlayerCountMode = (newMode: 1 | 2 | 3) => {
+    if (gameState === 'playing' && isHalatCekmeTopic(currentTopic) && newMode !== 2) {
+      return;
+    }
     setPlayerCountMode(newMode);
     playMp3('/coin.mp3');
 
@@ -3091,7 +3136,13 @@ export default function App() {
     setPendingGameResult(null);
     setShowPodiumVideoModal(false);
 
-    // Initialize Players based on playerCountMode (1, 2, or 3)
+    // Initialize Players based on playerCountMode (or enforce 2 players for Halat Cekme)
+    const isHalat = isHalatCekmeTopic(topicKey);
+    const targetPlayerCount = isHalat ? 2 : playerCountMode;
+    if (isHalat && playerCountMode !== 2) {
+      setPlayerCountMode(2);
+    }
+
     const initialPlayers: PlayerData[] = [];
     const playerConfigs = [
       {
@@ -3133,7 +3184,7 @@ export default function App() {
     ];
 
     let cumulativeAsked: string[] = [];
-    for (let i = 0; i < playerCountMode; i++) {
+    for (let i = 0; i < targetPlayerCount; i++) {
       const qRes = generateQuestionForPlayer(topicKey, cumulativeAsked, gradeOverride);
       cumulativeAsked.push(qRes.signature);
       initialPlayers.push({
@@ -3153,7 +3204,7 @@ export default function App() {
     setPlayers(initialPlayers);
 
     // Single player setup
-    if (playerCountMode === 1 && initialPlayers[0]?.currentQuestionData) {
+    if (targetPlayerCount === 1 && initialPlayers[0]?.currentQuestionData) {
       setCurrentQuestionData(initialPlayers[0].currentQuestionData);
       setShuffledOptions(initialPlayers[0].shuffledOptions);
     }
@@ -3201,6 +3252,17 @@ export default function App() {
 
     // 4. If in category view and topic modal not open
     if (!showTopicModal && !show3DLab && !showGeoboard && !showOtherGamesModal && !showEnglishGamesModal && !showXOXGame && wordGameType === null) {
+      if (selectedCategoryId === 'diger_oyunlar') {
+        const firstGame = selectedGrade === 1 
+          ? 'halat_toplama_1' 
+          : selectedGrade === 2 
+          ? 'halat_toplama_2' 
+          : selectedGrade === 3 
+          ? 'halat_toplama_3' 
+          : 'halat_toplama_4';
+        selectTopicAndStart(firstGame, (selectedGrade || 2) as 1 | 2 | 3 | 4);
+        return;
+      }
       setShowTopicModal(true);
       return;
     }
@@ -3229,19 +3291,61 @@ export default function App() {
       categoryLabel: string;
     }> = [];
 
-    // 1. Sınıf Matematik Etkinlikleri
+    const resolveTitle = (key: string, grade?: number): string => {
+      if (halatCekmeTopics[key]?.title) return halatCekmeTopics[key].title;
+      if (sureliExtraTopics[key]?.title) return sureliExtraTopics[key].title;
+      if (grade === 1 && topics1stGrade[key]?.title) return topics1stGrade[key].title;
+      if (grade === 2 && topics2ndGrade[key]?.title) return topics2ndGrade[key].title;
+      if (grade === 3 && topics3rdGrade[key]?.title) return topics3rdGrade[key].title;
+      if (grade === 4 && topics4thGrade[key]?.title) return topics4thGrade[key].title;
+      if (topics1stGrade[key]?.title) return topics1stGrade[key].title;
+      if (topics2ndGrade[key]?.title) return topics2ndGrade[key].title;
+      if (topics3rdGrade[key]?.title) return topics3rdGrade[key].title;
+      if (topics4thGrade[key]?.title) return topics4thGrade[key].title;
+      return key;
+    };
+
+    // 1. SINIF: Müfredat Konuları + 5. Diğer Oyunlar
+    const g1ExcludedFromCore = new Set([
+      'sureli_toplama_cikarma',
+      'sureli_on_tamamlama',
+      'balon_patlatma_mat',
+      'matematik_hafiza',
+      'hizli_islem_carki',
+      'sayi_dedektifi',
+      'ritim_labirent',
+      'geometri_eslestirme'
+    ]);
     Object.entries(topics1stGrade).forEach(([key, val]) => {
+      if (!g1ExcludedFromCore.has(key)) {
+        list.push({
+          id: `g1_${key}`,
+          type: 'grade_topic',
+          grade: 1,
+          topicKey: key,
+          title: val.title,
+          categoryLabel: '1. Sınıf'
+        });
+      }
+    });
+    // 1. Sınıf 5. Diğer Oyunlar (Halat Çekme, Süreli, Zeka Oyunları)
+    const g1OtherGames = [
+      'halat_toplama_1', 'halat_cikarma_1',
+      'sureli_toplama_cikarma', 'sureli_on_tamamlama',
+      'balon_patlatma_mat', 'matematik_hafiza', 'hizli_islem_carki', 'sayi_dedektifi', 'ritim_labirent', 'geometri_eslestirme'
+    ];
+    g1OtherGames.forEach(key => {
       list.push({
         id: `g1_${key}`,
         type: 'grade_topic',
         grade: 1,
         topicKey: key,
-        title: val.title,
-        categoryLabel: '1. Sınıf'
+        title: resolveTitle(key, 1),
+        categoryLabel: '1. Sınıf Diğer Oyunlar'
       });
     });
 
-    // 2. Sınıf Matematik Etkinlikleri
+    // 2. SINIF: Müfredat Konuları + 5. Diğer Oyunlar + 6. 3D Geometri Labı
     Object.entries(topics2ndGrade).forEach(([key, val]) => {
       list.push({
         id: `g2_${key}`,
@@ -3252,8 +3356,32 @@ export default function App() {
         categoryLabel: '2. Sınıf'
       });
     });
+    // 2. Sınıf 5. Diğer Oyunlar (Halat Çekme, Süreli, Zeka Oyunları)
+    const g2OtherGames = [
+      'halat_toplama_2', 'halat_cikarma_2', 'halat_carpma_2', 'halat_bolme_2',
+      'sureli_toplama_cikarma', 'sureli_carpma_bolme',
+      'balon_patlatma_mat', 'matematik_hafiza', 'hizli_islem_carki', 'sayi_dedektifi', 'ritim_labirent', 'geometri_eslestirme'
+    ];
+    g2OtherGames.forEach(key => {
+      list.push({
+        id: `g2_${key}`,
+        type: 'grade_topic',
+        grade: 2,
+        topicKey: key,
+        title: resolveTitle(key, 2),
+        categoryLabel: '2. Sınıf Diğer Oyunlar'
+      });
+    });
+    // 2. Sınıf 6. Kart: 3D Geometri Laboratuvarı
+    list.push({
+      id: 'g2_other_3dlab',
+      type: '3d_lab',
+      grade: 2,
+      title: '3D Geometri Laboratuvarı',
+      categoryLabel: '2. Sınıf'
+    });
 
-    // 3. Sınıf Matematik Etkinlikleri
+    // 3. SINIF: Müfredat Konuları + 5. Diğer Oyunlar
     Object.entries(topics3rdGrade).forEach(([key, val]) => {
       list.push({
         id: `g3_${key}`,
@@ -3264,8 +3392,24 @@ export default function App() {
         categoryLabel: '3. Sınıf'
       });
     });
+    // 3. Sınıf 5. Diğer Oyunlar
+    const g3OtherGames = [
+      'halat_toplama_3', 'halat_cikarma_3', 'halat_carpma_3', 'halat_bolme_3',
+      'sureli_carpma_3', 'sureli_bolme_3', 'sureli_carpma_bolme', 'sureli_toplama_cikarma',
+      'balon_patlatma_mat', 'matematik_hafiza', 'hizli_islem_carki', 'sayi_dedektifi', 'ritim_labirent', 'geometri_eslestirme'
+    ];
+    g3OtherGames.forEach(key => {
+      list.push({
+        id: `g3_${key}`,
+        type: 'grade_topic',
+        grade: 3,
+        topicKey: key,
+        title: resolveTitle(key, 3),
+        categoryLabel: '3. Sınıf Diğer Oyunlar'
+      });
+    });
 
-    // 4. Sınıf Matematik Etkinlikleri
+    // 4. SINIF: Müfredat Konuları + 5. Diğer Oyunlar
     Object.entries(topics4thGrade).forEach(([key, val]) => {
       list.push({
         id: `g4_${key}`,
@@ -3276,14 +3420,24 @@ export default function App() {
         categoryLabel: '4. Sınıf'
       });
     });
-
-    // 5. Diğer Oyunlar
-    list.push({
-      id: 'other_3dlab',
-      type: '3d_lab',
-      title: '3D Geometri Laboratuvarı',
-      categoryLabel: 'Diğer Oyunlar'
+    // 4. Sınıf 5. Diğer Oyunlar
+    const g4OtherGames = [
+      'halat_toplama_4', 'halat_cikarma_4', 'halat_carpma_4', 'halat_bolme_4',
+      'sureli_carpma_4', 'sureli_bolme_4', 'sureli_carpma_bolme', 'sureli_toplama_cikarma',
+      'balon_patlatma_mat', 'matematik_hafiza', 'hizli_islem_carki', 'sayi_dedektifi', 'ritim_labirent', 'geometri_eslestirme'
+    ];
+    g4OtherGames.forEach(key => {
+      list.push({
+        id: `g4_${key}`,
+        type: 'grade_topic',
+        grade: 4,
+        topicKey: key,
+        title: resolveTitle(key, 4),
+        categoryLabel: '4. Sınıf Diğer Oyunlar'
+      });
     });
+
+    // GENEL DİĞER OYUNLAR & İNGİLİZCE
     list.push({
       id: 'other_xox',
       type: 'xox',
@@ -3304,8 +3458,6 @@ export default function App() {
       title: 'Eş Anlamlı Kelimeler',
       categoryLabel: 'Diğer Oyunlar'
     });
-
-    // 6. İngilizce Oyunlar
     list.push({
       id: 'other_ingilizce',
       type: 'word_game',
@@ -3340,6 +3492,10 @@ export default function App() {
       }
       selectTopicAndStart(entry.topicKey, entry.grade);
     } else if (entry.type === '3d_lab') {
+      if (entry.grade) {
+        setSelectedGrade(entry.grade);
+        setLastSelectedGrade(entry.grade);
+      }
       setGameState('welcome');
       setShow3DLab(true);
     } else if (entry.type === 'xox') {
@@ -3361,7 +3517,13 @@ export default function App() {
     if (wordGameType === 'es_anlam') return allActivitiesList.findIndex(a => a.wordGameType === 'es_anlam' || a.id === 'other_es_anlam');
     if (wordGameType === 'zit_anlam') return allActivitiesList.findIndex(a => a.wordGameType === 'zit_anlam' || a.id === 'other_zit_anlam');
     if (showXOXGame) return allActivitiesList.findIndex(a => a.id === 'other_xox');
-    if (show3DLab) return allActivitiesList.findIndex(a => a.id === 'other_3dlab');
+    if (show3DLab) {
+      if (selectedGrade === 2) {
+        const g2Lab = allActivitiesList.findIndex(a => a.id === 'g2_other_3dlab');
+        if (g2Lab !== -1) return g2Lab;
+      }
+      return allActivitiesList.findIndex(a => a.id === 'g2_other_3dlab' || a.id === 'other_3dlab' || a.type === '3d_lab');
+    }
     if (showGeoboard) {
       if (selectedGrade === 1) return allActivitiesList.findIndex(a => a.id === 'g1_geometri_tahtasi');
       return allActivitiesList.findIndex(a => a.id === 'g2_geometri_tahtasi');
@@ -3380,8 +3542,22 @@ export default function App() {
       );
       if (topicIdx !== -1) return topicIdx;
     }
-    // 3. Fallback when on welcome or category screens: find first activity of the selected grade
+    // 3. Fallback when on welcome, category, or topic modal screens
     if (selectedGrade !== null) {
+      if (selectedCategoryId === 'diger_oyunlar') {
+        const firstOtherIdx = allActivitiesList.findIndex(
+          a => a.grade === selectedGrade && (a.categoryLabel?.includes('Diğer Oyunlar') || a.topicKey?.startsWith('halat_'))
+        );
+        if (firstOtherIdx !== -1) return firstOtherIdx;
+      } else if (selectedCategoryId !== null) {
+        const catObj = CATEGORY_MAP.find(c => c.id === selectedCategoryId);
+        if (catObj) {
+          const catFirstIdx = allActivitiesList.findIndex(
+            a => a.grade === selectedGrade && a.topicKey && catObj.keys.includes(a.topicKey)
+          );
+          if (catFirstIdx !== -1) return catFirstIdx;
+        }
+      }
       const gradeStartIdx = allActivitiesList.findIndex(a => a.grade === selectedGrade);
       if (gradeStartIdx !== -1) return gradeStartIdx;
     }
@@ -4033,15 +4209,19 @@ export default function App() {
         {/* 6. 1 OYUNCU (1oy.png) */}
         <button
           onClick={() => {
+            if (gameState === 'playing' && isHalatCekmeTopic(currentTopic)) return;
             playMp3('/op.mp3');
             switchPlayerCountMode(1);
           }}
-          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
-            playerCountMode === 1
-              ? 'ring-3 ring-amber-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]'
-              : 'opacity-70 hover:opacity-100'
+          disabled={gameState === 'playing' && isHalatCekmeTopic(currentTopic)}
+          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
+            gameState === 'playing' && isHalatCekmeTopic(currentTopic)
+              ? 'opacity-30 cursor-not-allowed'
+              : playerCountMode === 1
+              ? 'ring-3 ring-amber-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.8)] cursor-pointer'
+              : 'opacity-70 hover:opacity-100 cursor-pointer'
           }`}
-          title="1 Oyuncu Modu"
+          title={gameState === 'playing' && isHalatCekmeTopic(currentTopic) ? "Halat Çekme oyunu sadece 2 kişiliktir" : "1 Oyuncu Modu"}
         >
           <img 
             src="/1oy.png" 
@@ -4083,15 +4263,19 @@ export default function App() {
         {/* 8. 3 OYUNCU KAPIŞMA (3oy.png) */}
         <button
           onClick={() => {
+            if (gameState === 'playing' && isHalatCekmeTopic(currentTopic)) return;
             playMp3('/op.mp3');
             switchPlayerCountMode(3);
           }}
-          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center cursor-pointer filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
-            playerCountMode === 3
-              ? 'ring-3 ring-emerald-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(52,211,153,0.8)]'
-              : 'opacity-70 hover:opacity-100'
+          disabled={gameState === 'playing' && isHalatCekmeTopic(currentTopic)}
+          className={`relative group w-11 h-11 xs:w-13 xs:h-13 sm:w-16 sm:h-16 aspect-square transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.35)] shrink-0 rounded-2xl ${
+            gameState === 'playing' && isHalatCekmeTopic(currentTopic)
+              ? 'opacity-30 cursor-not-allowed'
+              : playerCountMode === 3
+              ? 'ring-3 ring-emerald-400 scale-105 brightness-110 drop-shadow-[0_0_12px_rgba(52,211,153,0.8)] cursor-pointer'
+              : 'opacity-70 hover:opacity-100 cursor-pointer'
           }`}
-          title="3 Oyuncu Kapışma Modu"
+          title={gameState === 'playing' && isHalatCekmeTopic(currentTopic) ? "Halat Çekme oyunu sadece 2 kişiliktir" : "3 Oyuncu Kapışma Modu"}
         >
           <img 
             src="/3oy.png" 
@@ -4496,6 +4680,37 @@ export default function App() {
                       </div>
                     </button>
                   </div>
+
+                  {/* ROW 3: 5. DİĞER OYUNLAR (4. SINIF) */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('diger_oyunlar');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
+                    >
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_32.png" alt="Diğer Oyunlar" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
+                      </div>
+
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
+                          5. Diğer Oyunlar
+                        </h3>
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-purple-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
+                          2 Kişilik Halat Çekme Düellosu, Süreli Çarpma & Bölme
+                        </p>
+                      </div>
+
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
+                      </div>
+                    </button>
+                  </div>
                 </div>
               ) : selectedGrade === 3 ? (
                 <div className="w-full max-w-6xl mx-auto flex flex-col gap-2 sm:gap-2.5">
@@ -4608,6 +4823,37 @@ export default function App() {
                         </h3>
                         <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-emerald-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
                           Cisimler, Açılar & Çevre Hesabı
+                        </p>
+                      </div>
+
+                      <div className="z-10 shrink-0 relative w-[100px] h-[44px] sm:w-[120px] sm:h-[52px] md:w-[140px] md:h-[60px] group-hover:scale-105 transition-all filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] flex items-center justify-center">
+                        <div className="absolute inset-0 bg-contain bg-center bg-no-repeat pointer-events-none" style={{ backgroundImage: `url('/ply.png')` }} />
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* ROW 3: 5. DİĞER OYUNLAR (3. SINIF) */}
+                  <div className="w-full">
+                    <button
+                      onClick={() => {
+                        playMp3('/op.mp3');
+                        setSelectedCategoryId('diger_oyunlar');
+                      }}
+                      className="group relative w-full bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-700 dark:from-violet-700 dark:via-purple-700 dark:to-indigo-800 text-white rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 border-2 sm:border-3 border-white/90 dark:border-slate-700/80 shadow-[0_4px_12px_rgba(124,58,237,0.25),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_8px_20px_rgba(124,58,237,0.35)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2.5 sm:gap-3.5 overflow-hidden cursor-pointer min-h-[64px] xs:min-h-[72px] sm:min-h-[80px] md:min-h-[88px]"
+                    >
+                      <div className="absolute -left-10 -top-10 w-36 h-36 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.35)_0%,transparent_70%)] pointer-events-none" />
+                      <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+
+                      <div className="relative shrink-0 z-10 w-14 h-14 sm:w-16 sm:h-16 md:w-18 md:h-18 -my-1 sm:-my-2 flex items-center justify-center">
+                        <img src="/MENUIKON/grid_icon_32.png" alt="Diğer Oyunlar" className="w-full h-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:scale-115 group-hover:rotate-6 transition-transform" />
+                      </div>
+
+                      <div className="flex-1 text-left min-w-0 z-10 py-0 flex flex-col justify-center">
+                        <h3 className="font-black text-xs xs:text-sm sm:text-base md:text-lg text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)] leading-tight uppercase tracking-wide break-words">
+                          5. Diğer Oyunlar
+                        </h3>
+                        <p className="text-[10px] xs:text-xs sm:text-xs md:text-sm font-bold text-purple-100/90 mt-0.5 drop-shadow-xs break-words leading-tight">
+                          2 Kişilik Halat Çekme Düellosu, Süreli Çarpma & Bölme
                         </p>
                       </div>
 
@@ -5130,43 +5376,115 @@ export default function App() {
                   </div>
                 )}
 
-                {/* 5. DİĞER OYUNLAR */}
+                {/* 5. DİĞER OYUNLAR (TÜM SINIF SEVİYELERİ İÇİN) */}
                 {selectedCategoryId === 'diger_oyunlar' && (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
-                      {(selectedGrade === 1
-                        ? [
-                            'sureli_toplama_cikarma',
-                            'sureli_on_tamamlama',
-                            'balon_patlatma_mat',
-                            'matematik_hafiza',
-                            'hizli_islem_carki',
-                            'sayi_dedektifi',
-                            'ritim_labirent',
-                            'geometri_eslestirme'
-                          ]
-                        : [
-                            'sureli_toplama_cikarma',
-                            'sureli_carpma_bolme',
-                            'balon_patlatma_mat',
-                            'matematik_hafiza',
-                            'hizli_islem_carki',
-                            'sayi_dedektifi',
-                            'ritim_labirent',
-                            'geometri_eslestirme'
-                          ]
-                      ).map(key => {
-                        const t = topics[key];
-                        if (!t) return null;
-                        return (
-                          <TopicButtonReferenceStyle
-                            key={key}
-                            topicKey={key}
-                            title={t.title}
-                            onClick={() => selectTopicAndStart(key)}
-                          />
-                        );
-                      })}
+                  <div className="space-y-4 sm:space-y-5">
+                    {/* BÖLÜM 1: 🪢 2 KİŞİLİK HALAT ÇEKME DÜELLOSU */}
+                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                      <div className="bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_32.png" alt="Halat Çekme" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
+                          <div className="flex flex-col">
+                            <span className="break-words text-sm sm:text-base font-black">🪢 Halat Çekme Oyunları ({selectedGrade}. Sınıf)</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-slate-800">Arkadaşınla 2 kişilik düelloda doğru cevabı ver, halatı takımına çek!</span>
+                          </div>
+                        </div>
+                        <span className="shrink-0 px-2 sm:px-2.5 py-1 bg-rose-600 text-white font-black text-[10px] sm:text-xs rounded-lg border border-white shadow-xs uppercase tracking-wider">
+                          SADECE 2 KİŞİLİK
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
+                        {(selectedGrade === 1
+                          ? ['halat_toplama_1', 'halat_cikarma_1']
+                          : selectedGrade === 2
+                          ? ['halat_toplama_2', 'halat_cikarma_2', 'halat_carpma_2', 'halat_bolme_2']
+                          : selectedGrade === 3
+                          ? ['halat_toplama_3', 'halat_cikarma_3', 'halat_carpma_3', 'halat_bolme_3']
+                          : ['halat_toplama_4', 'halat_cikarma_4', 'halat_carpma_4', 'halat_bolme_4']
+                        ).map(key => {
+                          const t = topics[key] || halatCekmeTopics[key];
+                          if (!t) return null;
+                          return (
+                            <TopicButtonReferenceStyle
+                              key={key}
+                              topicKey={key}
+                              title={t.title}
+                              onClick={() => selectTopicAndStart(key)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* BÖLÜM 2: ⚡ SÜRELİ MATEMATİK YARIŞLARI (1, 2 VE 3 KİŞİLİK) */}
+                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-rose-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                      <div className="bg-gradient-to-r from-rose-500 via-red-500 to-amber-500 text-white font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_22.png" alt="Süreli İşlemler" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
+                          <div className="flex flex-col">
+                            <span className="break-words text-sm sm:text-base font-black">⚡ Süreli İşlem Etkinlikleri</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-rose-100">10 saniye süre dolmadan hızlıca cevapla! (1, 2 veya 3 Kişilik)</span>
+                          </div>
+                        </div>
+                        <span className="shrink-0 px-2 sm:px-2.5 py-1 bg-blue-700 text-white font-black text-[10px] sm:text-xs rounded-lg border border-white shadow-xs uppercase tracking-wider">
+                          1, 2 VE 3 KİŞİLİK
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
+                        {(selectedGrade === 1
+                          ? ['sureli_toplama_cikarma', 'sureli_on_tamamlama']
+                          : selectedGrade === 2
+                          ? ['sureli_toplama_cikarma', 'sureli_carpma_bolme']
+                          : selectedGrade === 3
+                          ? ['sureli_carpma_3', 'sureli_bolme_3', 'sureli_carpma_bolme', 'sureli_toplama_cikarma']
+                          : ['sureli_carpma_4', 'sureli_bolme_4', 'sureli_carpma_bolme', 'sureli_toplama_cikarma']
+                        ).map(key => {
+                          const t = topics[key] || sureliExtraTopics[key];
+                          if (!t) return null;
+                          return (
+                            <TopicButtonReferenceStyle
+                              key={key}
+                              topicKey={key}
+                              title={t.title}
+                              onClick={() => selectTopicAndStart(key)}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* BÖLÜM 3: 🎮 MATEMATİK VE ZEKA OYUNLARI */}
+                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-indigo-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                      <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img src="/MENUIKON/grid_icon_17.png" alt="Zeka Oyunları" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
+                          <div className="flex flex-col">
+                            <span className="break-words text-sm sm:text-base font-black">🎮 Zeka ve Matematik Oyunları</span>
+                            <span className="text-[10px] sm:text-xs font-bold text-indigo-100">Hafıza, Çark, Ritim & Dedektiflik</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5 md:gap-3">
+                        {[
+                          'balon_patlatma_mat',
+                          'matematik_hafiza',
+                          'hizli_islem_carki',
+                          'sayi_dedektifi',
+                          'ritim_labirent',
+                          'geometri_eslestirme'
+                        ].map(key => {
+                          const t = topics[key];
+                          if (!t) return null;
+                          return (
+                            <TopicButtonReferenceStyle
+                              key={key}
+                              topicKey={key}
+                              title={t.title}
+                              onClick={() => selectTopicAndStart(key)}
+                            />
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -5443,7 +5761,7 @@ export default function App() {
 
       {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK - ŞEFFAF GLASSMORPHISM TASARIM) */}
       {gameState === 'playing' && playerCountMode === 1 && (
-        <div className="flex-1 flex flex-col p-1.5 sm:p-2.5 max-w-[360px] sm:max-w-[390px] mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10">
+        <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 ${currentTopic === 'uzamsal_iliskiler' ? 'max-w-[500px] sm:max-w-[560px] md:max-w-[620px]' : 'max-w-[360px] sm:max-w-[390px]'} mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10`}>
           {/* TOP BAR: GLASS CAPSULES */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 sm:mb-1.5 shrink-0 w-full">
             {/* LEFT: GROUP BADGE & TOPIC */}
@@ -5498,7 +5816,7 @@ export default function App() {
           </div>
 
           {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER WITH AUTO-FIT SCALING */}
-          <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] p-2 sm:p-3 my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0 w-full">
+          <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1 sm:p-1.5' : 'p-2 sm:p-3'} my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0 w-full`}>
             {/* Glossy top-light reflection */}
             <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
@@ -5506,7 +5824,7 @@ export default function App() {
               <AutoFitQuestionBox
                 questionHTML={currentQuestionData?.questionHTML}
                 questionText={currentQuestionData?.question}
-                mode={2}
+                mode={1}
               />
             </div>
           </div>
@@ -5555,7 +5873,7 @@ export default function App() {
                     key={idx}
                     onClick={() => handleAnswer(opt)}
                     disabled={feedbackState !== 'none'}
-                    className={`relative group w-full py-3.5 sm:py-4.5 px-3 min-h-[56px] sm:min-h-[70px] rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
+                    className={`relative group w-full ${currentTopic === 'uzamsal_iliskiler' ? 'py-2 sm:py-2.5 px-2.5 min-h-[44px] sm:min-h-[52px]' : 'py-3.5 sm:py-4.5 px-3 min-h-[56px] sm:min-h-[70px]'} rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
                   >
                     {/* Subtle top glare in button */}
                     <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
@@ -5629,134 +5947,207 @@ export default function App() {
                     buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
                   };
 
+              const isWinnerGroup = trackVictoryVideoActive && duelWinnerIndex === pIdx;
+              const isOtherGroup = trackVictoryVideoActive && duelWinnerIndex !== null && duelWinnerIndex !== pIdx;
+              const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+
               const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode);
               const optHeightClasses = playerCountMode === 3
                 ? "py-1.5 px-1.5 min-h-[38px] sm:min-h-[46px]"
-                : "py-2 sm:py-2.5 px-2 min-h-[46px] sm:min-h-[58px]";
+                : (currentTopic === 'uzamsal_iliskiler' ? "py-1.5 sm:py-2 px-2 min-h-[38px] sm:min-h-[46px]" : "py-2 sm:py-2.5 px-2 min-h-[46px] sm:min-h-[58px]");
 
               const cardAlignment = playerCountMode === 2
-                ? (pIdx === 0 ? 'mr-auto ml-0' : 'ml-auto mr-0')
-                : (playerCountMode === 3 
-                    ? (pIdx === 0 ? 'mr-auto ml-0' : pIdx === 1 ? 'mx-auto' : 'ml-auto mr-0') 
-                    : 'mx-auto');
+                ? (currentTopic === 'uzamsal_iliskiler' ? 'mx-auto' : (pIdx === 0 ? 'mr-auto ml-0' : 'ml-auto mr-0'))
+                : 'mx-auto';
               const cardMaxWidth = playerCountMode === 2
-                ? 'max-w-[480px] lg:max-w-[520px]'
-                : (playerCountMode === 3 
-                    ? 'max-w-[420px] lg:max-w-[460px]' 
-                    : 'max-w-none');
+                ? (currentTopic === 'uzamsal_iliskiler' ? 'max-w-[460px] lg:max-w-[520px] xl:max-w-[560px]' : 'max-w-[480px] lg:max-w-[520px]')
+                : 'max-w-none';
               const optionsMaxWidth = playerCountMode === 2
-                ? 'max-w-[320px] sm:max-w-[360px] md:max-w-[380px]'
+                ? (currentTopic === 'uzamsal_iliskiler' ? 'max-w-[360px] sm:max-w-[420px]' : 'max-w-[320px] sm:max-w-[360px] md:max-w-[380px]')
                 : (playerCountMode === 3 ? 'max-w-[280px] sm:max-w-[320px] md:max-w-[360px]' : 'max-w-[300px] sm:max-w-[340px]');
+
+              const containerClasses = isWinnerGroup
+                ? `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-slate-950/90 shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
+                : isOtherGroup
+                ? `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/40 opacity-60 backdrop-blur-sm shadow-xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
+                : `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`;
 
               return (
                 <div
                   key={p.id}
-                  className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`}
+                  className={containerClasses}
                 >
                   {/* PLAYER HEADER BAR */}
-                  <div className="flex items-center justify-between z-10 shrink-0 w-full mb-0.5 sm:mb-1">
-                    {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
-                    <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
-                      {pIdx + 1}
+                  {isWinnerGroup ? (
+                    <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+                      {/* LEFT: GOLD TROPHY */}
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-yellow-400 via-amber-300 to-yellow-600 border-2 border-white shadow-[0_0_15px_rgba(250,204,21,0.9)] text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center shrink-0 animate-bounce">
+                        🏆
+                      </div>
+                      {/* GOLD CHAMPION CAPSULE */}
+                      <div className="flex-1 ml-1.5 sm:ml-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 border-2 border-white rounded-xl px-2.5 py-1 flex items-center justify-between shadow-lg">
+                        <span className="font-black text-[11px] sm:text-xs text-slate-950 uppercase tracking-wide truncate flex items-center gap-1.5">
+                          <img src={winCfg.img} alt={winCfg.title} className="w-4 h-4 sm:w-5 sm:h-5 object-contain inline-block" />
+                          <span>{pIdx + 1}. GRUP KAZANDI!</span>
+                        </span>
+                        <span className="bg-slate-950 text-yellow-300 font-black text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg shadow-inner">
+                          {p.score} / 10 🎯
+                        </span>
+                      </div>
                     </div>
+                  ) : (
+                    <div className="flex items-center justify-between z-10 shrink-0 w-full mb-0.5 sm:mb-1">
+                      {/* LEFT: CIRCLE BADGE (1), (2), (3) */}
+                      <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} ${groupTheme.badgeShadow} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
+                        {pIdx + 1}
+                      </div>
 
-                    {/* CONNECTED GLASS CAPSULE FOR GROUP NAME, INDIVIDUAL TIMER & SCORE */}
-                    <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
-                      <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
-                        {pIdx + 1}. GRUP
-                      </span>
+                      {/* CONNECTED GLASS CAPSULE FOR GROUP NAME, INDIVIDUAL TIMER & SCORE */}
+                      <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
+                        <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
+                          {pIdx + 1}. GRUP
+                        </span>
 
-                      {/* INDIVIDUAL PLAYER COUNTDOWN TIMER */}
-                      {isTimedTopic(currentTopic) && p.lives > 0 && (
-                        <div className={`px-1.5 sm:px-2 py-0.5 rounded-lg border font-mono font-black text-[11px] sm:text-xs flex items-center gap-1 shrink-0 transition-all ${
-                          (p.timeLeft ?? 10) <= 3
-                            ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/80 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]'
-                            : 'bg-slate-900/90 border-amber-400/80 text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
-                        }`}>
-                          <span className={`text-[11px] sm:text-xs ${(p.timeLeft ?? 10) <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
-                          <span>{p.timeLeft ?? 10}s</span>
+                        {/* INDIVIDUAL PLAYER COUNTDOWN TIMER */}
+                        {!isOtherGroup && isTimedTopic(currentTopic) && p.lives > 0 && (
+                          <div className={`px-1.5 sm:px-2 py-0.5 rounded-lg border font-mono font-black text-[11px] sm:text-xs flex items-center gap-1 shrink-0 transition-all ${
+                            (p.timeLeft ?? 10) <= 3
+                              ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/80 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]'
+                              : 'bg-slate-900/90 border-amber-400/80 text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                          }`}>
+                            <span className={`text-[11px] sm:text-xs ${(p.timeLeft ?? 10) <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
+                            <span>{p.timeLeft ?? 10}s</span>
+                          </div>
+                        )}
+
+                        {/* RIGHT: SCORE & HEARTS */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <span className="bg-white/15 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
+                            {p.score} / 10
+                          </span>
+                          <div className="flex items-center gap-0.5">
+                            {Array.from({ length: 3 }).map((_, i) => (
+                              <span key={i} className={`text-[11px] sm:text-xs transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
+                                ❤️
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* WINNER GROUP VIDEO IN ITS OWN FRAME */}
+                  {isWinnerGroup ? (
+                    <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-black border-2 border-yellow-400/80 shadow-[inset_0_0_25px_rgba(0,0,0,0.9),0_0_25px_rgba(250,204,21,0.5)] overflow-hidden flex flex-col items-center justify-center min-h-0 w-full my-0.5">
+                      <video
+                        key={winCfg.videoSrc}
+                        src={winCfg.videoSrc}
+                        autoPlay
+                        playsInline
+                        className="w-full h-full object-cover"
+                        onEnded={handleTrackVideoComplete}
+                        onError={() => {
+                          console.log('Video oynatma hatası, sonuç ekranına geçiliyor');
+                          handleTrackVideoComplete();
+                        }}
+                      />
+
+                      {/* Mascot floating badge on video */}
+                      <div className={`absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r ${winCfg.badgeBg} text-white font-black text-[10px] sm:text-xs px-3 py-1 rounded-full border border-white shadow-xl flex items-center gap-1.5 z-20 pointer-events-none drop-shadow-md animate-pulse`}>
+                        <img src={winCfg.img} alt="Şampiyon" className="w-4 h-4 object-contain" />
+                        <span>{winCfg.title}</span>
+                      </div>
+
+                      {/* Fast forward to results button */}
+                      <button
+                        type="button"
+                        onClick={handleTrackVideoComplete}
+                        className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-[10px] sm:text-xs px-3.5 py-1 rounded-full border border-white shadow-2xl transition cursor-pointer z-20 flex items-center gap-1"
+                      >
+                        <span>Sonuçları Gör</span>
+                        <span>⏩</span>
+                      </button>
+                    </div>
+                  ) : isOtherGroup ? (
+                    /* OTHER GROUPS IN DUEL COMPLETED STATE */
+                    <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-md border border-white/10 flex flex-col items-center justify-center text-center p-3 my-0.5 min-h-0 w-full">
+                      <div className="text-2xl sm:text-3xl mb-1 filter drop-shadow">🏁</div>
+                      <div className="text-xs sm:text-sm font-black text-slate-200 uppercase tracking-wide">
+                        YARIŞMA TAMAMLANDI
+                      </div>
+                      <div className="text-[11px] text-amber-300/90 font-bold mt-0.5">
+                        Final Skoru: {p.score} / 10
+                      </div>
+                    </div>
+                  ) : (
+                    /* NORMAL GAME PLAYING VIEW */
+                    <>
+                      {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
+                      <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.25)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1 sm:p-1.5' : (playerCountMode === 3 ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1')} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
+                        {/* Top glare effect */}
+                        <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+
+                        {p.lives <= 0 ? (
+                          <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
+                            <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
+                            <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
+                              ELENDİ!
+                            </div>
+                            <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
+                              Diğer oyuncular yarışıyor...
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
+                            <AutoFitQuestionBox
+                              questionHTML={p.currentQuestionData?.questionHTML}
+                              questionText={p.currentQuestionData?.question}
+                              mode={playerCountMode}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
+                      {p.lives > 0 && (
+                        <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${optionsMaxWidth} mx-auto shrink-0 z-10`}>
+                          {p.shuffledOptions.map((opt, oIdx) => {
+                            const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
+                            const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
+
+                            let btnClass = groupTheme.buttonDefault;
+                            if (isCorrect) {
+                              btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
+                            } else if (isWrong) {
+                              btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
+                            }
+
+                            return (
+                              <button
+                                key={oIdx}
+                                onClick={() => handlePlayerAnswer(pIdx, opt)}
+                                disabled={p.feedbackState !== 'none'}
+                                className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                              >
+                                {/* Inner top glare */}
+                                <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
+                                {typeof opt === 'string' && opt.includes('<') ? (
+                                  <span
+                                    className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
+                                    dangerouslySetInnerHTML={{ __html: opt }}
+                                  />
+                                ) : (
+                                  <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
+                                    {opt}
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
                         </div>
                       )}
-
-                      {/* RIGHT: SCORE & HEARTS */}
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        <span className="bg-white/15 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
-                          {p.score} / 10
-                        </span>
-                        <div className="flex items-center gap-0.5">
-                          {Array.from({ length: 3 }).map((_, i) => (
-                            <span key={i} className={`text-[11px] sm:text-xs transition-all ${i < p.lives ? 'text-rose-500 scale-110 drop-shadow-[0_0_6px_#f43f5e]' : 'text-slate-600 opacity-40 grayscale'}`}>
-                              ❤️
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
-                  <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] ${playerCountMode === 3 ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
-                    {/* Top glare effect */}
-                    <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
-
-                    {p.lives <= 0 ? (
-                      <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
-                        <div className="text-2xl sm:text-3xl animate-bounce">💔</div>
-                        <div className="text-xl xs:text-2xl sm:text-3xl font-black text-rose-500 uppercase tracking-widest [text-shadow:0_3px_6px_#000,0_6px_16px_rgba(0,0,0,0.95)] drop-shadow-[0_4px_12px_rgba(225,29,72,0.95)] animate-pulse">
-                          ELENDİ!
-                        </div>
-                        <div className="text-white/90 text-[11px] sm:text-xs font-black [text-shadow:0_2px_4px_#000] drop-shadow-md">
-                          Diğer oyuncular yarışıyor...
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
-                        <AutoFitQuestionBox
-                          questionHTML={p.currentQuestionData?.questionHTML}
-                          questionText={p.currentQuestionData?.question}
-                          mode={playerCountMode}
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* CHOICE BUTTONS GRID FOR THIS PLAYER */}
-                  {p.lives > 0 && (
-                    <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${optionsMaxWidth} mx-auto shrink-0 z-10`}>
-                      {p.shuffledOptions.map((opt, oIdx) => {
-                        const isCorrect = p.selectedOption !== null && p.currentQuestionData && opt === p.currentQuestionData.correct;
-                        const isWrong = p.selectedOption !== null && p.currentQuestionData && opt === p.selectedOption && opt !== p.currentQuestionData.correct;
-
-                        let btnClass = groupTheme.buttonDefault;
-                        if (isCorrect) {
-                          btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
-                        } else if (isWrong) {
-                          btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
-                        }
-
-                        return (
-                          <button
-                            key={oIdx}
-                            onClick={() => handlePlayerAnswer(pIdx, opt)}
-                            disabled={p.feedbackState !== 'none'}
-                            className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
-                          >
-                            {/* Inner top glare */}
-                            <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                            {typeof opt === 'string' && opt.includes('<') ? (
-                              <span
-                                className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
-                                dangerouslySetInnerHTML={{ __html: opt }}
-                              />
-                            ) : (
-                              <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                                {opt}
-                              </span>
-                            )}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    </>
                   )}
                 </div>
               );
@@ -5764,82 +6155,81 @@ export default function App() {
 
             return playerCountMode === 2 ? (
               /* 2 OYUNCU MODU: 1. OYUNCU (SOL) - DİKEY BASKETBOL PARKURU (ORTA) - 2. OYUNCU (SAĞ) */
-              <div className="flex-1 flex flex-row items-stretch justify-between gap-2 sm:gap-4 w-full min-h-0 overflow-hidden">
-                {/* 1. GRUP (SOLDA - SOL BOŞLUĞUN YARISI KADAR SOLA KAYDIRILDI) */}
-                <div className="flex-1 flex items-center justify-start h-full min-h-0 min-w-0">
+              <div className={`flex-1 flex flex-row items-stretch ${currentTopic === 'uzamsal_iliskiler' ? 'justify-center gap-3 sm:gap-6' : 'justify-between gap-2 sm:gap-4'} w-full min-h-0 overflow-hidden`}>
+                {/* 1. GRUP */}
+                <div className={`flex-1 flex items-center ${currentTopic === 'uzamsal_iliskiler' ? 'justify-center' : 'justify-start'} h-full min-h-0 min-w-0`}>
                   {renderPlayerCard(players[0], 0)}
                 </div>
 
-                {/* DİKEY BASKETBOL PARKURU (TAM ORTADA) */}
+                {/* ORTA PARKUR (HALAT ÇEKME VEYA DİKEY BASKETBOL) */}
                 <div className="h-full flex items-center justify-center shrink-0 px-1">
-                  {(() => {
-                    const winCfg = getWinnerVideoConfig(duelWinnerIndex);
-                    return (
-                      <BasketballRaceTrack
-                        players={players}
-                        playerCountMode={2}
-                        targetScore={10}
-                        orientation="vertical"
-                        showVictoryVideo={trackVictoryVideoActive}
-                        victoryVideoSrc={winCfg.videoSrc}
-                        winnerTitle={winCfg.title}
-                        winnerImg={winCfg.img}
-                        winnerBadgeBg={winCfg.badgeBg}
-                        winnerBorderColor={winCfg.borderColor}
-                        winnerGlowColor={winCfg.glowColor}
-                        onVictoryVideoEnd={handleTrackVideoComplete}
-                        soundEnabled={soundEnabled}
-                      />
-                    );
-                  })()}
+                  {isHalatCekmeTopic(currentTopic) ? (
+                    <TugOfWarTrack
+                      players={players}
+                      targetScore={10}
+                      duelWinnerIndex={duelWinnerIndex}
+                      soundEnabled={soundEnabled}
+                    />
+                  ) : (
+                    <BasketballRaceTrack
+                      players={players}
+                      playerCountMode={2}
+                      targetScore={10}
+                      orientation="vertical"
+                      soundEnabled={soundEnabled}
+                    />
+                  )}
                 </div>
 
-                {/* 2. GRUP (SAĞDA - SAĞ BOŞLUĞUN YARISI KADAR SAĞA KAYDIRILDI) */}
-                <div className="flex-1 flex items-center justify-end h-full min-h-0 min-w-0">
+                {/* 2. GRUP */}
+                <div className={`flex-1 flex items-center ${currentTopic === 'uzamsal_iliskiler' ? 'justify-center' : 'justify-end'} h-full min-h-0 min-w-0`}>
                   {renderPlayerCard(players[1], 1)}
                 </div>
               </div>
             ) : (
-              /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA - %20 DARALTILMIŞ) + 3 OYUNCU (1 SOLDA, 2 ORTADA, 3 EN SAĞDA) */
-              <div className="flex-1 flex flex-row items-stretch justify-between gap-1 sm:gap-2.5 w-full min-h-0 overflow-hidden">
-                {/* DİKEY BASKETBOL PARKURU (EN SOLDA - GENİŞLİĞİ %20 DARALTILMIŞ, EN SOLA YASLI) */}
-                <div className="h-full flex items-center justify-start shrink-0 pl-0 pr-0.5 sm:pr-1">
-                  {(() => {
-                    const winCfg = getWinnerVideoConfig(duelWinnerIndex);
-                    return (
-                      <BasketballRaceTrack
-                        players={players}
-                        playerCountMode={3}
-                        targetScore={10}
-                        orientation="vertical"
-                        showVictoryVideo={trackVictoryVideoActive}
-                        victoryVideoSrc={winCfg.videoSrc}
-                        winnerTitle={winCfg.title}
-                        winnerImg={winCfg.img}
-                        winnerBadgeBg={winCfg.badgeBg}
-                        winnerBorderColor={winCfg.borderColor}
-                        winnerGlowColor={winCfg.glowColor}
-                        onVictoryVideoEnd={handleTrackVideoComplete}
-                        soundEnabled={soundEnabled}
-                      />
-                    );
-                  })()}
-                </div>
-
-                {/* 3 OYUNCU KARTLARI: 1. GRUP SOLDA, 2. GRUP ORTADA, 3. GRUP EN SAĞDA - BOŞLUKLAR 1-2 VE 2-3 ARASINA EŞİT DAĞITILDI */}
-                <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6">
-                  {/* 1. GRUP (PARKURUN HEMEN YANINDA - SOLA YASLI) */}
-                  <div className="flex-1 flex items-center justify-start h-full min-h-0 min-w-0">
+              /* 3 OYUNCU MODU: HER GRUBUN SOLUNDA BİREYSEL BASKETBOL PARKURU (p1, p2, p3) + KARTI */
+              <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6 overflow-hidden">
+                {/* 1. GRUP İSTASYONU (SOLDA: p1.png PARKURU + 1. GRUP KARTI) */}
+                <div className="flex-1 flex flex-row items-stretch justify-start h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                  <div className="h-full flex items-center justify-center shrink-0">
+                    <SingleBasketballTrack 
+                      playerIndex={0} 
+                      score={players[0]?.score || 0} 
+                      targetScore={10} 
+                      isWinner={duelWinnerIndex === 0} 
+                    />
+                  </div>
+                  <div className="flex-1 h-full min-h-0 min-w-0">
                     {renderPlayerCard(players[0], 0)}
                   </div>
+                </div>
 
-                  {/* 2. GRUP (TAM ORTADA) */}
-                  <div className="flex-1 flex items-center justify-center h-full min-h-0 min-w-0">
+                {/* 2. GRUP İSTASYONU (ORTADA: p2.png PARKURU + 2. GRUP KARTI) */}
+                <div className="flex-1 flex flex-row items-stretch justify-center h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                  <div className="h-full flex items-center justify-center shrink-0">
+                    <SingleBasketballTrack 
+                      playerIndex={1} 
+                      score={players[1]?.score || 0} 
+                      targetScore={10} 
+                      isWinner={duelWinnerIndex === 1} 
+                    />
+                  </div>
+                  <div className="flex-1 h-full min-h-0 min-w-0">
                     {renderPlayerCard(players[1], 1)}
                   </div>
+                </div>
 
-                  {/* 3. GRUP (EN SAĞA YASLI) */}
-                  <div className="flex-1 flex items-center justify-end h-full min-h-0 min-w-0">
+                {/* 3. GRUP İSTASYONU (SAĞDA: p3.png PARKURU + 3. GRUP KARTI) */}
+                <div className="flex-1 flex flex-row items-stretch justify-end h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                  <div className="h-full flex items-center justify-center shrink-0">
+                    <SingleBasketballTrack 
+                      playerIndex={2} 
+                      score={players[2]?.score || 0} 
+                      targetScore={10} 
+                      isWinner={duelWinnerIndex === 2} 
+                    />
+                  </div>
+                  <div className="flex-1 h-full min-h-0 min-w-0">
                     {renderPlayerCard(players[2], 2)}
                   </div>
                 </div>
@@ -5883,13 +6273,13 @@ export default function App() {
                       <p className="text-[11px] xs:text-[12.5px] sm:text-sm md:text-base font-black text-yellow-300 uppercase tracking-wide drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)] leading-tight mt-0.5">
                         {playerCountMode === 3 ? (
                           duelWinnerIndex === 0
-                            ? '1. GRUP (KAPLAN) KAZANDI! 🥇'
+                            ? '1. GRUP (KAPLUMBAĞA) KAZANDI! 🥇'
                             : duelWinnerIndex === 1
                             ? '2. GRUP (EJDERHA) KAZANDI! 🥇'
                             : '3. GRUP (SAVAŞÇI) KAZANDI! 🥇'
                         ) : (
                           duelWinnerIndex === 0
-                            ? '1. GRUP (KAPLAN) KAZANDI! 🥇'
+                            ? '1. GRUP (KAPLUMBAĞA) KAZANDI! 🥇'
                             : '2. GRUP (EJDERHA) KAZANDI! 🥇'
                         )}
                       </p>
@@ -5917,7 +6307,7 @@ export default function App() {
                       });
 
                       const groupDefs = [
-                        { pIdx: 0, name: "1. GRUP", img: "/kap.png", label: "KAPLAN", headerColor: "bg-blue-600 border-blue-300" },
+                        { pIdx: 0, name: "1. GRUP", img: "/kap.png", label: "KAPLUMBAĞA", headerColor: "bg-blue-600 border-blue-300" },
                         { pIdx: 1, name: "2. GRUP", img: "/ejd.png", label: "EJDERHA", headerColor: "bg-rose-600 border-rose-300" },
                         { pIdx: 2, name: "3. GRUP", img: "/balta.png", label: "SAVAŞÇI", headerColor: "bg-emerald-600 border-emerald-300" }
                       ].slice(0, groupCount);
