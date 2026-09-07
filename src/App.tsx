@@ -230,9 +230,35 @@ function getDynamicOptionFontClass(
   return "text-[10px] sm:text-[11px] md:text-xs font-bold";
 }
 
+// KULLANICI KURALI: "tüm kesirleri alt alta yaz, pay altında kesir çizgisi onunda altında payda. yan yana yazma."
+export function renderFractionHTML(pay: string | number, payda: string | number, tam?: string | number): string {
+  return `<span class="inline-flex items-center justify-center gap-1 font-black align-middle select-none">${
+    tam ? `<span class="text-base sm:text-lg md:text-xl font-black text-amber-300 mr-0.5">${tam}</span>` : ''
+  }<span class="inline-flex flex-col items-center justify-center leading-none text-center"><span class="text-xs sm:text-sm md:text-base font-black px-1 leading-none py-0.5">${pay}</span><span class="w-full h-[2px] bg-white rounded-full my-[1.5px] min-w-[14px]"></span><span class="text-xs sm:text-sm md:text-base font-black px-1 leading-none py-0.5">${payda}</span></span></span>`;
+}
+
 // KULLANICI KURALI: Şıkta hem yazı hem görsel olmasın; hangisi yeterliyse o olsun.
 export function cleanOptionForDisplay(opt: string | number): string | number {
-  if (typeof opt !== 'string' || !opt.includes('<')) {
+  if (typeof opt !== 'string') {
+    return opt;
+  }
+
+  // KULLANICI KURALI: Tüm kesirler alt alta: pay, kesir çizgisi, payda
+  const pureFractionMatch = opt.trim().match(/^(\d+)\s*\/\s*(\d+)$/);
+  if (pureFractionMatch) {
+    return renderFractionHTML(pureFractionMatch[1], pureFractionMatch[2]);
+  }
+
+  const mixedFractionMatch = opt.trim().match(/^(\d+)\s+(?:tam\s+)?(\d+)\s*\/\s*(\d+)$/i);
+  if (mixedFractionMatch) {
+    return renderFractionHTML(mixedFractionMatch[2], mixedFractionMatch[3], mixedFractionMatch[1]);
+  }
+
+  if (/\b\d+\s*\/\s*\d+\b/.test(opt) && !opt.includes('<')) {
+    return opt.replace(/(\d+)\s*\/\s*(\d+)/g, (_, p, d) => renderFractionHTML(p, d));
+  }
+
+  if (!opt.includes('<')) {
     return opt;
   }
   const hasImgOrSvg = opt.includes('<img') || opt.includes('<svg');
@@ -6105,13 +6131,13 @@ export default function App() {
 
               const cardAlignment = playerCountMode === 2
                 ? (currentTopic === 'uzamsal_iliskiler' ? 'mx-auto' : (pIdx === 0 ? 'mr-auto ml-0' : 'ml-auto mr-0'))
-                : 'mx-auto';
+                : '';
               const cardMaxWidth = playerCountMode === 2
                 ? (currentTopic === 'uzamsal_iliskiler' ? 'max-w-[460px] lg:max-w-[520px] xl:max-w-[560px]' : 'max-w-[480px] lg:max-w-[520px]')
                 : 'max-w-none';
               const optionsMaxWidth = playerCountMode === 2
                 ? (currentTopic === 'uzamsal_iliskiler' ? 'max-w-[360px] sm:max-w-[420px]' : 'max-w-[320px] sm:max-w-[360px] md:max-w-[380px]')
-                : (playerCountMode === 3 ? 'max-w-[280px] sm:max-w-[320px] md:max-w-[360px]' : 'max-w-[300px] sm:max-w-[340px]');
+                : (playerCountMode === 3 ? 'w-full max-w-full' : 'max-w-[300px] sm:max-w-[340px]');
 
               // SORU GRUBU SÜTUNU: 100% OPAK KATI ZEMİN (ARKA PLANLA KARIŞMAYI TAMAMEN ÖNLER)
               const containerClasses = isWinnerGroup
@@ -6339,10 +6365,10 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              /* 3 OYUNCU MODU: HER GRUBUN SOLUNDA BİREYSEL BASKETBOL PARKURU (p1, p2, p3) + KARTI */
-              <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6 overflow-hidden">
+              /* 3 OYUNCU MODU: HER GRUBUN SOLUNDA BİREYSEL BASKETBOL PARKURU (p1, p2, p3) + KARTI (EŞİT ARALIKLAR) */
+              <div className="flex-1 flex flex-row items-stretch min-h-0 h-full w-full gap-2 sm:gap-2.5 md:gap-3 overflow-hidden">
                 {/* 1. GRUP İSTASYONU (SOLDA: p1.png PARKURU + 1. GRUP KARTI) */}
-                <div className="flex-1 flex flex-row items-stretch justify-start h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                   <div className="h-full flex items-center justify-center shrink-0">
                     <SingleBasketballTrack 
                       playerIndex={0} 
@@ -6357,7 +6383,7 @@ export default function App() {
                 </div>
 
                 {/* 2. GRUP İSTASYONU (ORTADA: p2.png PARKURU + 2. GRUP KARTI) */}
-                <div className="flex-1 flex flex-row items-stretch justify-center h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                   <div className="h-full flex items-center justify-center shrink-0">
                     <SingleBasketballTrack 
                       playerIndex={1} 
@@ -6372,7 +6398,7 @@ export default function App() {
                 </div>
 
                 {/* 3. GRUP İSTASYONU (SAĞDA: p3.png PARKURU + 3. GRUP KARTI) */}
-                <div className="flex-1 flex flex-row items-stretch justify-end h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                   <div className="h-full flex items-center justify-center shrink-0">
                     <SingleBasketballTrack 
                       playerIndex={2} 

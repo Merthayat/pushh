@@ -1066,10 +1066,9 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     </div>
                   </div>
                 ) : (
-                  /* 3 OYUNCU MODU: HER GRUBUN İSTASYONUNDA BİREYSEL BASKETBOL PARKURU (p1, p2, p3) + KARTI */
-                  <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6 overflow-hidden">
+                  <div className="flex-1 flex flex-row items-stretch min-h-0 h-full w-full gap-2 sm:gap-2.5 md:gap-3 overflow-hidden">
                     {/* 1. GRUP İSTASYONU (SOLDA: p1.png PARKURU + 1. GRUP KARTI) */}
-                    <div className="flex-1 flex flex-row items-stretch justify-start h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                    <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                       <div className="h-full flex items-center justify-center shrink-0">
                         <SingleBasketballTrack 
                           playerIndex={0} 
@@ -1084,7 +1083,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     </div>
 
                     {/* 2. GRUP İSTASYONU (ORTADA: p2.png PARKURU + 2. GRUP KARTI) */}
-                    <div className="flex-1 flex flex-row items-stretch justify-center h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                    <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                       <div className="h-full flex items-center justify-center shrink-0">
                         <SingleBasketballTrack 
                           playerIndex={1} 
@@ -1099,7 +1098,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     </div>
 
                     {/* 3. GRUP İSTASYONU (SAĞDA: p3.png PARKURU + 3. GRUP KARTI) */}
-                    <div className="flex-1 flex flex-row items-stretch justify-end h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                    <div className="flex-1 flex flex-row items-stretch h-full min-h-0 min-w-0 gap-2 sm:gap-2.5 md:gap-3">
                       <div className="h-full flex items-center justify-center shrink-0">
                         <SingleBasketballTrack 
                           playerIndex={2} 

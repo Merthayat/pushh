@@ -374,16 +374,16 @@ export const SingleBasketballTrack: React.FC<SingleBasketballTrackProps> = ({
 
   return (
     <div className={`h-full flex flex-col items-center justify-center shrink-0 select-none ${className}`}>
-      {/* 271 / 1335 aspect ratio for single lane track */}
+      {/* 271 / 1335 aspect ratio for single lane track - %20 daraltıldı (216.8 / 1335) */}
       <div 
-        style={{ aspectRatio: '271 / 1335' }}
+        style={{ aspectRatio: `${271 * 0.8} / 1335` }}
         className="relative h-full max-h-full w-auto"
       >
-        {/* Track Image */}
+        {/* Track Image - %20 daraltılmış çerçeveye object-fill ile oturur */}
         <img
           src={cfg.trackSrc}
           alt={`${cfg.groupName} Parkuru`}
-          className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none filter drop-shadow-xl"
+          className="absolute inset-0 w-full h-full object-fill pointer-events-none select-none filter drop-shadow-xl"
           loading="eager"
           decoding="async"
         />
@@ -407,7 +407,7 @@ export const SingleBasketballTrack: React.FC<SingleBasketballTrackProps> = ({
 
             {/* Mascot Character with score pill */}
             <div className="relative flex flex-col items-center">
-              <div className={`relative w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center shrink-0 ${reachedGoal ? 'scale-125 animate-pulse' : ''}`}>
+              <div className={`relative w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center shrink-0 ${reachedGoal ? 'scale-125 animate-pulse' : ''}`}>
                 <img
                   src={cfg.img}
                   alt={cfg.character}

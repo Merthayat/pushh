@@ -1936,18 +1936,16 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `${toplamKurus} kuruş kaç TL ve kaç kuruş eder?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-1 text-center">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
               <div class="flex items-center justify-center gap-2 flex-nowrap max-w-full overflow-hidden">
-                <img src="/paralar/1_tl_madeni_para.png" class="h-8 sm:h-12 w-8 sm:w-12 object-contain drop-shadow-md shrink-0" />
-                <div class="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-amber-500 text-slate-950 font-black text-base sm:text-xl md:text-2xl border-2 border-white shadow-md shrink-0 whitespace-nowrap">
-                  🪙 ${toplamKurus} Kuruş
+                <div class="px-5 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 font-black text-xl sm:text-2xl md:text-3xl border-2 border-white shadow-lg shrink-0 whitespace-nowrap">
+                  ${toplamKurus} Kuruş
                 </div>
-                <img src="/paralar/50_kurus_madeni_para.png" class="h-7 sm:h-10 w-7 sm:w-10 object-contain drop-shadow-md shrink-0" />
               </div>
               <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu miktar kaç TL ve kaç kuruşa <span class="text-amber-300 underline decoration-amber-400 font-black">eşittir?</span>
               </div>
-              <div class="text-[11px] xs:text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
+              <div class="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
             </div>
           `,
           correct: dogru,

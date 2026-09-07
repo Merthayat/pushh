@@ -2565,22 +2565,21 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
           const lira = liraList[Math.floor(Math.random() * liraList.length)];
           const kurus = lira * 100;
 
-          let images: string[] = [];
-          if (kurus === 100) {
-            images = ['/paralar/50_kurus_madeni_para.png', '/paralar/50_kurus_madeni_para.png'];
-          } else if (kurus === 200) {
-            images = ['/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png'];
-          } else if (kurus === 300) {
-            images = ['/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png', '/paralar/1_tl_madeni_para.png'];
-          } else {
-            images = ['/paralar/1_tl_madeni_para.png'];
-          }
-
-          const questionText = `Kumbarasından ${kurus} Kuruş çıkan ${getIsimTamlayan(ogrenci)} toplam kaç TL parası vardır?`;
+          const questionText = `Kumbarasından <span class="text-amber-300 font-black">${kurus} Kuruş</span> çıkan ${getIsimTamlayan(ogrenci)} toplam kaç TL parası vardır?`;
 
           return {
-            question: questionText,
-            questionHTML: renderMoneyQuestionHTML(images, questionText),
+            question: `Kumbarasından ${kurus} Kuruş çıkan ${ogrenci} toplam kaç TL parası vardır?`,
+            questionHTML: `
+              <div class="flex flex-col items-center justify-center w-full gap-2 my-auto max-h-full px-2 text-center">
+                <div class="px-5 py-2 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 font-black text-xl sm:text-2xl border-2 border-white shadow-md inline-block my-1">
+                  ${kurus} Kuruş
+                </div>
+                <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] px-1 leading-snug">
+                  ${questionText}
+                </div>
+                <div class="text-xs sm:text-sm font-bold text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">(100 Kuruş = 1 TL)</div>
+              </div>
+            `,
             correct: `${lira} TL`,
             wrong: get3WrongOptions(lira).map(v => `${v} TL`),
             isLong: false

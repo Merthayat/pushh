@@ -240,14 +240,14 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         }
 
         return {
-          question: `${formatliSayi} sayısındaki ${rakam} rakamının (${basamakAdi} basamağı) basamak değeri kaçtır?`,
+          question: `${formatliSayi} sayısındaki ${basamakAdi} basamağının basamak değeri kaçtır?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-3 py-1 text-center">
               <div class="px-6 py-2 sm:px-8 sm:py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl md:text-4xl border-2 border-white shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
                 ${formatliSayi}
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                Bu sayıdaki <span class="text-amber-300 font-black">${basamakAdi} basamağındaki</span> (<span class="text-cyan-300 font-black">${rakam}</span>) rakamının <span class="underline decoration-amber-400">basamak değeri</span> kaçtır?
+                Bu sayıdaki <span class="text-amber-300 font-black">${basamakAdi} basamağının</span> <span class="underline decoration-amber-400">basamak değeri</span> kaçtır?
               </div>
             </div>
           `,
@@ -329,43 +329,74 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
   // 1.3 Doğal Sayıları Sıralama ve Karşılaştırma
   g4_sayi_siralama: {
     title: "Doğal Sayıları Sıralama",
-    desc: "4, 5 ve 6 basamaklı sayıları büyükten küçüğe veya küçükten büyüğe sıralama.",
+    desc: "4 ve 5 basamaklı sayıları büyükten küçüğe veya küçükten büyüğe sıralama.",
     generate: () => {
-      const taban = Math.floor(Math.random() * 80000) + 10000;
-      const sayilar = [
-        taban + Math.floor(Math.random() * 150),
-        taban + Math.floor(Math.random() * 300) + 200,
-        taban + Math.floor(Math.random() * 500) + 600,
-        taban + Math.floor(Math.random() * 800) + 1200
-      ];
+      // Sayılar tam yüzlük olacak (yüzden küçük basamak yok: onlar ve birler 00).
+      // Örnek: 23.600, 24.500 gibi net, kafa karıştırmayan yüzlükler.
+      const isFiveDigit = Math.random() < 0.85;
+      const baseThousands = isFiveDigit
+        ? Math.floor(Math.random() * 70) + 15 // 15 .. 84 (örn: 23 -> 23.000)
+        : Math.floor(Math.random() * 6) + 3;  // 3 .. 8 (örn: 4 -> 4.000)
+
+      // 4 farklı yüzlük adımı seç (her biri 100'ün tam katı)
+      const hundredSteps = new Set<number>();
+      while (hundredSteps.size < 4) {
+        // 1 ile 25 arası çarpan (100 ile 2500 arası farklar oluşturur)
+        hundredSteps.add(Math.floor(Math.random() * 25) + 1);
+      }
+      const sortedSteps = Array.from(hundredSteps).sort((a, b) => a - b);
+      const sayilar = sortedSteps.map(step => (baseThousands * 1000) + (step * 100));
+
       // Karışık sıra
       const karisik = [...sayilar].sort(() => 0.5 - Math.random());
       const buyuktenKucuge = Math.random() < 0.5;
+      const op = buyuktenKucuge ? ' > ' : ' < ';
 
-      let dogruSira: string;
-      if (buyuktenKucuge) {
-        dogruSira = [...sayilar].sort((a, b) => b - a).map(n => n.toLocaleString('tr-TR')).join(' > ');
-      } else {
-        dogruSira = [...sayilar].sort((a, b) => a - b).map(n => n.toLocaleString('tr-TR')).join(' < ');
-      }
+      // Doğru sıralanış
+      const dogruSira = [...sayilar]
+        .sort((a, b) => (buyuktenKucuge ? b - a : a - b))
+        .map(n => n.toLocaleString('tr-TR'))
+        .join(op);
 
-      // Yanlış sıralamalar
-      const yanlis1 = [...sayilar].sort(() => 0.5 - Math.random()).map(n => n.toLocaleString('tr-TR')).join(buyuktenKucuge ? ' > ' : ' < ');
-      const yanlis2 = [...sayilar].sort((a, b) => (buyuktenKucuge ? a - b : b - a)).map(n => n.toLocaleString('tr-TR')).join(buyuktenKucuge ? ' > ' : ' < ');
-      const yanlis3 = [...karisik].map(n => n.toLocaleString('tr-TR')).join(buyuktenKucuge ? ' > ' : ' < ');
+      // Yanlış sıralamalar (öğrenci yanılgıları)
+      const yanlisSet = new Set<string>();
 
-      const yanlislar = [yanlis1, yanlis2, yanlis3].filter(y => y !== dogruSira);
-      while (yanlislar.length < 3) {
-        yanlislar.push([...sayilar].sort(() => 0.5 - Math.random()).map(n => n.toLocaleString('tr-TR')).join(buyuktenKucuge ? ' > ' : ' < '));
+      // 1. Tam tersi yön (küçükten büyüğe yerine büyükten küçüğe veya tersi)
+      const tersSira = [...sayilar]
+        .sort((a, b) => (buyuktenKucuge ? a - b : b - a))
+        .map(n => n.toLocaleString('tr-TR'))
+        .join(op);
+      if (tersSira !== dogruSira) yanlisSet.add(tersSira);
+
+      // 2. Ortadaki veya sondaki iki sayının yer değiştirdiği sıralama
+      const sortedAscDesc = [...sayilar].sort((a, b) => (buyuktenKucuge ? b - a : a - b));
+      const swappedLast = [sortedAscDesc[0], sortedAscDesc[1], sortedAscDesc[3], sortedAscDesc[2]]
+        .map(n => n.toLocaleString('tr-TR'))
+        .join(op);
+      if (swappedLast !== dogruSira) yanlisSet.add(swappedLast);
+
+      const swappedFirst = [sortedAscDesc[1], sortedAscDesc[0], sortedAscDesc[2], sortedAscDesc[3]]
+        .map(n => n.toLocaleString('tr-TR'))
+        .join(op);
+      if (swappedFirst !== dogruSira) yanlisSet.add(swappedFirst);
+
+      // Rastgele karıştırmalarla 3 yanlışı tamamla
+      let attempts = 0;
+      while (yanlisSet.size < 3 && attempts < 50) {
+        attempts++;
+        const shuffled = [...sayilar].sort(() => 0.5 - Math.random()).map(n => n.toLocaleString('tr-TR')).join(op);
+        if (shuffled !== dogruSira) {
+          yanlisSet.add(shuffled);
+        }
       }
 
       return {
         question: `${karisik.map(n => n.toLocaleString('tr-TR')).join(', ')} sayılarının ${buyuktenKucuge ? 'büyükten küçüğe' : 'küçükten büyüğe'} doğru sıralanışı hangisidir?`,
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-1.5 sm:gap-2.5 py-0.5 text-center">
-            <div class="flex flex-wrap items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 max-w-full my-0.5 px-1">
+            <div class="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 max-w-full my-1 px-1">
               ${karisik.map(n => `
-                <span class="px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-lg bg-slate-900/90 border border-amber-400 text-amber-300 font-black text-[11px] xs:text-xs sm:text-sm shadow-sm shrink-0 whitespace-nowrap">
+                <span class="px-2.5 py-1 sm:px-3.5 sm:py-1.5 rounded-xl bg-slate-900/90 border-2 border-amber-400 text-amber-300 font-black text-xs sm:text-base md:text-lg shadow-md shrink-0 whitespace-nowrap">
                   ${n.toLocaleString('tr-TR')}
                 </span>
               `).join('')}
@@ -376,7 +407,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           </div>
         `,
         correct: dogruSira,
-        wrong: yanlislar.slice(0, 3),
+        wrong: Array.from(yanlisSet).slice(0, 3),
         isLong: true
       };
     }
@@ -488,7 +519,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
               ${sequenceHTML}
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-              Aşağıdaki <span class="text-amber-300 font-black">${isBiner ? "biner" : "yüzer"}</span> ritmik sayma örüntüsünde <span class="text-cyan-300 font-black">❓</span> yerine hangi sayı gelmelidir?
+              Ritmik saymada <span class="text-cyan-300 font-black">❓</span> yerine hangi sayı gelmelidir?
             </div>
           </div>
         `,
@@ -551,7 +582,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
   // 2.1 Kesir Çeşitleri ve Modelleme
   g4_kesir_cesitleri_modelleme: {
     title: "Kesir Çeşitleri (Basit, Bileşik, Tam)",
-    desc: "Basit kesir, bileşik kesir ve tam sayılı kesir kavramlarını ayırt etme ve modelleme.",
+    desc: "Basit kesir, bileşik kesir ve tam sayılı kesir kavramlarını ayırt etme.",
     generate: () => {
       const turSecim = Math.random();
       if (turSecim < 0.35) {
@@ -559,7 +590,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const payda = Math.floor(Math.random() * 8) + 3; // 3..10
         const pay = Math.floor(Math.random() * (payda - 1)) + 1; // 1..(payda-1)
         return {
-          question: `${pay}/${payda} kesri hangi kesir türüne örnektir?`,
+          question: "Kesrin türü hangisidir?",
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="flex flex-col items-center px-6 py-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
@@ -567,13 +598,13 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 <div class="w-10 h-0.5 bg-white my-0.5"></div>
                 <span>${payda}</span>
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki <span class="text-amber-300 font-black">${pay}/${payda}</span> kesrinin türü aşağıdakilerden hangisidir?
+              <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Kesrin türü hangisidir?
               </div>
             </div>
           `,
           correct: "Basit Kesir",
-          wrong: ["Bileşik Kesir", "Tam Sayılı Kesir", "Birim Kesir Değildir"],
+          wrong: ["Bileşik Kesir", "Tam Sayılı Kesir", "Birim Kesir"],
           isLong: false
         };
       } else if (turSecim < 0.7) {
@@ -581,7 +612,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const payda = Math.floor(Math.random() * 6) + 2; // 2..7
         const pay = payda + Math.floor(Math.random() * 5) + 1; // pay > payda
         return {
-          question: `${pay}/${payda} kesri hangi kesir türüne örnektir?`,
+          question: "Kesrin türü hangisidir?",
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="flex flex-col items-center px-6 py-2 rounded-2xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
@@ -589,13 +620,13 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 <div class="w-10 h-0.5 bg-white my-0.5"></div>
                 <span>${payda}</span>
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Payı paydasına eşit veya paydasından büyük olan <span class="text-amber-300 font-black">${pay}/${payda}</span> kesrinin türü nedir?
+              <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Kesrin türü hangisidir?
               </div>
             </div>
           `,
           correct: "Bileşik Kesir",
-          wrong: ["Basit Kesir", "Tam Sayılı Kesir", "Ondalık Kesir"],
+          wrong: ["Basit Kesir", "Tam Sayılı Kesir", "Birim Kesir"],
           isLong: false
         };
       } else {
@@ -604,7 +635,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const payda = Math.floor(Math.random() * 6) + 3;
         const pay = Math.floor(Math.random() * (payda - 1)) + 1;
         return {
-          question: `${tam} tam ${pay}/${payda} kesri hangi kesir türüne örnektir?`,
+          question: "Kesrin türü hangisidir?",
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="flex items-center gap-2 px-6 py-2 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
@@ -615,8 +646,8 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                   <span>${payda}</span>
                 </div>
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki <span class="text-amber-300 font-black">${tam} tam ${pay}/${payda}</span> kesrinin türü nedir?
+              <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Kesrin türü hangisidir?
               </div>
             </div>
           `,
@@ -645,16 +676,24 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
       const soruTipiBuyuk = Math.random() < 0.5;
 
       return {
-        question: `1/${p1} ve 1/${p2} birim kesirlerinden hangisi daha ${soruTipiBuyuk ? 'büyüktür' : 'küçüktür'}?`,
+        question: soruTipiBuyuk ? 'Hangisi daha büyüktür?' : 'Hangisi daha küçüktür?',
         questionHTML: `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-            <div class="flex items-center justify-center gap-4 px-6 py-2.5 rounded-2xl bg-slate-900/90 text-white font-black text-2xl sm:text-3xl border-2 border-amber-400 shadow-md">
-              <span class="text-cyan-300">1/${p1}</span>
-              <span class="text-amber-400">❓</span>
-              <span class="text-pink-300">1/${p2}</span>
+            <div class="flex items-center justify-center gap-4 sm:gap-6 px-6 py-2.5 rounded-2xl bg-slate-900/90 text-white font-black border-2 border-amber-400 shadow-md">
+              <div class="flex flex-col items-center justify-center text-cyan-300">
+                <span class="text-2xl sm:text-3xl font-black leading-none">1</span>
+                <div class="w-8 sm:w-10 h-0.5 bg-cyan-300 my-1"></div>
+                <span class="text-2xl sm:text-3xl font-black leading-none">${p1}</span>
+              </div>
+              <span class="text-amber-400 text-2xl sm:text-3xl">❓</span>
+              <div class="flex flex-col items-center justify-center text-pink-300">
+                <span class="text-2xl sm:text-3xl font-black leading-none">1</span>
+                <div class="w-8 sm:w-10 h-0.5 bg-pink-300 my-1"></div>
+                <span class="text-2xl sm:text-3xl font-black leading-none">${p2}</span>
+              </div>
             </div>
-            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-              Birim kesirlerde paydası küçük olan daha büyüktür. Buna göre hangisi <span class="text-amber-300 underline decoration-amber-400 font-black">${soruTipiBuyuk ? 'DAHA BÜYÜKTÜR' : 'DAHA KÜÇÜKTÜR'}</span>?
+            <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+              ${soruTipiBuyuk ? 'Hangisi daha büyüktür?' : 'Hangisi daha küçüktür?'}
             </div>
           </div>
         `,
@@ -689,18 +728,26 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         ];
 
         return {
-          question: `${pay1}/${payda} + ${pay2}/${payda} işleminin sonucu kaçtır?`,
+          question: "İşlemin sonucu kaçtır?",
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-              <div class="flex items-center gap-2 sm:gap-3 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-4xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)]">
-                <span>${pay1}/${payda}</span>
-                <span class="text-amber-300">+</span>
-                <span>${pay2}/${payda}</span>
-                <span class="text-amber-300">=</span>
-                <span class="text-yellow-300 font-black">?</span>
+              <div class="flex items-center gap-3 sm:gap-4 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)]">
+                <div class="flex flex-col items-center justify-center">
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${pay1}</span>
+                  <div class="w-8 sm:w-10 h-0.5 bg-white my-1"></div>
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${payda}</span>
+                </div>
+                <span class="text-amber-300 text-2xl sm:text-3xl font-black">+</span>
+                <div class="flex flex-col items-center justify-center">
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${pay2}</span>
+                  <div class="w-8 sm:w-10 h-0.5 bg-white my-1"></div>
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${payda}</span>
+                </div>
+                <span class="text-amber-300 text-2xl sm:text-3xl font-black">=</span>
+                <span class="text-yellow-300 font-black text-2xl sm:text-3xl">?</span>
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                Paydaları eşit kesirler toplanırken paylar toplanır, ortak payda aynen yazılır. <span class="text-amber-300 underline decoration-amber-400 font-black">Sonuç kaçtır</span>?
+              <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+                İşlemin sonucu kaçtır?
               </div>
             </div>
           `,
@@ -715,23 +762,31 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
         const yanlislar = [
           `${sonucPay + 1}/${payda}`,
-          `${sonucPay + 2}/${payda}`,
-          `${sonucPay}/0`
+          `${sonucPay - 1 > 0 ? sonucPay - 1 : sonucPay + 2}/${payda}`,
+          `${sonucPay}/${payda * 2}`
         ];
 
         return {
-          question: `${pay1}/${payda} - ${pay2}/${payda} işleminin sonucu kaçtır?`,
+          question: "İşlemin sonucu kaçtır?",
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-              <div class="flex items-center gap-2 sm:gap-3 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-pink-700 text-white font-black text-2xl sm:text-4xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)]">
-                <span>${pay1}/${payda}</span>
-                <span class="text-amber-300">-</span>
-                <span>${pay2}/${payda}</span>
-                <span class="text-amber-300">=</span>
-                <span class="text-yellow-300 font-black">?</span>
+              <div class="flex items-center gap-3 sm:gap-4 px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-pink-700 text-white font-black border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)]">
+                <div class="flex flex-col items-center justify-center">
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${pay1}</span>
+                  <div class="w-8 sm:w-10 h-0.5 bg-white my-1"></div>
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${payda}</span>
+                </div>
+                <span class="text-amber-300 text-2xl sm:text-3xl font-black">-</span>
+                <div class="flex flex-col items-center justify-center">
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${pay2}</span>
+                  <div class="w-8 sm:w-10 h-0.5 bg-white my-1"></div>
+                  <span class="text-2xl sm:text-3xl font-black leading-none">${payda}</span>
+                </div>
+                <span class="text-amber-300 text-2xl sm:text-3xl font-black">=</span>
+                <span class="text-yellow-300 font-black text-2xl sm:text-3xl">?</span>
               </div>
-              <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
-                Paydaları eşit kesirler çıkarılırken paylar çıkarılır, ortak payda aynen yazılır. <span class="text-cyan-300 underline decoration-cyan-400 font-black">Sonuç kaçtır</span>?
+              <div class="text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
+                İşlemin sonucu kaçtır?
               </div>
             </div>
           `,
@@ -770,7 +825,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${km} km ${m} m = ? m
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (1 km = 1000 m) olduğuna göre verilen uzunluk <span class="text-amber-300 underline decoration-amber-400 font-black">kaç metredir</span>?
+                Verilen uzunluk <span class="text-amber-300 underline decoration-amber-400 font-black">kaç metredir</span>?
               </div>
             </div>
           `,
@@ -798,7 +853,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${m} m ${cm} cm = ? cm
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (1 m = 100 cm) olduğuna göre verilen uzunluk <span class="text-amber-300 underline decoration-amber-400 font-black">kaç santimetredir</span>?
+                Verilen uzunluk <span class="text-amber-300 underline decoration-amber-400 font-black">kaç santimetredir</span>?
               </div>
             </div>
           `,
@@ -826,7 +881,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${cm} cm ${mm} mm = ? mm
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (1 cm = 10 mm) olduğuna göre verilen uzunluk <span class="text-cyan-300 underline decoration-cyan-400 font-black">kaç milimetredir</span>?
+                Verilen uzunluk <span class="text-cyan-300 underline decoration-cyan-400 font-black">kaç milimetredir</span>?
               </div>
             </div>
           `,
@@ -865,7 +920,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${ton} ton ${kg} kg = ? kg
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (1 ton = 1000 kg) olduğuna göre bu ağırlık <span class="text-amber-300 underline decoration-amber-400 font-black">kaç kilogramdır</span>?
+                Verilen kütle <span class="text-amber-300 underline decoration-amber-400 font-black">kaç kilogramdır</span>?
               </div>
             </div>
           `,
@@ -893,7 +948,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${kg} kg ${g} g = ? g
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (1 kg = 1000 g) olduğuna göre bu ağırlık <span class="text-cyan-300 underline decoration-cyan-400 font-black">kaç gramdır</span>?
+                Verilen kütle <span class="text-cyan-300 underline decoration-cyan-400 font-black">kaç gramdır</span>?
               </div>
             </div>
           `,
@@ -930,7 +985,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${s1.toLocaleString('tr-TR')} + ${s2.toLocaleString('tr-TR')} = ?
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki eldeli toplama işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+                İşlemin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
@@ -952,7 +1007,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${s1.toLocaleString('tr-TR')} - ${s2.toLocaleString('tr-TR')} = ?
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki onluk bozmayı gerektiren çıkarma işleminin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
+                İşlemin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
@@ -987,7 +1042,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
               ${s1} × ${s2} = ?
             </div>
             <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-              Yukarıdaki çarpma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">doğru sonucu</span> hangisidir?
+              İşlemin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
             </div>
           </div>
         `,
@@ -1022,7 +1077,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
               ${bolunen.toLocaleString('tr-TR')} ÷ ${bolen} = ?
             </div>
             <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-              Yukarıdaki bölme işleminde <span class="text-cyan-300 underline decoration-cyan-400 font-black">BÖLÜM</span> kaçtır? ${kalan > 0 ? `<span class="text-xs text-yellow-200 block mt-0.5">(Kalan: ${kalan})</span>` : ''}
+              Bölme işleminde <span class="text-cyan-300 underline decoration-cyan-400 font-black">bölüm kaçtır</span>?
             </div>
           </div>
         `,
@@ -1059,7 +1114,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${sayi} × ${carpan} = ?
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (10, 100, 1000 ile) Zihinden çarpma işleminin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
+                İşlemin <span class="text-amber-300 underline decoration-amber-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
@@ -1085,7 +1140,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${sayi.toLocaleString('tr-TR')} ÷ ${carpan} = ?
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                (10, 100, 1000 ile) Zihinden bölme işleminin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
+                İşlemin <span class="text-cyan-300 underline decoration-cyan-400 font-black">sonucu kaçtır</span>?
               </div>
             </div>
           `,
@@ -1122,7 +1177,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${a} + ${b} = ${c} + <span class="text-amber-300">🔺</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Eşitliğin her iki tarafının dengede olması için <span class="text-amber-300 underline decoration-amber-400 font-black">🔺 yerine</span> hangi sayı gelmelidir?
+                Eşitlikte <span class="text-amber-300 underline decoration-amber-400 font-black">🔺 yerine</span> hangi sayı gelmelidir?
               </div>
             </div>
           `,
@@ -1155,7 +1210,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 ${a} × ${b} = ${c} × <span class="text-yellow-300">⬛</span>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Eşitliğin sağlanması için <span class="text-yellow-300 underline decoration-yellow-400 font-black">⬛ yerine</span> hangi sayı gelmelidir?
+                Eşitlikte <span class="text-yellow-300 underline decoration-yellow-400 font-black">⬛ yerine</span> hangi sayı gelmelidir?
               </div>
             </div>
           `,
@@ -1234,25 +1289,30 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
   // 4.2 Çevre Uzunluğu (Üçgen, Kare, Dikdörtgen)
   g4_cevre_uzunlugu: {
     title: "Çevre Uzunluğu Hesaplama",
-    desc: "Kare, dikdörtgen ve üçgenin çevre uzunluklarını hesaplama ve çevre problemleri.",
+    desc: "Kare, dikdörtgen ve üçgenin çevre uzunluklarını görsel modeller üzerinden hesaplama.",
     generate: () => {
       const mode = Math.random();
 
       if (mode < 0.35) {
-        // Kare Çevresi
+        // Kare Çevresi - Görsel Çizimli
         const kenar = Math.floor(Math.random() * 15) + 5;
         const cevre = kenar * 4;
         const yanlislar = [cevre + 4, cevre - 4, kenar * 2].map(n => `${n} cm`);
 
         return {
-          question: `Bir kenar uzunluğu ${kenar} cm olan karenin çevre uzunluğu kaç santimetredir?`,
+          question: `Kenar uzunluğu ${kenar} cm olan karenin çevresi kaç cm'dir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-md">
-                🟦 Karenin Kenarı = ${kenar} cm
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center my-0.5">
+                <svg viewBox="0 0 160 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <rect x="35" y="25" width="90" height="90" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
+                  <path d="M35 37 L47 37 L47 25" fill="none" stroke="#93c5fd" stroke-width="2" />
+                  <text x="80" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} cm</text>
+                  <text x="27" y="75" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} cm</text>
+                </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Karenin tüm kenarları eşit olduğuna göre <span class="text-amber-300 underline decoration-amber-400 font-black">çevresi kaç santimetredir</span>?
+                Yukarıdaki karenin <span class="text-amber-300 underline decoration-amber-400 font-black">çevresi kaç cm'dir</span>?
               </div>
             </div>
           `,
@@ -1261,21 +1321,26 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           isLong: false
         };
       } else if (mode < 0.7) {
-        // Dikdörtgen Çevresi
-        const kisa = Math.floor(Math.random() * 10) + 4;
-        const uzun = kisa + Math.floor(Math.random() * 10) + 4;
+        // Dikdörtgen Çevresi - Görsel Çizimli
+        const kisa = Math.floor(Math.random() * 8) + 4;
+        const uzun = kisa + Math.floor(Math.random() * 8) + 3;
         const cevre = 2 * (kisa + uzun);
         const yanlislar = [cevre + 4, cevre - 4, kisa + uzun].map(n => `${n} cm`);
 
         return {
-          question: `Kısa kenarı ${kisa} cm, uzun kenarı ${uzun} cm olan dikdörtgenin çevre uzunluğu kaç cm'dir?`,
+          question: `Kısa kenarı ${kisa} cm, uzun kenarı ${uzun} cm olan dikdörtgenin çevresi kaç cm'dir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-700 text-white font-black text-lg sm:text-xl border-2 border-white shadow-md">
-                ▭ Kısa: ${kisa} cm &nbsp;•&nbsp; Uzun: ${uzun} cm
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center my-0.5">
+                <svg viewBox="0 0 210 130" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <rect x="25" y="25" width="145" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
+                  <path d="M25 37 L37 37 L37 25" fill="none" stroke="#e9d5ff" stroke-width="2" />
+                  <text x="97" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} cm</text>
+                  <text x="178" y="70" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} cm</text>
+                </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Bu dikdörtgenin <span class="text-cyan-300 underline decoration-cyan-400 font-black">çevre uzunluğu (Ç = 2 × [Kısa + Uzun])</span> kaç cm'dir?
+                Yukarıdaki dikdörtgenin <span class="text-cyan-300 underline decoration-cyan-400 font-black">çevresi kaç cm'dir</span>?
               </div>
             </div>
           `,
@@ -1284,7 +1349,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           isLong: false
         };
       } else {
-        // Eşkenar / Çeşitkenar Üçgen Çevresi
+        // Üçgen Çevresi - Görsel Çizimli
         const a = Math.floor(Math.random() * 10) + 6;
         const b = Math.floor(Math.random() * 10) + 6;
         const c = Math.floor(Math.random() * 10) + 6;
@@ -1292,14 +1357,19 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const yanlislar = [cevre + 3, cevre - 3, cevre + 5].map(n => `${n} cm`);
 
         return {
-          question: `Kenar uzunlukları ${a} cm, ${b} cm ve ${c} cm olan üçgenin çevresi kaç santimetredir?`,
+          question: `Kenar uzunlukları ${a} cm, ${b} cm ve ${c} cm olan üçgenin çevresi kaç cm'dir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-lg sm:text-xl border-2 border-white shadow-md">
-                🔺 Kenarlar: ${a} cm, ${b} cm, ${c} cm
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center my-0.5">
+                <svg viewBox="0 0 180 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <polygon points="90,22 25,115 155,115" fill="#064e3b" fill-opacity="0.85" stroke="#34d399" stroke-width="3" stroke-linejoin="round" />
+                  <text x="48" y="65" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${a} cm</text>
+                  <text x="132" y="65" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${b} cm</text>
+                  <text x="90" y="132" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${c} cm</text>
+                </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Bu üçgenin <span class="text-amber-300 underline decoration-amber-400 font-black">çevre uzunluğu</span> kaç santimetredir?
+                Yukarıdaki üçgenin <span class="text-amber-300 underline decoration-amber-400 font-black">çevre uzunluğu</span> kaç cm'dir?
               </div>
             </div>
           `,
@@ -1313,31 +1383,110 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
   // 4.3 Birim Kareler ile Alan Tahmini ve Hesabı
   g4_alan_tahmini_ve_birim_kare: {
-    title: "Birim Karelerle Alan",
-    desc: "Birim kareler sayarak şekillerin alanını belirleme ve alan tahmini.",
+    title: "Birim Karelerle Alan Hesabı",
+    desc: "Kare, dikdörtgen ve birim kare modelleri üzerinden br² cinsinden alan hesaplama.",
     generate: () => {
-      const satir = Math.floor(Math.random() * 4) + 3; // 3..6
-      const sutun = Math.floor(Math.random() * 5) + 3; // 3..7
-      const alan = satir * sutun;
+      const mode = Math.random();
 
-      const yanlislar = [alan + sutun, alan - satir, alan + 2].filter(y => y !== alan && y > 0).slice(0, 3).map(n => `${n} birimkare`);
+      if (mode < 0.4) {
+        // Dikdörtgen Alanı - Görsel Çizimli
+        const kisa = Math.floor(Math.random() * 7) + 3; // 3..9
+        const uzun = kisa + Math.floor(Math.random() * 6) + 2; // 5..15
+        const alan = kisa * uzun;
+        const cevre = 2 * (kisa + uzun);
 
-      return {
-        question: `${satir} satır ve ${sutun} sütundan oluşan dikdörtgen şeklin alanı kaç birimkaredir?`,
-        questionHTML: `
-          <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
-            <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 text-white font-black text-lg sm:text-xl border-2 border-white shadow-md">
-              📐 ${satir} Satır × ${sutun} Sütun Birim Kare
+        const yanlislar = [cevre, alan + 4, alan - 4 > 0 ? alan - 4 : alan + 8]
+          .filter(y => y !== alan)
+          .slice(0, 3)
+          .map(n => `${n} br²`);
+
+        return {
+          question: `Kısa kenarı ${kisa} br, uzun kenarı ${uzun} br olan dikdörtgenin alanı kaç br²'dir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center my-0.5">
+                <svg viewBox="0 0 210 130" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <rect x="25" y="25" width="145" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
+                  <path d="M25 37 L37 37 L37 25" fill="none" stroke="#e9d5ff" stroke-width="2" />
+                  <text x="97" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} br</text>
+                  <text x="178" y="70" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} br</text>
+                </svg>
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki dikdörtgenin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br²'dir</span>?
+              </div>
             </div>
-            <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-              İçinde ${satir} sıra ve her sırada ${sutun} adet birim kare olan şeklin <span class="text-yellow-300 underline decoration-yellow-400 font-black">toplam alanı kaç birimkaredir</span>?
+          `,
+          correct: `${alan} br²`,
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode < 0.7) {
+        // Kare Alanı - Görsel Çizimli
+        const kenar = Math.floor(Math.random() * 9) + 4; // 4..12
+        const alan = kenar * kenar;
+        const cevre = kenar * 4;
+
+        const yanlislar = [cevre, alan + 5, alan - 5 > 0 ? alan - 5 : alan + 9]
+          .filter(y => y !== alan)
+          .slice(0, 3)
+          .map(n => `${n} br²`);
+
+        return {
+          question: `Kenar uzunluğu ${kenar} br olan karenin alanı kaç br²'dir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center my-0.5">
+                <svg viewBox="0 0 160 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
+                  <rect x="35" y="25" width="90" height="90" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
+                  <path d="M35 37 L47 37 L47 25" fill="none" stroke="#93c5fd" stroke-width="2" />
+                  <text x="80" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} br</text>
+                  <text x="27" y="75" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} br</text>
+                </svg>
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki karenin <span class="text-amber-300 underline decoration-amber-400 font-black">alanı kaç br²'dir</span>?
+              </div>
             </div>
-          </div>
-        `,
-        correct: `${alan} birimkare`,
-        wrong: yanlislar,
-        isLong: false
-      };
+          `,
+          correct: `${alan} br²`,
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else {
+        // Birim Kareler ile Alan
+        const satir = Math.floor(Math.random() * 3) + 3; // 3..5
+        const sutun = Math.floor(Math.random() * 4) + 3; // 3..6
+        const alan = satir * sutun;
+
+        const yanlislar = [alan + 2, alan - 2 > 0 ? alan - 2 : alan + 4, (satir + sutun) * 2]
+          .filter(y => y !== alan)
+          .slice(0, 3)
+          .map(n => `${n} br²`);
+
+        const gridCells = Array.from({ length: satir * sutun }).map(() => `
+          <div class="w-5 h-5 sm:w-6 sm:h-6 rounded bg-cyan-500/80 border border-cyan-200/60 flex items-center justify-center text-[10px] text-white font-bold shrink-0">1</div>
+        `).join('');
+
+        return {
+          question: `${satir} satır ve ${sutun} sütundan oluşan şeklin alanı kaç br²'dir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
+              <div class="flex items-center justify-center p-2 rounded-xl bg-slate-900/90 border-2 border-cyan-400 shadow-md my-0.5">
+                <div class="grid gap-1" style="grid-template-columns: repeat(${sutun}, minmax(0, 1fr));">
+                  ${gridCells}
+                </div>
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki şeklin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br²'dir</span>?
+              </div>
+            </div>
+          `,
+          correct: `${alan} br²`,
+          wrong: yanlislar,
+          isLong: false
+        };
+      }
     }
   },
 
@@ -1364,7 +1513,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
               <div class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-700 text-white font-black text-lg sm:text-xl border-2 border-white shadow-md max-w-lg">
-                "${secilen.tanim}" (${secilen.sembol})
+                "${secilen.tanim}"
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
                 Yukarıda tanımı verilen <span class="text-amber-300 underline decoration-amber-400 font-black">geometrik model</span> hangisidir?
