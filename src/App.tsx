@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Sun, Moon, Volume2, VolumeX, Trophy, Heart, Flame, RotateCcw, Home, BarChart2,
   ChevronDown, ChevronRight, Play, Sparkles, X, Trash2, ArrowLeft, Grid, Check, Image, Plus,
-  Award, Lock, ShieldCheck, Medal
+  Award, Lock, ShieldCheck, Medal, Activity
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { QuestionData, StatRecord, PlayerData, GroupStatsRecord } from './types';
@@ -16,6 +16,16 @@ import { EnglishGamesHub } from './components/EnglishGamesHub';
 import { WordGameModal } from './components/WordGameModal';
 import { GlossyRoundButton, GlossyPillButton, GlossyCompleteCard, GlossyArrowIcon, GlossyScreenRotateIcon, GoldCoinDisplayCard } from './components/GameUIButtons';
 import { ModernStatsView, Cute3DStarMascotSVG } from './components/ModernStatsView';
+import { ClassCountersModal } from './components/ClassCountersModal';
+import { 
+  ClassCountersData, 
+  loadCounters, 
+  recordSiteVisit, 
+  recordClassClick, 
+  recordClassQuestionSolved,
+  syncHistoricalQuestions,
+  GradeCategoryKey 
+} from './utils/counterStorage';
 import { ChromaKeyVideo } from './components/ChromaKeyVideo';
 import { AutoFitQuestionBox } from './components/AutoFitQuestionBox';
 import { BasketballRaceTrack, SingleBasketballTrack } from './components/BasketballRaceTrack';
@@ -218,6 +228,39 @@ function getDynamicOptionFontClass(
   if (maxLen <= 10) return "text-xs sm:text-sm md:text-base font-black";
   if (maxLen <= 18) return "text-[11px] sm:text-xs md:text-sm font-extrabold";
   return "text-[10px] sm:text-[11px] md:text-xs font-bold";
+}
+
+// KULLANICI KURALI: Şıkta hem yazı hem görsel olmasın; hangisi yeterliyse o olsun.
+export function cleanOptionForDisplay(opt: string | number): string | number {
+  if (typeof opt !== 'string' || !opt.includes('<')) {
+    return opt;
+  }
+  const hasImgOrSvg = opt.includes('<img') || opt.includes('<svg');
+  if (!hasImgOrSvg) {
+    return opt;
+  }
+
+  // HTML etiketlerini ayıklayarak saf metin var mı bakalım
+  const textContent = opt.replace(/<[^>]*>/g, '').trim();
+  if (!textContent) {
+    // Sadece görsel var, yazı yok -> görsel tek başına yeterlidir
+    return opt;
+  }
+
+  // Hem görsel hem yazı var: Hangisi yeterliyse o kalmalı!
+  // Eğer soru bir sıra / derece / numara sorusu ise (örn: "1.", "1. (Birinci)", "Birinci", "2. Sıra"):
+  // Cevap sıra yazısıdır, nesne görseli fuzulidir -> sadece metin yeterlidir:
+  if (/(\d+\.|\b(birinci|ikinci|üçüncü|dördüncü|beşinci|altıncı|yedinci|sekizinci|dokuzuncu|onuncu|sıra)\b)/i.test(textContent)) {
+    return textContent;
+  }
+
+  // Eğer nesne/şekil sorusu ise nesnenin görseli tek başına yeterlidir, yanındaki isim metni fuzulidir -> sadece görsel:
+  const imgMatch = opt.match(/<img[^>]*>|<svg[\s\S]*?<\/svg>/i);
+  if (imgMatch) {
+    return imgMatch[0];
+  }
+
+  return opt;
 }
 
 const CISIM_SVG: Record<string, string> = {
@@ -2294,6 +2337,34 @@ export default function App() {
   } | null>(null);
   const [showPodiumVideoModal, setShowPodiumVideoModal] = useState(false);
 
+  // Tam Ekran Durumu
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  useEffect(() => {
+    try {
+      document.documentElement.classList.remove('smartboard-4k-active');
+      localStorage.removeItem('smartboard_4k_mode');
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const toggleFullscreen = () => {
+    try {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    } catch {}
+  };
+
   // Winner specific celebration video config:
   // kap.png (1. GRUP, idx 0) -> kap.mp4
   // ejd.png (2. GRUP, idx 1) -> ejd.mp4
@@ -2543,6 +2614,14 @@ export default function App() {
   const [activityToast, setActivityToast] = useState<string | null>(null);
   const [statsModalTab, setStatsModalTab] = useState<'rozetler' | 'istatistik'>('rozetler');
   const [confirmReset, setConfirmReset] = useState(false);
+  const [showCountersModal, setShowCountersModal] = useState(false);
+  const [countersData, setCountersData] = useState<ClassCountersData>(() => loadCounters());
+
+  const handleClassClick = (category: GradeCategoryKey) => {
+    const updated = recordClassClick(category);
+    setCountersData(updated);
+  };
+
   const [statsData, setStatsData] = useState<Record<string, StatRecord>>(() => {
     try {
       return JSON.parse(localStorage.getItem('mathGameStats_v1') || '{}');
@@ -2648,6 +2727,18 @@ export default function App() {
   useEffect(() => {
     checkAndUnlockBadges(statsData, streak, score, lives);
   }, [statsData]);
+
+  // Record site visit & sync existing historical questions into counters
+  useEffect(() => {
+    recordSiteVisit();
+    const synced = syncHistoricalQuestions(
+      statsData,
+      Object.keys(topics1stGrade),
+      Object.keys(topics3rdGrade),
+      Object.keys(topics4thGrade)
+    );
+    setCountersData(synced);
+  }, []);
 
   // Play hata.mp3 audio whenever trytry2.mp4 defeat video screen is shown
   useEffect(() => {
@@ -3654,6 +3745,24 @@ export default function App() {
 
       localStorage.setItem('mathGameStats_v1', JSON.stringify(stats));
       setStatsData(stats);
+
+      // Update class & category counters
+      let gradeKey: GradeCategoryKey = 'grade2';
+      if (selectedGrade === 1 || topicId.startsWith('g1_') || (topics1stGrade && (topics1stGrade as any)[topicId])) {
+        gradeKey = 'grade1';
+      } else if (selectedGrade === 3 || topicId.startsWith('g3_') || (topics3rdGrade && (topics3rdGrade as any)[topicId])) {
+        gradeKey = 'grade3';
+      } else if (selectedGrade === 4 || topicId.startsWith('g4_') || (topics4thGrade && (topics4thGrade as any)[topicId])) {
+        gradeKey = 'grade4';
+      } else if (topicId.startsWith('ing_') || wordGameType === 'ingilizce') {
+        gradeKey = 'englishGames';
+      } else if (['zit_anlam', 'es_anlam', 'xox_matematik', 'other_diger_oyunlar'].includes(topicId) || wordGameType === 'zit_anlam' || wordGameType === 'es_anlam') {
+        gradeKey = 'otherGames';
+      } else {
+        gradeKey = selectedGrade === 1 ? 'grade1' : selectedGrade === 3 ? 'grade3' : selectedGrade === 4 ? 'grade4' : 'grade2';
+      }
+      const updatedCounters = recordClassQuestionSolved(gradeKey, dogruMu);
+      setCountersData(updatedCounters);
     } catch {
       // Ignore
     }
@@ -3932,7 +4041,7 @@ export default function App() {
       {/* ORIGINAL POSITIVE CRISP BACKGROUND IMAGE OVERLAY */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
-          src="/intro2.png" 
+          src="/dere3.jpg" 
           alt="Arka Plan Görseli"
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105 transition-all duration-300"
@@ -3941,10 +4050,10 @@ export default function App() {
 
       {/* GLOBAL HEADER BAR - 3D CARTOON GAME UI STYLE WITH ALL BUTTONS GROUPED AND CENTERED (HIDDEN ON INTRO) */}
       {!showIntro && (
-        <header className="bg-white/95 dark:bg-[#0B132B]/95 backdrop-blur-md border-b-3 border-yellow-400 dark:border-yellow-500/80 px-1 xs:px-2 sm:px-4 py-0.5 sm:py-1 flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 shadow-lg z-[100] relative shrink-0 w-full max-w-full overflow-x-auto no-scrollbar">
+        <header className="bg-white dark:bg-[#0B132B] border-b-3 border-yellow-400 dark:border-yellow-500/80 px-1 xs:px-2 sm:px-4 py-0.5 sm:py-1 flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 shadow-lg z-[100] relative shrink-0 w-full max-w-full overflow-x-auto no-scrollbar">
         {/* SINIF BELİRTEN BUTONLAR (1, 2, 3, 4. SINIF) - 1. BUTONUN (ANA SAYFA) SOL TARAFI */}
         {selectedGrade !== null && (
-          <div className="flex items-center gap-0.5 xs:gap-1 sm:gap-1.5 p-0.5 sm:p-1 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-md rounded-xl sm:rounded-2xl border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)] shrink-0 mr-0.5 sm:mr-1">
+          <div className="flex items-center gap-0.5 xs:gap-1 sm:gap-1.5 p-0.5 sm:p-1 bg-slate-900 dark:bg-slate-950 rounded-xl sm:rounded-2xl border-2 border-amber-400 shadow-[0_0_12px_rgba(245,158,11,0.3)] shrink-0 mr-0.5 sm:mr-1">
             {[1, 2, 3, 4].map((g) => {
               const isSelected = selectedGrade === g;
               const iconSrc = g === 1 ? '/icon_1.png' : g === 2 ? '/icon_2.png' : g === 3 ? '/icon_3.png' : '/icon_4.png';
@@ -3955,6 +4064,7 @@ export default function App() {
                     playMp3('/op.mp3');
                     setSelectedGrade(g);
                     setLastSelectedGrade(g);
+                    handleClassClick(g === 1 ? 'grade1' : g === 2 ? 'grade2' : g === 3 ? 'grade3' : 'grade4');
                     setSelectedCategoryId(null);
                     setGameState('welcome');
                     setShow3DLab(false);
@@ -4292,19 +4402,18 @@ export default function App() {
         {/* AYIRICI ÇİZGİ */}
         <div className="h-7 sm:h-10 w-0.5 bg-yellow-400/40 rounded-full mx-0.5 shrink-0" />
 
-        {/* GEÇİCİ ETKİNLİKLER ARASI GEÇİŞ BUTONLARI (1. SINIFTAN 6. İNGİLİZCEYE KADAR) */}
-        <div className="flex items-center gap-1.5 bg-slate-950/80 backdrop-blur-md p-1 sm:p-1.5 rounded-2xl border-2 border-amber-400 shadow-[0_0_18px_rgba(245,158,11,0.35)] shrink-0">
+        {/* GEÇİCİ ETKİNLİKLER ARASI GEÇİŞ BUTONLARI (DİĞER BUTONLARLA AYNI GENİŞLİK VE BOYUTTA) */}
+        <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950 p-0.5 sm:p-1 rounded-2xl border-2 border-amber-400/80 shadow-[0_0_18px_rgba(245,158,11,0.35)] shrink-0">
           <button
             onClick={() => {
               playMp3('/op.mp3');
               handlePrevActivity();
             }}
             title="Önceki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
-            className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
+            aria-label="Önceki Etkinlik"
+            className="relative group w-8 h-8 xs:w-9 xs:h-9 sm:w-11 sm:h-11 aspect-square rounded-xl bg-gradient-to-br from-amber-500 via-orange-600 to-amber-600 hover:brightness-110 active:scale-95 text-white font-black flex items-center justify-center shadow-md transition-all cursor-pointer border border-white/50 filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0"
           >
-            <span className="text-sm sm:text-base">⏮️</span>
-            <span className="hidden sm:inline tracking-wide uppercase">Önceki Etkinlik</span>
-            <span className="sm:hidden tracking-wide uppercase">Önceki</span>
+            <span className="text-sm sm:text-base select-none pointer-events-none">⏮️</span>
           </button>
           <button
             onClick={() => {
@@ -4312,11 +4421,39 @@ export default function App() {
               handleNextActivity();
             }}
             title="Sonraki Etkinliğe Geç (1. Sınıftan 6. İngilizceye)"
-            className="px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:brightness-110 active:scale-95 text-white font-black text-xs sm:text-sm flex items-center gap-1.5 shadow-md transition-all cursor-pointer border border-white/50"
+            aria-label="Sonraki Etkinlik"
+            className="relative group w-8 h-8 xs:w-9 xs:h-9 sm:w-11 sm:h-11 aspect-square rounded-xl bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-600 hover:brightness-110 active:scale-95 text-white font-black flex items-center justify-center shadow-md transition-all cursor-pointer border border-white/50 filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0"
           >
-            <span className="hidden sm:inline tracking-wide uppercase">Sonraki Etkinlik</span>
-            <span className="sm:hidden tracking-wide uppercase">Sonraki</span>
-            <span className="text-sm sm:text-base">⏭️</span>
+            <span className="text-sm sm:text-base select-none pointer-events-none">⏭️</span>
+          </button>
+        </div>
+
+        {/* AYIRICI ÇİZGİ */}
+        <div className="h-7 sm:h-10 w-0.5 bg-yellow-400/40 rounded-full mx-0.5 shrink-0" />
+
+        {/* TAM EKRAN KONTROLÜ (FH.png GÖRSEL BUTON) */}
+        <div className="flex items-center bg-slate-950 p-0.5 sm:p-1 rounded-2xl border-2 border-cyan-400/80 shadow-[0_0_18px_rgba(6,182,212,0.35)] shrink-0">
+          <button
+            onClick={() => {
+              playMp3('/op.mp3');
+              toggleFullscreen();
+            }}
+            title={isFullscreen ? "Tam Ekrandan Çık" : "Tam Ekran Yap (Akıllı Tahtaya Tam Yay)"}
+            aria-label="Tam Ekran"
+            className={`relative group w-8 h-8 xs:w-9 xs:h-9 sm:w-11 sm:h-11 aspect-square rounded-xl transition-all transform hover:scale-105 active:scale-95 flex items-center justify-center filter drop-shadow-[0_2px_5px_rgba(0,0,0,0.4)] shrink-0 border cursor-pointer ${
+              isFullscreen
+                ? 'bg-gradient-to-br from-amber-500 via-orange-600 to-amber-600 border-white ring-2 ring-amber-400 brightness-110 shadow-[0_0_12px_rgba(245,158,11,0.8)]'
+                : 'bg-slate-800/80 hover:bg-slate-700/90 border-white/30 opacity-80 hover:opacity-100'
+            }`}
+          >
+            <img 
+              src="/FH.png" 
+              alt="Tam Ekran" 
+              className="w-full h-full object-contain p-0.5 pointer-events-none drop-shadow" 
+            />
+            {isFullscreen && (
+              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-amber-300 shadow-[0_0_8px_#fcd34d]" />
+            )}
           </button>
         </div>
       </header>
@@ -4324,7 +4461,7 @@ export default function App() {
 
       {/* FLOATING ACTIVITY TOAST NOTIFICATION */}
       {activityToast && (
-        <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950/95 backdrop-blur-xl text-amber-300 font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl border-2 border-amber-400 shadow-[0_10px_35px_rgba(0,0,0,0.85),0_0_20px_rgba(245,158,11,0.5)] flex items-center gap-2 text-xs sm:text-sm md:text-base animate-bounce">
+        <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-50 bg-slate-950 text-amber-300 font-black px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl border-2 border-amber-400 shadow-[0_10px_35px_rgba(0,0,0,0.85),0_0_20px_rgba(245,158,11,0.5)] flex items-center gap-2 text-xs sm:text-sm md:text-base animate-bounce">
           <span className="text-base sm:text-lg">✨</span>
           <span className="tracking-wide text-white drop-shadow-md">{activityToast}</span>
         </div>
@@ -4347,7 +4484,7 @@ export default function App() {
               {/* VIBRANT PROFESSIONAL COLORFUL TITLE FRAME */}
               <div className="w-full flex items-center justify-center mb-2 sm:mb-3 px-2 shrink-0">
                 <div className="relative group p-0.5 sm:p-1 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-400 via-rose-500 to-cyan-400 shadow-[0_4px_20px_rgba(245,158,11,0.35),0_0_15px_rgba(6,182,212,0.25)]">
-                  <div className="flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-1.5 sm:py-2.5 rounded-[14px] sm:rounded-[22px] bg-slate-950/85 backdrop-blur-xl border border-white/25 shadow-inner">
+                  <div className="flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-1.5 sm:py-2.5 rounded-[14px] sm:rounded-[22px] bg-slate-950 border border-white/25 shadow-inner">
                     <Sparkles size={16} className="text-amber-400 shrink-0 animate-pulse" />
                     <h2 className="font-black text-xs sm:text-base md:text-lg bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-400 bg-clip-text text-transparent uppercase tracking-wider drop-shadow-sm">
                       Sınıfını Seç ve Başla
@@ -4365,6 +4502,7 @@ export default function App() {
                     playMp3('/op.mp3');
                     setSelectedGrade(1);
                     setLastSelectedGrade(1);
+                    handleClassClick('grade1');
                   }}
                   className="group relative w-full bg-gradient-to-r from-amber-500 via-orange-600 to-red-600 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-amber-300 shadow-[0_6px_18px_rgba(234,88,12,0.4),0_2px_0_rgba(0,0,0,0.25)] hover:shadow-[0_10px_26px_rgba(234,88,12,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-yellow-300/50 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
@@ -4394,6 +4532,7 @@ export default function App() {
                     playMp3('/op.mp3');
                     setSelectedGrade(2);
                     setLastSelectedGrade(2);
+                    handleClassClick('grade2');
                   }}
                   className="group relative w-full bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-emerald-300 shadow-[0_6px_16px_rgba(16,185,129,0.35),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_24px_rgba(16,185,129,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-emerald-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
@@ -4423,6 +4562,7 @@ export default function App() {
                     playMp3('/op.mp3');
                     setSelectedGrade(3);
                     setLastSelectedGrade(3);
+                    handleClassClick('grade3');
                   }}
                   className="group relative w-full bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-white/90 shadow-[0_6px_16px_rgba(147,51,234,0.35),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_24px_rgba(147,51,234,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-purple-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
@@ -4452,6 +4592,7 @@ export default function App() {
                     playMp3('/op.mp3');
                     setSelectedGrade(4);
                     setLastSelectedGrade(4);
+                    handleClassClick('grade4');
                   }}
                   className="group relative w-full bg-gradient-to-r from-sky-600 via-indigo-700 to-purple-800 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-amber-300 shadow-[0_6px_18px_rgba(79,70,229,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(79,70,229,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-cyan-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
                 >
@@ -4479,6 +4620,7 @@ export default function App() {
                 <button
                   onClick={() => {
                     playMp3('/coin.mp3');
+                    handleClassClick('otherGames');
                     setShowOtherGamesModal(true);
                   }}
                   className="group relative w-full bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-600 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-pink-300 shadow-[0_6px_18px_rgba(217,70,239,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(217,70,239,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-pink-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
@@ -4507,6 +4649,7 @@ export default function App() {
                 <button
                   onClick={() => {
                     playMp3('/coin.mp3');
+                    handleClassClick('englishGames');
                     setShowEnglishGamesModal(true);
                   }}
                   className="group relative w-full bg-gradient-to-r from-sky-500 via-blue-600 to-indigo-700 text-white rounded-[16px] sm:rounded-[20px] md:rounded-[24px] p-2 sm:p-3 md:p-4 border-3 sm:border-4 border-sky-300 shadow-[0_6px_18px_rgba(14,165,233,0.4),0_2px_0_rgba(0,0,0,0.2)] hover:shadow-[0_10px_26px_rgba(14,165,233,0.5)] transition-all transform hover:-translate-y-0.5 active:translate-y-0.5 flex items-center justify-between gap-2 sm:gap-3.5 md:gap-4 overflow-hidden cursor-pointer ring-2 sm:ring-4 ring-sky-300/40 min-h-[64px] sm:min-h-[78px] md:min-h-[86px]"
@@ -5166,7 +5309,7 @@ export default function App() {
                     </div>
 
                     {/* Ritmik Saymalar Group Section */}
-                    <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
                       <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_23.png" alt="Ritmik" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
@@ -5200,7 +5343,7 @@ export default function App() {
 
                     {/* Saati Okuma Group Section (Sadece 2. Sınıf) */}
                     {selectedGrade === 2 && (
-                      <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
+                      <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
                         <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
                           <div className="flex items-center gap-2.5 min-w-0">
                             <img src="/MENUIKON/grid_icon_12.png" alt="Saati Okuma" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
@@ -5254,7 +5397,7 @@ export default function App() {
                 {selectedCategoryId === 'islemler' && (
                   <div className="space-y-5">
                     {/* Toplama İşlemi Group */}
-                    <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
                       <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_22.png" alt="Toplama" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
@@ -5287,7 +5430,7 @@ export default function App() {
                     </div>
 
                     {/* Çıkarma İşlemi Group */}
-                    <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
                       <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_30.png" alt="Çıkarma" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
@@ -5380,7 +5523,7 @@ export default function App() {
                 {selectedCategoryId === 'diger_oyunlar' && (
                   <div className="space-y-4 sm:space-y-5">
                     {/* BÖLÜM 1: 🪢 2 KİŞİLİK HALAT ÇEKME DÜELLOSU */}
-                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
                       <div className="bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_32.png" alt="Halat Çekme" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
@@ -5417,7 +5560,7 @@ export default function App() {
                     </div>
 
                     {/* BÖLÜM 2: ⚡ SÜRELİ MATEMATİK YARIŞLARI (1, 2 VE 3 KİŞİLİK) */}
-                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-rose-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-rose-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
                       <div className="bg-gradient-to-r from-rose-500 via-red-500 to-amber-500 text-white font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_22.png" alt="Süreli İşlemler" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
@@ -5454,7 +5597,7 @@ export default function App() {
                     </div>
 
                     {/* BÖLÜM 3: 🎮 MATEMATİK VE ZEKA OYUNLARI */}
-                    <div className="bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-md border-2 border-indigo-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-indigo-400 rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-lg">
                       <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-black text-xs sm:text-sm md:text-base px-3.5 py-2 rounded-xl border border-white shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_17.png" alt="Zeka Oyunları" className="w-10 h-10 sm:w-12 sm:h-12 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1" />
@@ -5516,7 +5659,7 @@ export default function App() {
                     </div>
 
                     {/* Ritmik Saymalar Alt Başlığı & Konuları */}
-                    <div className="bg-slate-900/50 dark:bg-slate-950/80 backdrop-blur-sm border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
+                    <div className="bg-slate-900/90 dark:bg-slate-950 border-2 border-amber-400 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4 shadow-md">
                       <div className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-400 text-blue-950 font-black text-sm sm:text-base px-3.5 py-2 rounded-xl border border-amber-500 shadow-sm flex items-center justify-between gap-2.5 mb-3">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <img src="/MENUIKON/grid_icon_23.png" alt="Ritmik Saymalar" className="w-12 h-12 sm:w-14 sm:h-14 object-contain filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] shrink-0 -my-1.5" />
@@ -5759,17 +5902,17 @@ export default function App() {
         </div>
       )}
 
-      {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK - ŞEFFAF GLASSMORPHISM TASARIM) */}
+      {/* FULL SCREEN GAME AREA (TEK KİŞİLİK TAM SAYFA ETKİNLİK - OPAK VE NET ARKA PLAN) */}
       {gameState === 'playing' && playerCountMode === 1 && (
-        <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 ${currentTopic === 'uzamsal_iliskiler' ? 'max-w-[500px] sm:max-w-[560px] md:max-w-[620px]' : 'max-w-[360px] sm:max-w-[390px]'} mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10`}>
-          {/* TOP BAR: GLASS CAPSULES */}
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 sm:mb-1.5 shrink-0 w-full">
+        <div className={`flex-1 flex flex-col p-2 sm:p-3 my-0.5 sm:my-1 bg-[#0a0f1d] border-2 border-cyan-400/40 rounded-2xl sm:rounded-3xl shadow-2xl ${currentTopic === 'uzamsal_iliskiler' ? 'max-w-[520px] sm:max-w-[580px] md:max-w-[640px]' : 'max-w-[380px] sm:max-w-[420px]'} mx-auto w-full justify-between overflow-hidden min-h-0 relative h-full z-10`}>
+          {/* TOP BAR: OPAQUE CAPSULES */}
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1.5 sm:mb-2 shrink-0 w-full">
             {/* LEFT: GROUP BADGE & TOPIC */}
             <div className="flex items-center gap-1.5 min-w-0">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-purple-800 via-purple-900 to-indigo-950 border-2 border-purple-300 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-[0_0_16px_rgba(192,132,252,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)] shrink-0">
                 1
               </div>
-              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl px-2.5 sm:px-3 py-1 flex items-center justify-between gap-1.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+              <div className="bg-[#0b1329] border border-cyan-400/50 rounded-xl px-2.5 sm:px-3 py-1 flex items-center justify-between gap-1.5 min-w-0 shadow-[0_4px_16px_rgba(0,0,0,0.8),0_0_15px_rgba(6,182,212,0.2)]">
                 <div className="flex flex-col min-w-0">
                   <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
                     1. GRUP
@@ -5788,10 +5931,10 @@ export default function App() {
 
             {/* CENTER: COUNTDOWN TIMER BADGE IF TIMED TOPIC (SINGLE PLAYER) */}
             {isTimedTopic(currentTopic) && (
-              <div className={`backdrop-blur-xl border rounded-xl px-2 sm:px-2.5 py-1 flex items-center gap-1 font-mono font-black text-xs shrink-0 transition-all ${
+              <div className={`border rounded-xl px-2 sm:px-2.5 py-1 flex items-center gap-1 font-mono font-black text-xs shrink-0 transition-all ${
                 questionTimeLeft <= 3 
-                  ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/60 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]' 
-                  : 'bg-slate-950/85 border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]'
+                  ? 'bg-rose-950 border-rose-500 text-rose-300 ring-2 ring-rose-500/60 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]' 
+                  : 'bg-[#0b1329] border-amber-400 text-amber-300 shadow-[0_0_10px_rgba(245,158,11,0.3)]'
               }`}>
                 <span className={`text-xs ${questionTimeLeft <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
                 <span>{questionTimeLeft}s</span>
@@ -5800,7 +5943,7 @@ export default function App() {
 
             {/* RIGHT: SCORE & LIVES */}
             <div className="flex items-center gap-1.5 shrink-0">
-              <div className="bg-slate-950/70 backdrop-blur-xl border border-cyan-400/40 rounded-xl px-2.5 sm:px-3 py-1 flex items-center gap-1.5 sm:gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.5),0_0_15px_rgba(6,182,212,0.2)]">
+              <div className="bg-[#0b1329] border border-cyan-400/50 rounded-xl px-2.5 sm:px-3 py-1 flex items-center gap-1.5 sm:gap-2 shadow-[0_4px_16px_rgba(0,0,0,0.8),0_0_15px_rgba(6,182,212,0.2)]">
                 <span className="bg-amber-400 text-slate-950 font-black text-[10px] sm:text-xs px-2 py-0.5 rounded-lg shadow-md uppercase tracking-wider">
                   PUAN: {score} / 10
                 </span>
@@ -5815,10 +5958,10 @@ export default function App() {
             </div>
           </div>
 
-          {/* CENTER: CRYSTAL CLEAR GLASS QUESTION CONTAINER WITH AUTO-FIT SCALING */}
-          <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.25)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1 sm:p-1.5' : 'p-2 sm:p-3'} my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0 w-full`}>
-            {/* Glossy top-light reflection */}
-            <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+          {/* CENTER: 100% OPAQUE SOLID QUESTION CONTAINER (ARKA PLAN ASLA KARIŞMAZ) */}
+          <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0b1329] border-2 border-cyan-300/60 shadow-[0_12px_40px_rgba(0,0,0,0.95),inset_0_1px_2px_rgba(255,255,255,0.15)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1.5 sm:p-2' : 'p-2.5 sm:p-3.5'} my-1 sm:my-1.5 flex flex-col items-center justify-center text-center overflow-hidden min-h-0 w-full`}>
+            {/* Subtle top inner gradient */}
+            <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
             <div className="relative z-10 w-full h-full flex items-center justify-center min-h-0 max-h-full overflow-hidden">
               <AutoFitQuestionBox
@@ -5836,23 +5979,23 @@ export default function App() {
               const OPTION_COLOR_THEMES = [
                 {
                   border: 'border-cyan-400',
-                  bg: 'bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800',
-                  shadow: 'shadow-[0_4px_16px_rgba(37,99,235,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                  bg: 'bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 active:from-blue-700 active:to-indigo-800 text-white',
+                  shadow: 'shadow-md active:shadow-xs',
                 },
                 {
                   border: 'border-pink-400',
-                  bg: 'bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800',
-                  shadow: 'shadow-[0_4px_16px_rgba(225,29,72,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                  bg: 'bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 active:from-rose-700 active:to-rose-800 text-white',
+                  shadow: 'shadow-md active:shadow-xs',
                 },
                 {
                   border: 'border-emerald-400',
-                  bg: 'bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800',
-                  shadow: 'shadow-[0_4px_16px_rgba(16,185,129,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                  bg: 'bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 active:from-emerald-700 active:to-green-800 text-white',
+                  shadow: 'shadow-md active:shadow-xs',
                 },
                 {
                   border: 'border-amber-300',
-                  bg: 'bg-gradient-to-b from-amber-600 via-orange-600 to-amber-700 hover:from-amber-500 hover:to-orange-500 active:from-amber-700 active:to-amber-800',
-                  shadow: 'shadow-[0_4px_16px_rgba(245,158,11,0.45),inset_0_1px_2px_rgba(255,255,255,0.6)]',
+                  bg: 'bg-gradient-to-b from-amber-600 via-orange-600 to-amber-700 active:from-amber-700 active:to-amber-800 text-white',
+                  shadow: 'shadow-md active:shadow-xs',
                 }
               ];
 
@@ -5863,9 +6006,9 @@ export default function App() {
 
                 let feedbackClasses = `${theme.border} ${theme.bg} ${theme.shadow}`;
                 if (isCorrect) {
-                  feedbackClasses = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-700 shadow-[0_0_30px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.7)] scale-105 animate-pulse";
+                  feedbackClasses = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-600 shadow-lg scale-102 text-white";
                 } else if (isWrong) {
-                  feedbackClasses = "ring-4 ring-rose-500 border-rose-400 bg-rose-900/90 shadow-[0_0_30px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.3)] scale-95 opacity-85";
+                  feedbackClasses = "ring-4 ring-rose-500 border-rose-400 bg-rose-800 shadow-md scale-95 opacity-80 text-white";
                 }
 
                 return (
@@ -5873,20 +6016,23 @@ export default function App() {
                     key={idx}
                     onClick={() => handleAnswer(opt)}
                     disabled={feedbackState !== 'none'}
-                    className={`relative group w-full ${currentTopic === 'uzamsal_iliskiler' ? 'py-2 sm:py-2.5 px-2.5 min-h-[44px] sm:min-h-[52px]' : 'py-3.5 sm:py-4.5 px-3 min-h-[56px] sm:min-h-[70px]'} rounded-2xl border-2 backdrop-blur-xl transition-all duration-200 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
+                    className={`fast-quiz-btn relative w-full ${currentTopic === 'uzamsal_iliskiler' ? 'py-2 sm:py-2.5 px-2.5 min-h-[44px] sm:min-h-[52px]' : 'py-3.5 sm:py-4.5 px-3 min-h-[56px] sm:min-h-[70px]'} rounded-2xl border-2 transition-transform duration-75 flex items-center justify-center text-center leading-tight break-words cursor-pointer uppercase tracking-wider overflow-hidden active:scale-95 ${feedbackClasses}`}
                   >
                     {/* Subtle top glare in button */}
-                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-2xl" />
-                    {typeof opt === 'string' && opt.includes('<') ? (
-                      <span
-                        className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
-                        dangerouslySetInnerHTML={{ __html: opt }}
-                      />
-                    ) : (
-                      <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white font-black [text-shadow:_0_2px_4px_#000,_0_4px_10px_rgba(0,0,0,0.9)]`}>
-                        {opt}
-                      </span>
-                    )}
+                    <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
+                    {(() => {
+                      const displayOpt = cleanOptionForDisplay(opt);
+                      return typeof displayOpt === 'string' && displayOpt.includes('<') ? (
+                        <span
+                          className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
+                          dangerouslySetInnerHTML={{ __html: displayOpt }}
+                        />
+                      ) : (
+                        <span className={`relative z-10 px-2 flex items-center justify-center text-center pointer-events-none ${uniformOptFontClass} text-white font-black [text-shadow:_0_1px_3px_#000]`}>
+                          {displayOpt}
+                        </span>
+                      );
+                    })()}
                   </button>
                 );
               });
@@ -5898,13 +6044,13 @@ export default function App() {
       {/* MULTI-PLAYER SPLIT SCREEN DÜELLO ALANI (2 VE 3 OYUNCU - ŞEFFAF GLASSMORPHISM) */}
       {gameState === 'playing' && playerCountMode > 1 && (
         <div className={`flex-1 flex flex-col p-1.5 sm:p-2.5 w-full h-full overflow-hidden min-h-0 relative z-10 ${playerCountMode === 2 ? 'max-w-[clamp(1024px,calc(512px+50vw),1800px)]' : 'max-w-[clamp(1200px,calc(500px+70vw),2200px)] w-full'} mx-auto`}>
-          {/* COMMON TOP BAR: SLEEK COMPACT GLASS CAPSULES */}
+          {/* COMMON TOP BAR: SOLID COMPACT CAPSULES */}
           <div className="flex items-center justify-between gap-1.5 sm:gap-2 mb-1 shrink-0">
-            <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
+            <span className="px-2.5 sm:px-3 py-1 bg-[#0b1329] border border-cyan-400/50 text-cyan-200 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(6,182,212,0.25)] uppercase tracking-wider shrink-0">
               ⚔️ {playerCountMode} OYUNCU DÜELLO
             </span>
             <div className="flex-1 min-w-0 text-center px-1.5 flex items-center justify-center gap-1.5">
-              <div className="inline-flex items-center justify-center gap-1.5 max-w-full bg-slate-950/85 backdrop-blur-xl border border-cyan-400/50 rounded-xl px-3 sm:px-6 py-1 shadow-[0_0_16px_rgba(6,182,212,0.3)]">
+              <div className="inline-flex items-center justify-center gap-1.5 max-w-full bg-[#0b1329] border border-cyan-400/60 rounded-xl px-3 sm:px-6 py-1 shadow-[0_0_16px_rgba(6,182,212,0.3)]">
                 <h2 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider break-words drop-shadow-md">
                   {getCurrentTopicInfo(currentTopic, selectedGrade)?.title || ''}
                 </h2>
@@ -5915,7 +6061,7 @@ export default function App() {
                 />
               </div>
             </div>
-            <span className="px-2.5 sm:px-3 py-1 bg-slate-950/75 backdrop-blur-xl border border-cyan-400/40 text-amber-300 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
+            <span className="px-2.5 sm:px-3 py-1 bg-[#0b1329] border border-cyan-400/50 text-amber-300 font-black text-[11px] sm:text-xs rounded-xl shadow-[0_0_12px_rgba(245,158,11,0.25)] uppercase tracking-wider shrink-0">
               🎯 HEDEF: 10 PUAN
             </span>
           </div>
@@ -5929,7 +6075,7 @@ export default function App() {
                     badgeBorder: "border-cyan-300",
                     badgeShadow: "shadow-[0_0_16px_rgba(6,182,212,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
                     containerBorder: "border-cyan-400",
-                    buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 hover:from-blue-500 hover:to-indigo-600 active:from-blue-700 active:to-indigo-800 text-white shadow-[0_4px_14px_rgba(37,99,235,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+                    buttonDefault: "border-cyan-400 bg-gradient-to-b from-blue-600 via-blue-600 to-indigo-700 active:from-blue-700 active:to-indigo-800 text-white shadow-md active:shadow-xs",
                   }
                 : pIdx === 1
                 ? {
@@ -5937,17 +6083,18 @@ export default function App() {
                     badgeBorder: "border-pink-300",
                     badgeShadow: "shadow-[0_0_16px_rgba(244,63,94,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
                     containerBorder: "border-pink-400",
-                    buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 hover:from-rose-500 hover:to-pink-500 active:from-rose-700 active:to-rose-800 text-white shadow-[0_4px_14px_rgba(225,29,72,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+                    buttonDefault: "border-pink-400 bg-gradient-to-b from-rose-600 via-pink-600 to-rose-700 active:from-rose-700 active:to-rose-800 text-white shadow-md active:shadow-xs",
                   }
                 : {
                     badgeBg: "from-emerald-700 via-teal-800 to-emerald-950",
                     badgeBorder: "border-emerald-300",
                     badgeShadow: "shadow-[0_0_16px_rgba(52,211,153,0.7),inset_0_1px_2px_rgba(255,255,255,0.4)]",
                     containerBorder: "border-emerald-400",
-                    buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
+                    buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 active:from-emerald-700 active:to-green-800 text-white shadow-md active:shadow-xs",
                   };
 
-              const isWinnerGroup = trackVictoryVideoActive && duelWinnerIndex === pIdx;
+              // Halat çekmede kazanan videosu SADECE ortadaki alanda gösterilir; oyuncu kartında ekstra video açılmaz
+              const isWinnerGroup = trackVictoryVideoActive && duelWinnerIndex === pIdx && !isHalatCekmeTopic(currentTopic);
               const isOtherGroup = trackVictoryVideoActive && duelWinnerIndex !== null && duelWinnerIndex !== pIdx;
               const winCfg = getWinnerVideoConfig(duelWinnerIndex);
 
@@ -5966,11 +6113,12 @@ export default function App() {
                 ? (currentTopic === 'uzamsal_iliskiler' ? 'max-w-[360px] sm:max-w-[420px]' : 'max-w-[320px] sm:max-w-[360px] md:max-w-[380px]')
                 : (playerCountMode === 3 ? 'max-w-[280px] sm:max-w-[320px] md:max-w-[360px]' : 'max-w-[300px] sm:max-w-[340px]');
 
+              // SORU GRUBU SÜTUNU: 100% OPAK KATI ZEMİN (ARKA PLANLA KARIŞMAYI TAMAMEN ÖNLER)
               const containerClasses = isWinnerGroup
-                ? `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-slate-950/90 shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
+                ? `relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-[#0a0f1d] shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
                 : isOtherGroup
-                ? `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/40 opacity-60 backdrop-blur-sm shadow-xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
-                : `relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`;
+                ? `relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-[#0a0f1d] opacity-65 shadow-xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`
+                : `relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-[#0a0f1d] shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${cardMaxWidth} ${cardAlignment} h-full`;
 
               return (
                 <div
@@ -6002,8 +6150,8 @@ export default function App() {
                         {pIdx + 1}
                       </div>
 
-                      {/* CONNECTED GLASS CAPSULE FOR GROUP NAME, INDIVIDUAL TIMER & SCORE */}
-                      <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
+                      {/* CONNECTED SOLID CAPSULE FOR GROUP NAME, INDIVIDUAL TIMER & SCORE */}
+                      <div className="flex-1 ml-1.5 sm:ml-2 bg-[#0f172a] border border-cyan-400/40 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.6)] gap-1 sm:gap-1.5">
                         <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
                           {pIdx + 1}. GRUP
                         </span>
@@ -6012,8 +6160,8 @@ export default function App() {
                         {!isOtherGroup && isTimedTopic(currentTopic) && p.lives > 0 && (
                           <div className={`px-1.5 sm:px-2 py-0.5 rounded-lg border font-mono font-black text-[11px] sm:text-xs flex items-center gap-1 shrink-0 transition-all ${
                             (p.timeLeft ?? 10) <= 3
-                              ? 'bg-rose-950/95 border-rose-500 text-rose-300 ring-2 ring-rose-500/80 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]'
-                              : 'bg-slate-900/90 border-amber-400/80 text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
+                              ? 'bg-rose-950 border-rose-500 text-rose-300 ring-2 ring-rose-500/80 scale-105 animate-pulse shadow-[0_0_12px_rgba(244,63,94,0.7)]'
+                              : 'bg-slate-900 border-amber-400/80 text-amber-300 shadow-[0_0_8px_rgba(245,158,11,0.3)]'
                           }`}>
                             <span className={`text-[11px] sm:text-xs ${(p.timeLeft ?? 10) <= 3 ? 'animate-bounce text-rose-400' : ''}`}>⏱️</span>
                             <span>{p.timeLeft ?? 10}s</span>
@@ -6022,7 +6170,7 @@ export default function App() {
 
                         {/* RIGHT: SCORE & HEARTS */}
                         <div className="flex items-center gap-1.5 shrink-0">
-                          <span className="bg-white/15 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
+                          <span className="bg-white/20 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg shadow-sm">
                             {p.score} / 10
                           </span>
                           <div className="flex items-center gap-0.5">
@@ -6071,22 +6219,22 @@ export default function App() {
                     </div>
                   ) : isOtherGroup ? (
                     /* OTHER GROUPS IN DUEL COMPLETED STATE */
-                    <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-md border border-white/10 flex flex-col items-center justify-center text-center p-3 my-0.5 min-h-0 w-full">
+                    <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border border-white/20 flex flex-col items-center justify-center text-center p-3 my-0.5 min-h-0 w-full">
                       <div className="text-2xl sm:text-3xl mb-1 filter drop-shadow">🏁</div>
                       <div className="text-xs sm:text-sm font-black text-slate-200 uppercase tracking-wide">
                         YARIŞMA TAMAMLANDI
                       </div>
-                      <div className="text-[11px] text-amber-300/90 font-bold mt-0.5">
+                      <div className="text-[11px] text-amber-300 font-bold mt-0.5">
                         Final Skoru: {p.score} / 10
                       </div>
                     </div>
                   ) : (
                     /* NORMAL GAME PLAYING VIEW */
                     <>
-                      {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
-                      <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.25)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1 sm:p-1.5' : (playerCountMode === 3 ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1')} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
-                        {/* Top glare effect */}
-                        <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+                      {/* QUESTION SOLID CONTAINER FOR THIS PLAYER - 100% OPAQUE (ARKA PLANLA KARIŞMAZ) */}
+                      <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-cyan-300/60 shadow-[0_8px_32px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.15)] ${currentTopic === 'uzamsal_iliskiler' ? 'p-1 sm:p-1.5' : (playerCountMode === 3 ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1')} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
+                        {/* Subtle top inner gradient */}
+                        <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                         {p.lives <= 0 ? (
                           <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
@@ -6118,9 +6266,9 @@ export default function App() {
 
                             let btnClass = groupTheme.buttonDefault;
                             if (isCorrect) {
-                              btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-950/80 shadow-[0_0_25px_rgba(16,185,129,0.9),inset_0_1px_2px_rgba(255,255,255,0.4)] scale-105 animate-pulse";
+                              btnClass = "ring-4 ring-emerald-400 border-emerald-300 bg-emerald-600 shadow-lg scale-102 text-white";
                             } else if (isWrong) {
-                              btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-950/80 shadow-[0_0_25px_rgba(244,63,94,0.9),inset_0_1px_2px_rgba(255,255,255,0.2)] scale-95 opacity-80";
+                              btnClass = "ring-4 ring-rose-500 border-rose-400 bg-rose-800 shadow-md scale-95 opacity-80 text-white";
                             }
 
                             return (
@@ -6128,20 +6276,23 @@ export default function App() {
                                 key={oIdx}
                                 onClick={() => handlePlayerAnswer(pIdx, opt)}
                                 disabled={p.feedbackState !== 'none'}
-                                className={`relative group w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                                className={`fast-quiz-btn relative w-full ${optHeightClasses} rounded-xl sm:rounded-2xl border-2 transition-transform duration-75 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
                               >
                                 {/* Inner top glare */}
                                 <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
-                                {typeof opt === 'string' && opt.includes('<') ? (
-                                  <span
-                                    className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
-                                    dangerouslySetInnerHTML={{ __html: opt }}
-                                  />
-                                ) : (
-                                  <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white [text-shadow:_0_2px_4px_#000,_0_4px_8px_rgba(0,0,0,0.9)]`}>
-                                    {opt}
-                                  </span>
-                                )}
+                                {(() => {
+                                  const displayOpt = cleanOptionForDisplay(opt);
+                                  return typeof displayOpt === 'string' && displayOpt.includes('<') ? (
+                                    <span
+                                      className="relative z-10 w-full h-full flex items-center justify-center px-1 pointer-events-none text-white font-black"
+                                      dangerouslySetInnerHTML={{ __html: displayOpt }}
+                                    />
+                                  ) : (
+                                    <span className={`relative z-10 px-1 leading-tight flex items-center justify-center text-center ${uniformOptFontClass} text-white font-black [text-shadow:_0_1px_3px_#000]`}>
+                                      {displayOpt}
+                                    </span>
+                                  );
+                                })()}
                               </button>
                             );
                           })}
@@ -6169,6 +6320,7 @@ export default function App() {
                       targetScore={10}
                       duelWinnerIndex={duelWinnerIndex}
                       soundEnabled={soundEnabled}
+                      onVideoComplete={handleTrackVideoComplete}
                     />
                   ) : (
                     <BasketballRaceTrack
@@ -6240,11 +6392,27 @@ export default function App() {
       )}
 
 
-      {/* GLOBAL FOOTER WITH COPYRIGHT TEXT */}
-      <footer className="mt-auto z-30 shrink-0 bg-slate-950/90 dark:bg-[#070D1E]/95 backdrop-blur-md border-t-2 border-yellow-400/90 dark:border-yellow-500/80 py-2.5 sm:py-3.5 px-4 flex items-center justify-center shadow-xl w-full">
-        <p className="text-yellow-400 dark:text-yellow-300 font-bold text-xs sm:text-sm tracking-wide text-center drop-shadow-sm">
+      {/* GLOBAL FOOTER WITH COPYRIGHT TEXT & DISCREET SAYAÇ BUTTON */}
+      <footer className="mt-auto z-30 shrink-0 bg-slate-950 dark:bg-[#070D1E] border-t-2 border-yellow-400/90 dark:border-yellow-500/80 py-2 sm:py-2.5 px-3 sm:px-4 flex items-center justify-between shadow-xl w-full">
+        <div className="w-8 sm:w-16 shrink-0" />
+        <p className="text-yellow-400 dark:text-yellow-300 font-bold text-xs sm:text-sm tracking-wide text-center drop-shadow-sm truncate">
           © 2026 OLCİCO Tüm hakları saklıdır.
         </p>
+        <button
+          onClick={() => {
+            playMp3('/op.mp3');
+            setCountersData(loadCounters());
+            setShowCountersModal(true);
+          }}
+          className="group px-2 py-1 rounded-lg bg-slate-900/60 hover:bg-slate-800 text-slate-500 hover:text-amber-400 border border-slate-800/80 hover:border-amber-400/30 transition-all cursor-pointer flex items-center gap-1.5 opacity-40 hover:opacity-100 shrink-0"
+          title="Sınıf & Ziyaretçi Sayaç Paneli"
+          aria-label="Sayaç Paneli"
+        >
+          <Activity size={13} className="text-amber-400/80 group-hover:animate-pulse" />
+          <span className="text-[10px] font-mono tracking-tight text-slate-400 group-hover:text-amber-300">
+            {countersData.visits.total}
+          </span>
+        </button>
       </footer>
 
       {/* GAME OVER / VICTORY OVERLAY */}
@@ -6464,46 +6632,32 @@ export default function App() {
                   )}
                 </div>
 
-                {/* 2. MIDDLE SECTION: VIDEO */}
+                {/* 2. MIDDLE SECTION: VISUAL OR CUSTOM VIDEO */}
                 <div className="relative w-full my-auto flex items-center justify-center overflow-visible pointer-events-none z-30 py-1 sm:py-2">
                   {gameResult.reason === 'puan' ? (
-                    <div className="h-28 sm:h-36 aspect-[9/16] flex items-center justify-center relative">
-                      <ChromaKeyVideo
-                        key={customWinVideo || 'default-win-video'}
-                        src={customWinVideo || "/3s.mp4"}
-                        autoPlay={true}
-                        loop={true}
-                        muted={true}
-                        enableChromaKey={true}
-                        showControls={false}
-                        className="w-full h-full object-contain scale-110 sm:scale-120 relative z-30 pointer-events-none"
-                      />
-
-                      {/* OVERLAY mcomp.mp4 (GÖREV TAMAMLANDI) DIRECTLY ON ASLAN'S BELLY IF WIN */}
-                      <div className="absolute inset-x-0 top-[38%] -translate-y-1/2 z-40 pointer-events-none flex items-center justify-center overflow-visible">
+                    customWinVideo ? (
+                      <div className="h-28 sm:h-36 aspect-[9/16] flex items-center justify-center relative">
                         <ChromaKeyVideo
-                          src="/mcomp.mp4"
+                          key={customWinVideo}
+                          src={customWinVideo}
                           autoPlay={true}
                           loop={true}
                           muted={true}
                           enableChromaKey={true}
                           showControls={false}
-                          className="w-full h-20 sm:h-24 object-contain scale-[1.5] origin-center pointer-events-none"
+                          className="w-full h-full object-contain scale-110 sm:scale-120 relative z-30 pointer-events-none"
                         />
                       </div>
-                    </div>
+                    ) : (
+                      <div className="h-24 sm:h-32 flex flex-col items-center justify-center relative select-none">
+                        <div className="text-4xl sm:text-5xl animate-bounce">🏆</div>
+                        <div className="text-amber-300 font-black text-sm sm:text-base mt-1 drop-shadow-md">Tebrikler!</div>
+                      </div>
+                    )
                   ) : (
-                    <div className="h-28 sm:h-36 aspect-video w-full flex items-center justify-center relative">
-                      <ChromaKeyVideo
-                        key="trytry2-defeat-video"
-                        src="/trytry2.mp4"
-                        autoPlay={true}
-                        loop={true}
-                        muted={true}
-                        enableChromaKey={true}
-                        showControls={false}
-                        className="w-full h-full object-contain scale-110 sm:scale-120 relative z-30 pointer-events-none"
-                      />
+                    <div className="h-24 sm:h-32 flex flex-col items-center justify-center relative select-none">
+                      <div className="text-4xl sm:text-5xl animate-pulse">💪</div>
+                      <div className="text-amber-200 font-black text-sm sm:text-base mt-1 drop-shadow-md">Harika Bir Denemeydi!</div>
                     </div>
                   )}
                 </div>
@@ -6549,7 +6703,7 @@ export default function App() {
       {newlyUnlockedBadge && (
         <div className="fixed top-16 sm:top-20 left-1/2 -translate-x-1/2 z-[99999] animate-bounce px-4 w-full max-w-md pointer-events-none">
           <div className={`p-4 rounded-3xl bg-gradient-to-r ${newlyUnlockedBadge.badgeColor} border-4 ${newlyUnlockedBadge.borderColor} shadow-[0_12px_30px_rgba(0,0,0,0.6)] text-white flex items-center gap-3.5`}>
-            <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-3xl shrink-0 shadow-inner overflow-hidden p-1">
+            <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center text-3xl shrink-0 shadow-inner overflow-hidden p-1">
               {newlyUnlockedBadge.imageSrc ? (
                 <img src={newlyUnlockedBadge.imageSrc} alt={newlyUnlockedBadge.title} className="w-full h-full object-contain drop-shadow-md" />
               ) : (
@@ -6635,6 +6789,14 @@ export default function App() {
         );
       })()}
 
+      {/* SINIF & ZİYARETÇİ SAYAÇLARI MODAL (YÖNETİCİ & ÖĞRETMEN) */}
+      <ClassCountersModal
+        isOpen={showCountersModal}
+        onClose={() => setShowCountersModal(false)}
+        countersData={countersData}
+        onCountersUpdated={(newData) => setCountersData(newData)}
+        playMp3={playMp3}
+      />
 
       {/* 3D GEOMETRY INTERACTIVE LAB MODAL */}
       {show3DLab && (
@@ -6746,6 +6908,11 @@ export default function App() {
           playerCountMode={playerCountMode}
           onSwitchPlayerCountMode={switchPlayerCountMode}
           soundEnabled={soundEnabled}
+          onQuestionAnswered={(isCorrect, gType) => {
+            const cat: GradeCategoryKey = gType === 'ingilizce' ? 'englishGames' : 'otherGames';
+            const updated = recordClassQuestionSolved(cat, isCorrect);
+            setCountersData(updated);
+          }}
         />
       )}
 
@@ -6756,7 +6923,7 @@ export default function App() {
           <video
             ref={introVideoRef}
             src="/introh.mp4"
-            poster="/intro2.png"
+            poster="/dere3.jpg"
             autoPlay
             loop
             muted
@@ -6796,7 +6963,7 @@ export default function App() {
       {/* REPLAY CHAMPIONSHIP VIDEO MODAL */}
       {showPodiumVideoModal && duelWinnerIndex !== null && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-sm select-none"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/90 select-none"
           onClick={() => setShowPodiumVideoModal(false)}
         >
           <div 

@@ -22,6 +22,12 @@ const CRITICAL_BUTTON_IMAGES = [
   '/kap.png',
   '/ejd.png',
   '/balta.png',
+  '/kap1.png',
+  '/ejd1.png',
+  '/balta1.png',
+  '/p1.png',
+  '/p2.png',
+  '/p3.png',
 ];
 
 if (typeof window !== 'undefined') {

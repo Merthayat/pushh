@@ -5,7 +5,7 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { ZIT_ANLAM_DATA, ES_ANLAM_DATA, INGILIZCE_DATA, WordPair } from '../data/wordPairsData';
-import { BasketballRaceTrack } from './BasketballRaceTrack';
+import { BasketballRaceTrack, SingleBasketballTrack } from './BasketballRaceTrack';
 
 interface WordGameModalProps {
   gameType: 'zit_anlam' | 'es_anlam' | 'ingilizce';
@@ -15,6 +15,7 @@ interface WordGameModalProps {
   playerCountMode?: 1 | 2 | 3;
   onSwitchPlayerCountMode?: (mode: 1 | 2 | 3) => void;
   soundEnabled?: boolean;
+  onQuestionAnswered?: (isCorrect: boolean, gameType: 'zit_anlam' | 'es_anlam' | 'ingilizce') => void;
 }
 
 type GameMode = 'duel2' | 'duel3' | 'quiz1' | 'matching';
@@ -138,7 +139,7 @@ const getWinnerVideoConfig = (winnerIdx: number | null) => {
     return {
       videoSrc: '/kap.mp4',
       title: '1. GRUP ŞAMPİYON! 🏆',
-      img: '/kap.png',
+      img: '/kap1.png',
       badgeBg: 'from-blue-600 via-cyan-500 to-indigo-600',
       borderColor: 'border-cyan-400',
       glowColor: 'shadow-[0_0_35px_rgba(6,182,212,0.95)]'
@@ -148,7 +149,7 @@ const getWinnerVideoConfig = (winnerIdx: number | null) => {
     return {
       videoSrc: '/ejd.mp4',
       title: '2. GRUP ŞAMPİYON! 🏆',
-      img: '/ejd.png',
+      img: '/ejd1.png',
       badgeBg: 'from-rose-600 via-pink-500 to-red-700',
       borderColor: 'border-rose-400',
       glowColor: 'shadow-[0_0_35px_rgba(244,63,94,0.95)]'
@@ -157,7 +158,7 @@ const getWinnerVideoConfig = (winnerIdx: number | null) => {
   return {
     videoSrc: '/sog.mp4',
     title: '3. GRUP ŞAMPİYON! 🏆',
-    img: '/balta.png',
+    img: '/balta1.png',
     badgeBg: 'from-emerald-600 via-teal-500 to-green-700',
     borderColor: 'border-emerald-400',
     glowColor: 'shadow-[0_0_35px_rgba(16,185,129,0.95)]'
@@ -171,7 +172,8 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   playMp3,
   playerCountMode = 2,
   onSwitchPlayerCountMode,
-  soundEnabled = true
+  soundEnabled = true,
+  onQuestionAnswered
 }) => {
   const isZit = gameType === 'zit_anlam';
   const isEs = gameType === 'es_anlam';
@@ -242,7 +244,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         text: pair.word,
         isFlipped: false,
         isMatched: false,
-        emoji: pair.emoji?.split(' ')[0]
+        emoji: isIng ? undefined : pair.emoji?.split(' ')[0]
       });
       generatedCards.push({
         id: `pair-${index}-b`,
@@ -250,7 +252,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         text: pair.match,
         isFlipped: false,
         isMatched: false,
-        emoji: pair.emoji?.split(' ')[1] || pair.emoji
+        emoji: isIng ? undefined : (pair.emoji?.split(' ')[1] || pair.emoji)
       });
     });
 
@@ -369,6 +371,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
     setQuizSelectedOption(option);
     const isCorrect = option === quizQuestion.correct;
+    onQuestionAnswered?.(isCorrect, gameType);
 
     if (isCorrect) {
       playSound('correct');
@@ -459,6 +462,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
       }
 
       const isCorrect = option === p.currentQuestion.correct;
+      onQuestionAnswered?.(isCorrect, gameType);
       const nextPlayers = [...prev];
 
       if (isCorrect) {
@@ -610,15 +614,110 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           buttonDefault: "border-emerald-400 bg-gradient-to-b from-emerald-600 via-teal-600 to-green-700 hover:from-emerald-500 hover:to-teal-500 active:from-emerald-700 active:to-green-800 text-white shadow-[0_4px_14px_rgba(16,185,129,0.5),inset_0_1px_2px_rgba(255,255,255,0.6)]",
         };
 
+    const isWinnerGroup = trackVictoryVideoActive && duelWinnerIndex === pIdx;
+    const isOtherGroup = trackVictoryVideoActive && duelWinnerIndex !== null && duelWinnerIndex !== pIdx;
+    const winCfg = getWinnerVideoConfig(duelWinnerIndex);
+
     const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], activeMode === 'duel3' ? 3 : 2);
     const optHeightClasses = activeMode === 'duel3' 
-      ? "py-1.5 sm:py-2 px-1 sm:px-1.5 min-h-[38px] sm:min-h-[46px]" 
+      ? "py-1 sm:py-1.5 px-1 sm:px-1.5 min-h-[36px] sm:min-h-[42px]" 
       : "py-2 sm:py-2.5 px-2 min-h-[44px] sm:min-h-[54px]";
+
+    // KAZANAN GRUP: KART KENDİ ALANINDA ZAFER VİDEOSUNU GÖSTERİR
+    if (isWinnerGroup) {
+      return (
+        <div
+          key={p.id}
+          className={`relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-[#0a0f1d] shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+        >
+          <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-yellow-400 via-amber-300 to-yellow-600 border-2 border-white shadow-[0_0_15px_rgba(250,204,21,0.9)] text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center shrink-0 animate-bounce">
+              🏆
+            </div>
+            <div className="flex-1 ml-1.5 sm:ml-2 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-500 border-2 border-white rounded-xl px-2.5 py-1 flex items-center justify-between shadow-lg">
+              <span className="font-black text-[11px] sm:text-xs text-slate-950 uppercase tracking-wide truncate flex items-center gap-1.5">
+                <img src={winCfg.img} alt={winCfg.title} className="w-4 h-4 sm:w-5 sm:h-5 object-contain inline-block" />
+                <span>{pIdx + 1}. GRUP KAZANDI!</span>
+              </span>
+              <span className="bg-slate-950 text-yellow-300 font-black text-[10px] sm:text-[11px] px-2 py-0.5 rounded-lg shadow-inner">
+                {p.score} / {duelTargetScore}
+              </span>
+            </div>
+          </div>
+
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-black border-2 border-yellow-400/80 shadow-[inset_0_0_25px_rgba(0,0,0,0.9),0_0_25px_rgba(250,204,21,0.5)] overflow-hidden flex flex-col items-center justify-center min-h-0 w-full my-0.5">
+            <video
+              key={winCfg.videoSrc}
+              src={winCfg.videoSrc}
+              autoPlay
+              playsInline
+              className="w-full h-full object-cover"
+              onEnded={() => {
+                setTrackVictoryVideoActive(false);
+                setIsDuelFinished(true);
+              }}
+              onError={() => {
+                setTrackVictoryVideoActive(false);
+                setIsDuelFinished(true);
+              }}
+            />
+            <div className={`absolute top-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r ${winCfg.badgeBg} text-white font-black text-[10px] sm:text-xs px-3 py-1 rounded-full border border-white shadow-xl flex items-center gap-1.5 z-20 pointer-events-none drop-shadow-md animate-pulse`}>
+              <img src={winCfg.img} alt="Şampiyon" className="w-4 h-4 object-contain" />
+              <span>{winCfg.title}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setTrackVictoryVideoActive(false);
+                setIsDuelFinished(true);
+              }}
+              className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-[10px] sm:text-xs px-3.5 py-1 rounded-full border border-white shadow-2xl transition cursor-pointer z-20 flex items-center gap-1"
+            >
+              <span>Sonuçları Gör</span>
+              <span>⏩</span>
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // DİĞER GRUPLAR (YARIŞMA TAMAMLANDI)
+    if (isOtherGroup) {
+      return (
+        <div
+          key={p.id}
+          className={`relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 border-slate-700 bg-[#0a0f1d] opacity-65 shadow-xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+        >
+          <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
+            <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br ${groupTheme.badgeBg} border-2 ${groupTheme.badgeBorder} text-white font-black text-xs sm:text-sm flex items-center justify-center shrink-0`}>
+              {pIdx + 1}
+            </div>
+            <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-900 border border-slate-700 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between">
+              <span className="font-black text-[11px] sm:text-xs text-slate-400 uppercase tracking-wide truncate">
+                {pIdx + 1}. GRUP
+              </span>
+              <span className="bg-white/10 text-white font-black text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded-lg">
+                {p.score} / {duelTargetScore}
+              </span>
+            </div>
+          </div>
+          <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border border-white/20 flex flex-col items-center justify-center text-center p-3 my-0.5 min-h-0 w-full">
+            <div className="text-2xl sm:text-3xl mb-1 filter drop-shadow">🏁</div>
+            <div className="text-xs sm:text-sm font-black text-slate-200 uppercase tracking-wide">
+              YARIŞMA TAMAMLANDI
+            </div>
+            <div className="text-[11px] text-amber-300 font-bold mt-0.5">
+              Final Skoru: {p.score} / {duelTargetScore}
+            </div>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div
         key={p.id}
-        className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-slate-950/15 backdrop-blur-sm shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+        className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-[#0a0f1d] shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
       >
         {/* PLAYER HEADER BAR */}
         <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
@@ -628,7 +727,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           </div>
 
           {/* CONNECTED GLASS CAPSULE FOR GROUP NAME & SCORE */}
-          <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-950/50 backdrop-blur-lg border border-cyan-400/30 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-[0_4px_16px_rgba(0,0,0,0.3)] gap-1 sm:gap-1.5">
+          <div className="flex-1 ml-1.5 sm:ml-2 bg-slate-900/90 border border-cyan-400/40 rounded-xl px-2 sm:px-2.5 py-1 flex items-center justify-between shadow-md gap-1 sm:gap-1.5">
             <span className="font-black text-[11px] sm:text-xs text-slate-100 uppercase tracking-wide truncate">
               {pIdx + 1}. GRUP ({p.avatar})
             </span>
@@ -649,10 +748,9 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
           </div>
         </div>
 
-        {/* QUESTION GLASS CONTAINER FOR THIS PLAYER - USES UP TO THE FRAME LINES */}
-        <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/35 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_8px_32px_rgba(0,0,0,0.5),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_20px_rgba(6,182,212,0.2)] ${activeMode === 'duel3' ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
-          {/* Top glare effect */}
-          <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
+        {/* QUESTION SOLID CONTAINER FOR THIS PLAYER */}
+        <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-cyan-300/60 shadow-[0_8px_32px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.15)] ${activeMode === 'duel3' ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
+          <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
           {p.isEliminated || p.lives <= 0 ? (
             <div className="relative z-20 flex flex-col items-center justify-center gap-1 p-2">
@@ -672,7 +770,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
               {/* TARGET WORD DISPLAY */}
               <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 border-white flex items-center justify-center gap-1.5 max-w-full truncate">
-                {p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
+                {!isIng && p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
                 <span className="truncate">{p.currentQuestion.word}</span>
               </div>
             </div>
@@ -728,20 +826,16 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
       {/* 1. BACKGROUND IMAGE & STAGE LIGHTING OVERLAYS */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
-          src="/intro2.png" 
+          src="/dere3.jpg" 
           alt="Arka Plan Görseli"
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105"
         />
-        {/* STAGE LIGHTING & AMBIENT GLOW (MATCHING ALL MAIN GRADE ACTIVITIES) */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* 2. SUB-HEADER: GRADE SELECTION & CONTROLS (CENTERED ON SCREEN) */}
       {!showCompletionScreen && (
-        <div className="relative z-20 px-3 sm:px-12 py-2 sm:py-2.5 bg-slate-950/65 backdrop-blur-md border-b-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-lg">
+        <div className="relative z-20 px-3 sm:px-12 py-2 sm:py-2.5 bg-slate-950/85 border-b-2 border-amber-400/50 flex items-center justify-center shrink-0 shadow-lg">
           {isIng ? (
             <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 flex-wrap text-center">
               <span className="text-[11px] sm:text-xs font-black text-amber-300 mr-0.5 sm:mr-1 uppercase drop-shadow-sm whitespace-nowrap">
@@ -933,11 +1027,14 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                 {/* GAMEPLAY CONTAINER: SIDE-BY-SIDE WITH VERTICAL BASKETBALL TRACK */}
                 {activeMode === 'duel2' ? (
                   /* 2 OYUNCU MODU: 1. OYUNCU (SOL) - DİKEY BASKETBOL PARKURU (ORTA) - 2. OYUNCU (SAĞ) */
-                  <div className="flex-1 flex flex-row items-stretch justify-center gap-2 sm:gap-3.5 w-full min-h-0 overflow-hidden">
-                    {renderDuelPlayerCard(duelPlayers[0], 0)}
+                  <div className="flex-1 flex flex-row items-stretch justify-between gap-2 sm:gap-4 w-full min-h-0 overflow-hidden">
+                    {/* 1. GRUP */}
+                    <div className="flex-1 flex items-center justify-start h-full min-h-0 min-w-0">
+                      {renderDuelPlayerCard(duelPlayers[0], 0)}
+                    </div>
 
                     {/* DİKEY BASKETBOL PARKURU (TAM ORTADA) */}
-                    <div className="h-full flex items-center justify-center shrink-0">
+                    <div className="h-full flex items-center justify-center shrink-0 px-1">
                       {(() => {
                         const winCfg = getWinnerVideoConfig(duelWinnerIndex);
                         return (
@@ -963,43 +1060,57 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                       })()}
                     </div>
 
-                    {renderDuelPlayerCard(duelPlayers[1], 1)}
+                    {/* 2. GRUP */}
+                    <div className="flex-1 flex items-center justify-end h-full min-h-0 min-w-0">
+                      {renderDuelPlayerCard(duelPlayers[1], 1)}
+                    </div>
                   </div>
                 ) : (
-                  /* 3 OYUNCU MODU: DİKEY BASKETBOL PARKURU (EN SOLDA) + 3 OYUNCU (SAĞDA YAN YANA) */
-                  <div className="flex-1 flex flex-row items-stretch justify-center gap-1.5 sm:gap-2.5 w-full min-h-0 overflow-hidden">
-                    {/* DİKEY BASKETBOL PARKURU (EN SOLDA) */}
-                    <div className="h-full flex items-center justify-center shrink-0">
-                      {(() => {
-                        const winCfg = getWinnerVideoConfig(duelWinnerIndex);
-                        return (
-                          <BasketballRaceTrack
-                            players={duelPlayers}
-                            playerCountMode={3}
-                            targetScore={duelTargetScore}
-                            orientation="vertical"
-                            showVictoryVideo={trackVictoryVideoActive}
-                            victoryVideoSrc={winCfg.videoSrc}
-                            winnerTitle={winCfg.title}
-                            winnerImg={winCfg.img}
-                            winnerBadgeBg={winCfg.badgeBg}
-                            winnerBorderColor={winCfg.borderColor}
-                            winnerGlowColor={winCfg.glowColor}
-                            onVictoryVideoEnd={() => {
-                              setTrackVictoryVideoActive(false);
-                              setIsDuelFinished(true);
-                            }}
-                            soundEnabled={soundEnabled}
-                          />
-                        );
-                      })()}
+                  /* 3 OYUNCU MODU: HER GRUBUN İSTASYONUNDA BİREYSEL BASKETBOL PARKURU (p1, p2, p3) + KARTI */
+                  <div className="flex-1 flex flex-row items-stretch justify-between min-h-0 h-full w-full gap-2 sm:gap-4 md:gap-6 overflow-hidden">
+                    {/* 1. GRUP İSTASYONU (SOLDA: p1.png PARKURU + 1. GRUP KARTI) */}
+                    <div className="flex-1 flex flex-row items-stretch justify-start h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                      <div className="h-full flex items-center justify-center shrink-0">
+                        <SingleBasketballTrack 
+                          playerIndex={0} 
+                          score={duelPlayers[0]?.score || 0} 
+                          targetScore={duelTargetScore} 
+                          isWinner={duelWinnerIndex === 0} 
+                        />
+                      </div>
+                      <div className="flex-1 h-full min-h-0 min-w-0">
+                        {renderDuelPlayerCard(duelPlayers[0], 0)}
+                      </div>
                     </div>
 
-                    {/* 3 OYUNCU SAĞDA YAN YANA 3 SÜTUN */}
-                    <div className="flex-1 grid grid-cols-3 gap-1.5 sm:gap-2.5 h-full min-h-0">
-                      {renderDuelPlayerCard(duelPlayers[0], 0)}
-                      {renderDuelPlayerCard(duelPlayers[1], 1)}
-                      {renderDuelPlayerCard(duelPlayers[2], 2)}
+                    {/* 2. GRUP İSTASYONU (ORTADA: p2.png PARKURU + 2. GRUP KARTI) */}
+                    <div className="flex-1 flex flex-row items-stretch justify-center h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                      <div className="h-full flex items-center justify-center shrink-0">
+                        <SingleBasketballTrack 
+                          playerIndex={1} 
+                          score={duelPlayers[1]?.score || 0} 
+                          targetScore={duelTargetScore} 
+                          isWinner={duelWinnerIndex === 1} 
+                        />
+                      </div>
+                      <div className="flex-1 h-full min-h-0 min-w-0">
+                        {renderDuelPlayerCard(duelPlayers[1], 1)}
+                      </div>
+                    </div>
+
+                    {/* 3. GRUP İSTASYONU (SAĞDA: p3.png PARKURU + 3. GRUP KARTI) */}
+                    <div className="flex-1 flex flex-row items-stretch justify-end h-full min-h-0 min-w-0 gap-1.5 sm:gap-2">
+                      <div className="h-full flex items-center justify-center shrink-0">
+                        <SingleBasketballTrack 
+                          playerIndex={2} 
+                          score={duelPlayers[2]?.score || 0} 
+                          targetScore={duelTargetScore} 
+                          isWinner={duelWinnerIndex === 2} 
+                        />
+                      </div>
+                      <div className="flex-1 h-full min-h-0 min-w-0">
+                        {renderDuelPlayerCard(duelPlayers[2], 2)}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1066,7 +1177,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                     </span>
                     
                     <div className="px-5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-2xl sm:text-3xl md:text-4xl tracking-wide uppercase shadow-[0_8px_24px_rgba(245,158,11,0.5)] border-3 border-white flex items-center gap-2.5 my-1 transform hover:scale-105 transition-transform">
-                      {quizQuestion.emoji && <span className="text-2xl sm:text-3xl filter drop-shadow-md">{quizQuestion.emoji}</span>}
+                      {!isIng && quizQuestion.emoji && <span className="text-2xl sm:text-3xl filter drop-shadow-md">{quizQuestion.emoji}</span>}
                       <span className="[text-shadow:_0_1px_2px_rgba(255,255,255,0.8)]">{quizQuestion.word}</span>
                     </div>
                   </div>
@@ -1178,7 +1289,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                       >
                         {isFlipped ? (
                           <div className="flex flex-col items-center justify-center gap-0.5">
-                            {card.emoji && <span className="text-base sm:text-lg">{card.emoji}</span>}
+                            {!isIng && card.emoji && <span className="text-base sm:text-lg">{card.emoji}</span>}
                             <span className="font-black text-xs sm:text-sm uppercase tracking-wide leading-tight">
                               {card.text}
                             </span>

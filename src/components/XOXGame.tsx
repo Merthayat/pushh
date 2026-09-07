@@ -276,7 +276,7 @@ export const XOXGame: React.FC<XOXGameProps> = ({ onClose, playMp3 }) => {
       {/* SAME POSITIVE BACKGROUND IMAGE AS OTHER CLASSROOM ACTIVITIES */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <img 
-          src="/intro2.png" 
+          src="/dere3.jpg" 
           alt="Arka Plan Görseli"
           referrerPolicy="no-referrer"
           className="w-full h-full object-cover object-center scale-105"

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import { 
-  ArrowLeft, RotateCcw, Trash2, CheckCircle2, Volume2, 
+  ArrowLeft, RotateCcw, Trash2, CheckCircle2, Volume2, VolumeX,
   Lightbulb, Sparkles, Award, RefreshCw, X, Play, Info, ChevronRight, HelpCircle
 } from 'lucide-react';
 import { Cute3DStarMascotSVG } from './ModernStatsView';
@@ -377,29 +377,12 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   const currentMission = activeMissions[missionIndex] || activeMissions[0];
   const selectedColor = COLOR_PALETTE[selectedColorIndex] || COLOR_PALETTE[0];
 
-  // TTS Sesli Okuma
-  const speakInstruction = useCallback((text?: string) => {
-    try {
-      if (!soundEnabled) return;
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text || currentMission.speechText);
-        utterance.lang = 'tr-TR';
-        utterance.rate = 0.95;
-        window.speechSynthesis.speak(utterance);
-      }
-    } catch (e) {
-      // ignore
-    }
-  }, [soundEnabled, currentMission]);
-
-  // Görev değiştiğinde temizle ve seslendir
+  // Görev değiştiğinde temizle
   useEffect(() => {
     setDrawnPoints([]);
     setShowGhostHint(false);
     setStatusMessage(null);
-    speakInstruction(currentMission.speechText);
-  }, [missionIndex, currentMission, speakInstruction]);
+  }, [missionIndex, currentMission]);
 
   // Canlı Şekil Analizi
   const analysis = useMemo(() => {
@@ -644,8 +627,9 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
                 ? 'bg-amber-500/20 border-amber-400/40 text-amber-300' 
                 : 'bg-white/5 border-white/10 text-slate-400'
             }`}
+            title={soundEnabled ? 'Sesleri Kapat' : 'Sesleri Aç'}
           >
-            <Volume2 className="w-4 h-4" />
+            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
           </button>
           <div className="px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-400/30 flex items-center gap-1 text-xs font-black text-amber-300">
             <Award className="w-3.5 h-3.5" />
@@ -655,30 +639,33 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
       </div>
 
       {/* GÖREV VE TALİMAT KARTI */}
-      <div className="w-full max-w-md my-1 p-3 rounded-2xl bg-gradient-to-r from-white/10 to-white/5 border border-white/20 shadow-xl backdrop-blur-md flex flex-col gap-1.5 shrink-0">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl">{currentMission.icon}</span>
-            <div>
+      <div className="relative z-20 w-full max-w-md my-1 sm:my-2 p-3 rounded-2xl bg-gradient-to-r from-white/10 to-white/5 border border-white/20 shadow-xl backdrop-blur-md flex flex-col gap-1.5 shrink-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-2xl shrink-0">{currentMission.icon}</span>
+            <div className="min-w-0">
               <div className="text-xs font-extrabold text-amber-300 flex items-center gap-1">
                 <span>GÖREV {missionIndex + 1}/{activeMissions.length}</span>
                 {completedMissions.includes(currentMission.id) && (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 inline shrink-0" />
                 )}
               </div>
-              <h2 className="text-base sm:text-lg font-black text-white leading-tight">
+              <h2 className="text-base sm:text-lg font-black text-white leading-tight truncate">
                 {currentMission.title}
               </h2>
             </div>
           </div>
 
-          <button
-            onClick={() => speakInstruction()}
-            className="p-2 rounded-xl bg-amber-400 text-slate-950 hover:bg-amber-300 font-bold text-xs flex items-center gap-1 shadow-md transition-transform active:scale-95"
-            title="Sesli Dinle"
-          >
-            <Volume2 className="w-4 h-4" />
-          </button>
+          {/* SESLİ İKONUNUN YERİNE X İLE KAPATMA BUTONU */}
+          {onClose && (
+            <button
+              onClick={onClose}
+              className="p-2 sm:p-2.5 rounded-xl bg-rose-500/20 hover:bg-rose-500/40 border border-rose-400/40 text-rose-300 hover:text-white font-bold transition-all active:scale-95 shadow-md flex items-center justify-center shrink-0 cursor-pointer"
+              title="Kapat"
+            >
+              <X className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          )}
         </div>
 
         <p className="text-xs sm:text-sm text-slate-200 font-medium">

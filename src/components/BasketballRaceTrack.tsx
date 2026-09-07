@@ -90,7 +90,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplumbağa)
           groupName: '1. GRUP',
           character: 'KAPLUMBAĞA',
-          img: '/kap.png',
+          img: '/kap1.png',
           badgeBg: 'from-blue-500 to-indigo-600',
           borderColor: 'border-cyan-300',
           glowColor: 'shadow-[0_0_10px_rgba(6,182,212,0.8)]',
@@ -100,7 +100,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           playerIndex: 1, // 2. GRUP (Right Lane - Red/Ejderha)
           groupName: '2. GRUP',
           character: 'EJDERHA',
-          img: '/ejd.png',
+          img: '/ejd1.png',
           badgeBg: 'from-rose-500 to-pink-600',
           borderColor: 'border-pink-300',
           glowColor: 'shadow-[0_0_10px_rgba(244,63,94,0.8)]',
@@ -112,7 +112,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           playerIndex: 0, // 1. GRUP (Left Lane - Blue/Kaplumbağa)
           groupName: '1. GRUP',
           character: 'KAPLUMBAĞA',
-          img: '/kap.png',
+          img: '/kap1.png',
           badgeBg: 'from-blue-500 to-indigo-600',
           borderColor: 'border-cyan-300',
           glowColor: 'shadow-[0_0_10px_rgba(6,182,212,0.8)]',
@@ -122,7 +122,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           playerIndex: 1, // 2. GRUP (Middle Lane - Red/Ejderha)
           groupName: '2. GRUP',
           character: 'EJDERHA',
-          img: '/ejd.png',
+          img: '/ejd1.png',
           badgeBg: 'from-rose-500 to-pink-600',
           borderColor: 'border-pink-300',
           glowColor: 'shadow-[0_0_10px_rgba(244,63,94,0.8)]',
@@ -132,7 +132,7 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
           playerIndex: 2, // 3. GRUP (Right Lane - Green/Savaşçı)
           groupName: '3. GRUP',
           character: 'SAVAŞÇI',
-          img: '/balta.png',
+          img: '/balta1.png',
           badgeBg: 'from-emerald-500 to-teal-600',
           borderColor: 'border-emerald-300',
           glowColor: 'shadow-[0_0_10px_rgba(16,185,129,0.8)]',
@@ -178,12 +178,12 @@ export const BasketballRaceTrack: React.FC<BasketballRaceTrackProps> = ({
               return (
                 <div
                   key={cfg.groupName}
-                  className="absolute flex items-center justify-center transition-all duration-700 ease-out z-30"
+                  className="absolute flex items-center justify-center transition-all duration-500 ease-out z-30 will-change-[top,transform]"
                   style={{
                     // Travels upward from bottom start chevron (~87%) to top basket hoop (~13%)
                     left: `${cfg.centerPercent}%`,
                     top: `calc(87% - ${progressRatio} * 74%)`,
-                    transform: 'translate(-50%, -50%)',
+                    transform: 'translate3d(-50%, -50%, 0)',
                   }}
                 >
                   <div className="relative flex flex-col items-center">
@@ -335,7 +335,7 @@ const SINGLE_TRACK_CONFIGS = [
     trackSrc: '/p1.png',
     groupName: '1. GRUP',
     character: 'KAPLUMBAĞA',
-    img: '/kap.png',
+    img: '/kap1.png',
     badgeBg: 'from-blue-500 to-indigo-600',
     borderColor: 'border-cyan-300',
     glowColor: 'shadow-[0_0_12px_rgba(6,182,212,0.6)]',
@@ -344,7 +344,7 @@ const SINGLE_TRACK_CONFIGS = [
     trackSrc: '/p2.png',
     groupName: '2. GRUP',
     character: 'EJDERHA',
-    img: '/ejd.png',
+    img: '/ejd1.png',
     badgeBg: 'from-rose-500 to-pink-600',
     borderColor: 'border-pink-300',
     glowColor: 'shadow-[0_0_12px_rgba(244,63,94,0.6)]',
@@ -353,7 +353,7 @@ const SINGLE_TRACK_CONFIGS = [
     trackSrc: '/p3.png',
     groupName: '3. GRUP',
     character: 'SAVAŞÇI',
-    img: '/balta.png',
+    img: '/balta1.png',
     badgeBg: 'from-emerald-500 to-teal-600',
     borderColor: 'border-emerald-300',
     glowColor: 'shadow-[0_0_12px_rgba(16,185,129,0.6)]',
@@ -391,11 +391,11 @@ export const SingleBasketballTrack: React.FC<SingleBasketballTrackProps> = ({
         {/* Mascot moving upwards towards basket */}
         <div className="absolute inset-0 z-20 pointer-events-none">
           <div
-            className="absolute flex flex-col items-center transition-all duration-700 ease-out z-30"
+            className="absolute flex flex-col items-center transition-all duration-500 ease-out z-30 will-change-[top,transform]"
             style={{
               left: '50%',
               top: `calc(87% - ${progressRatio} * 73%)`,
-              transform: 'translate(-50%, -50%)',
+              transform: 'translate3d(-50%, -50%, 0)',
             }}
           >
             {/* Basket! indicator when target reached */}

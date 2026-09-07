@@ -8,6 +8,7 @@ interface TugOfWarTrackProps {
   duelWinnerIndex?: number | null;
   soundEnabled?: boolean;
   className?: string;
+  onVideoComplete?: () => void;
 }
 
 export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
@@ -15,7 +16,8 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
   targetScore = 10,
   duelWinnerIndex = null,
   soundEnabled = true,
-  className = ''
+  className = '',
+  onVideoComplete
 }) => {
   const p1Score = players[0]?.score || 0;
   const p2Score = players[1]?.score || 0;
@@ -23,8 +25,8 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
   // Track previous scores to trigger pull animation
   const [lastPullTeam, setLastPullTeam] = useState<'p1' | 'p2' | null>(null);
   const [pullAnimKey, setPullAnimKey] = useState(0);
-  const [isDefeatDismissed, setIsDefeatDismissed] = useState(false);
-  const defeatVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [isWinnerVideoDismissed, setIsWinnerVideoDismissed] = useState(false);
+  const winnerVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const prevScoresRef = React.useRef({ p1: p1Score, p2: p2Score });
 
@@ -58,58 +60,87 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
   const isP2Won = p2Score >= targetScore || duelWinnerIndex === 1;
   const isGameOver = isP1Won || isP2Won || duelWinnerIndex !== null;
 
-  // Defeat Video Selection:
-  // Kaplumbağa yenilirse (P2 Ejderha kazandı) -> hakapyen.mp4
-  // Ejderha yenilirse (P1 Kaplumbağa kazandı) -> haejyen.mp4
-  const defeatVideoSrc = isP2Won ? '/hakapyen.mp4' : isP1Won ? '/haejyen.mp4' : null;
+  // KULLANICI TALEBİ: Halat çekme oyunlarında sadece KAZANAN tarafın videosunu göster (ortadaki alanda)
+  // 1. Grup (Kaplumbağa) kazandıysa -> /kap.mp4
+  // 2. Grup (Ejderha) kazandıysa -> /ejd.mp4
+  const winnerVideoSrc = isP1Won ? '/kap.mp4' : isP2Won ? '/ejd.mp4' : null;
+  const winnerTitle = isP1Won ? '1. GRUP (KAPLUMBAĞA) KAZANDI! 🏆' : isP2Won ? '2. GRUP (EJDERHA) KAZANDI! 🏆' : '';
+  const winnerBadgeBg = isP1Won ? 'from-blue-600 via-cyan-500 to-indigo-600' : 'from-rose-600 via-pink-500 to-red-600';
+  const winnerImg = isP1Won ? '/kap1.png' : '/ejd1.png';
 
   // Reset dismissal if game resets or winner changes
   useEffect(() => {
-    setIsDefeatDismissed(false);
+    setIsWinnerVideoDismissed(false);
   }, [isGameOver, duelWinnerIndex, p1Score, p2Score]);
 
-  // Handle defeat video autoplay and sound
+  // Handle winner video autoplay and sound
   useEffect(() => {
-    if (defeatVideoRef.current && defeatVideoSrc && !isDefeatDismissed) {
-      defeatVideoRef.current.currentTime = 0;
-      defeatVideoRef.current.muted = !soundEnabled;
-      const playPromise = defeatVideoRef.current.play();
+    if (winnerVideoRef.current && winnerVideoSrc && !isWinnerVideoDismissed) {
+      winnerVideoRef.current.currentTime = 0;
+      winnerVideoRef.current.muted = !soundEnabled;
+      const playPromise = winnerVideoRef.current.play();
       if (playPromise !== undefined) {
         playPromise.catch(() => {
           // If unmuted autoplay blocked by browser policy, fallback to muted
-          if (defeatVideoRef.current) {
-            defeatVideoRef.current.muted = true;
-            defeatVideoRef.current.play().catch(() => {});
+          if (winnerVideoRef.current) {
+            winnerVideoRef.current.muted = true;
+            winnerVideoRef.current.play().catch(() => {});
           }
         });
       }
     }
-  }, [defeatVideoSrc, soundEnabled, isDefeatDismissed]);
+  }, [winnerVideoSrc, soundEnabled, isWinnerVideoDismissed]);
 
   return (
     <div
       id="tug-of-war-arena"
-      className={`relative flex flex-col items-center justify-between h-full w-[200px] xs:w-[225px] sm:w-[260px] md:w-[295px] lg:w-[325px] rounded-2xl sm:rounded-3xl bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-900/95 backdrop-blur-md border-2 border-amber-400/60 shadow-[0_0_35px_rgba(245,158,11,0.3),inset_0_1px_2px_rgba(255,255,255,0.2)] p-2 sm:p-2.5 overflow-hidden select-none ${className}`}
+      className={`relative flex flex-col items-center justify-between h-full w-[200px] xs:w-[225px] sm:w-[260px] md:w-[295px] lg:w-[325px] rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0b1329] via-[#070c1b] to-[#0b1329] border-2 border-amber-400/60 shadow-[0_0_35px_rgba(245,158,11,0.3),inset_0_1px_2px_rgba(255,255,255,0.2)] p-2 sm:p-2.5 overflow-hidden select-none ${className}`}
     >
       {/* BACKGROUND FIELD DECORATION */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px]" />
 
-      {/* FULL-FRAME DEFEAT VIDEO: YAZISIZ VE MESAJSIZ TÜM ÇERÇEVEYİ KAPLAYAN VİDEO EKRANI */}
-      {defeatVideoSrc && !isDefeatDismissed && (
+      {/* FULL-FRAME WINNER VIDEO: HALAT ÇEKMEDE ORTADAKİ ALANDA SADECE KAZANAN TARAFIN VİDEOSU GÖSTERİLİR */}
+      {winnerVideoSrc && !isWinnerVideoDismissed && (
         <div className="absolute inset-0 z-50 rounded-2xl sm:rounded-3xl overflow-hidden bg-black flex items-center justify-center pointer-events-auto animate-in fade-in duration-300">
           <video
-            ref={defeatVideoRef}
-            src={defeatVideoSrc}
+            ref={winnerVideoRef}
+            src={winnerVideoSrc}
             autoPlay
-            loop
             playsInline
             muted={!soundEnabled}
             className="w-full h-full object-cover"
+            onEnded={() => {
+              if (onVideoComplete) {
+                onVideoComplete();
+              }
+            }}
           />
+
+          {/* Winner banner on top of video */}
+          <div className={`absolute top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r ${winnerBadgeBg} text-white font-black text-[10px] sm:text-xs px-3 py-1 rounded-full border border-white shadow-xl flex items-center gap-1.5 z-20 pointer-events-none drop-shadow-md animate-pulse`}>
+            <img src={winnerImg} alt="Şampiyon" className="w-4 h-4 object-contain" />
+            <span>{winnerTitle}</span>
+          </div>
+
+          {/* Bottom Action: Sonuçları Gör button */}
+          <button
+            type="button"
+            onClick={() => {
+              setIsWinnerVideoDismissed(true);
+              if (onVideoComplete) {
+                onVideoComplete();
+              }
+            }}
+            className="absolute bottom-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-950 font-black text-[10px] sm:text-xs px-3.5 py-1.5 rounded-full border border-white shadow-2xl transition cursor-pointer z-20 flex items-center gap-1"
+          >
+            <span>Sonuçları Gör</span>
+            <span>⏩</span>
+          </button>
+
           {/* Subtle translucent close icon */}
           <button
             type="button"
-            onClick={() => setIsDefeatDismissed(true)}
+            onClick={() => setIsWinnerVideoDismissed(true)}
             className="absolute top-2.5 right-2.5 z-20 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center text-xs font-bold border border-white/30 shadow-lg backdrop-blur-xs transition-colors cursor-pointer"
             title="Kapat"
             aria-label="Kapat"
@@ -273,10 +304,10 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
             <div className="relative w-[64px] h-[114px] sm:w-[76px] sm:h-[135px] md:w-[84px] md:h-[150px] flex items-center justify-center">
               <TransparentVideo
                 src="/hakap.mp4"
-                fallbackImg="/kap.png"
+                fallbackImg="/kap1.png"
                 alt="1. Grup Kaplumbağa"
                 isPaused={isGameOver}
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(6,182,212,0.85)]"
+                className="w-full h-full object-contain"
               />
 
               {/* Strain / pull dust clouds on Kaplumbağa */}
@@ -318,10 +349,10 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
             <div className="relative w-[64px] h-[114px] sm:w-[76px] sm:h-[135px] md:w-[84px] md:h-[150px] flex items-center justify-center">
               <TransparentVideo
                 src="/haej.mp4"
-                fallbackImg="/ejd.png"
+                fallbackImg="/ejd1.png"
                 alt="2. Grup Ejderha"
                 isPaused={isGameOver}
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(244,63,94,0.85)]"
+                className="w-full h-full object-contain"
               />
 
               {/* Strain / pull dust clouds on Ejderha */}
@@ -339,26 +370,26 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
           {isP1Won ? (
             <div className="px-2 py-1 bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-600 text-white font-black text-[11px] sm:text-xs rounded-xl border border-white shadow-lg flex items-center justify-center gap-1.5 animate-bounce">
               <span>🏆 1. GRUP HALATI KAZANDI!</span>
-              {isDefeatDismissed && (
+              {isWinnerVideoDismissed && (
                 <button
                   type="button"
-                  onClick={() => setIsDefeatDismissed(false)}
-                  className="px-1.5 py-0.5 bg-rose-600 hover:bg-rose-500 text-white text-[9px] rounded font-bold border border-white/60 pointer-events-auto cursor-pointer shadow ml-1"
+                  onClick={() => setIsWinnerVideoDismissed(false)}
+                  className="px-1.5 py-0.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-[9px] rounded font-bold border border-white/60 pointer-events-auto cursor-pointer shadow ml-1"
                 >
-                  🎬 Ejderha Yenilgisi
+                  🎬 Şampiyon Videosu
                 </button>
               )}
             </div>
           ) : isP2Won ? (
             <div className="px-2 py-1 bg-gradient-to-r from-rose-600 via-pink-500 to-rose-600 text-white font-black text-[11px] sm:text-xs rounded-xl border border-white shadow-lg flex items-center justify-center gap-1.5 animate-bounce">
               <span>🏆 2. GRUP HALATI KAZANDI!</span>
-              {isDefeatDismissed && (
+              {isWinnerVideoDismissed && (
                 <button
                   type="button"
-                  onClick={() => setIsDefeatDismissed(false)}
-                  className="px-1.5 py-0.5 bg-blue-600 hover:bg-blue-500 text-white text-[9px] rounded font-bold border border-white/60 pointer-events-auto cursor-pointer shadow ml-1"
+                  onClick={() => setIsWinnerVideoDismissed(false)}
+                  className="px-1.5 py-0.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-[9px] rounded font-bold border border-white/60 pointer-events-auto cursor-pointer shadow ml-1"
                 >
-                  🎬 Kaplumbağa Yenilgisi
+                  🎬 Şampiyon Videosu
                 </button>
               )}
             </div>

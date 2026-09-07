@@ -729,12 +729,9 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const secilenIndex = Math.floor(Math.random() * secilenDizi.length);
       const secilenNesne = secilenDizi[secilenIndex];
 
-      // Küçük çocukların görselle kolayca seçebilmesi için şık oluşturucu (metinler kesilmez)
+      // Soru 1 için şık: Sadece nesnenin görseli (yazı olmadan, temiz ve net)
       const nesneSecenegiHTML = (nesne: { ad: string; img: string }) => `
-        <div class="flex items-center justify-center gap-1.5 w-full px-1">
-          <img src="${nesne.img}" alt="${nesne.ad}" class="w-6 h-6 sm:w-7 sm:h-7 object-contain drop-shadow shrink-0" />
-          <span class="font-black text-[11px] sm:text-xs md:text-sm text-white leading-tight text-center break-words line-clamp-2">${nesne.ad}</span>
-        </div>
+        <img src="${nesne.img}" alt="${nesne.ad}" class="h-9 sm:h-11 md:h-12 w-auto max-w-[85%] object-contain drop-shadow pointer-events-none" />
       `;
 
       // 5 okul eşyasının 1.den 5.ye kadar sıra görünümü (100% genişlik, ekrandan asla taşmaz)
@@ -803,20 +800,13 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
           </div>
         `;
 
-        const siraSecenekHTML = (siraMetni: string) => `
-          <div class="flex items-center justify-center gap-1.5 w-full px-1">
-            <img src="${secilenNesne.img}" alt="${secilenNesne.ad}" class="w-5 h-5 sm:w-6 sm:h-6 object-contain drop-shadow shrink-0" />
-            <span class="font-black text-xs sm:text-sm text-white leading-tight text-center">${siraMetni}</span>
-          </div>
-        `;
-
         const yanlisSiraSecenekleri = siraAdlari.filter((_, i) => i !== secilenIndex).slice(0, 3);
         return {
           question: `Sırada "${secilenNesne.ad}" kaçıncı sıradadır?`,
           questionHTML,
-          correct: siraSecenekHTML(siraAdlari[secilenIndex]),
-          wrong: yanlisSiraSecenekleri.map(s => siraSecenekHTML(s)),
-          isLong: true
+          correct: siraAdlari[secilenIndex],
+          wrong: yanlisSiraSecenekleri,
+          isLong: false
         };
       }
     }

@@ -719,6 +719,58 @@ canvas,
   animation: spinSlow 12s linear infinite;
 }
 
+/* ==========================================================================
+   4K AKILLI TAHTA & ULTRA-HD EKRANLAR İÇİN OTOMATİK ÖLÇEKLEME (3840x2160)
+   ========================================================================== */
+@media (min-width: 2100px) or (min-height: 1200px) {
+  :root {
+    font-size: 18.5px; /* Rem bazlı tüm metin, buton ve kutular orantılı büyür */
+  }
+
+  /* 4K ekranda kartların dar kalmasını önle */
+  #tug-of-war-arena {
+    width: 380px !important;
+  }
+}
+
+@media (min-width: 2800px) or (min-height: 1600px) {
+  :root {
+    font-size: 22px; /* Gerçek 4K ekranda uzaktan rahatça görülebilen boyut */
+  }
+
+  #tug-of-war-arena {
+    width: 440px !important;
+  }
+}
+
+/* MANUEL VEYA OTOMATİK 4K AKILLI TAHTA MODU AKTİFKEN */
+html.smartboard-4k-active {
+  font-size: 19px !important;
+}
+
+html.smartboard-4k-active #tug-of-war-arena {
+  width: 360px !important;
+}
+
+@media (max-width: 1400px) {
+  html.smartboard-4k-active {
+    font-size: 17px !important;
+  }
+}
+
+/* ==========================================================================
+   AKILLI TAHTA VE DÜŞÜK DONANIM İÇİN ŞIK BUTONLARI HIZLANDIRMA (ZERO-LAG)
+   ========================================================================== */
+.fast-quiz-btn {
+  contain: layout paint style;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
+  touch-action: manipulation;
+}
+
 
 
 
