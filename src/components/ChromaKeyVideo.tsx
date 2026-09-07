@@ -45,6 +45,7 @@ export const ChromaKeyVideo: React.FC<ChromaKeyVideoProps> = ({
 
     let animId: number;
     let isMounted = true;
+    let lastRenderTime = 0;
 
     const renderSingleFrame = () => {
       if (!video || !canvas || !ctx || video.readyState < 2) return;
@@ -52,14 +53,19 @@ export const ChromaKeyVideo: React.FC<ChromaKeyVideoProps> = ({
         const vWidth = video.videoWidth;
         const vHeight = video.videoHeight;
         if (vWidth > 0 && vHeight > 0) {
-          if (canvas.width !== vWidth || canvas.height !== vHeight) {
-            canvas.width = vWidth;
-            canvas.height = vHeight;
+          // Akıllı tahtalar ve düşük donanımlı cihazlar için işlem çözünürlüğünü maks 360p ile sınırla
+          const scale = Math.min(1, 360 / vWidth);
+          const targetW = Math.max(1, Math.round(vWidth * scale));
+          const targetH = Math.max(1, Math.round(vHeight * scale));
+
+          if (canvas.width !== targetW || canvas.height !== targetH) {
+            canvas.width = targetW;
+            canvas.height = targetH;
             setAspectRatio(vWidth / vHeight);
           }
-          ctx.drawImage(video, 0, 0, vWidth, vHeight);
+          ctx.drawImage(video, 0, 0, targetW, targetH);
           if (enableChromaKey) {
-            const frame = ctx.getImageData(0, 0, vWidth, vHeight);
+            const frame = ctx.getImageData(0, 0, targetW, targetH);
             const l = frame.data.length;
             for (let i = 0; i < l; i += 4) {
               const r = frame.data[i];
@@ -125,11 +131,15 @@ export const ChromaKeyVideo: React.FC<ChromaKeyVideoProps> = ({
       }
     };
 
-    const processFrame = () => {
+    const processFrame = (timestamp: number) => {
       if (!isMounted) return;
 
-      if (video && video.readyState >= 2) {
-        renderSingleFrame();
+      // Sadece video oynarken ve hazır olduğunda, maks ~30 FPS ile işle
+      if (video && !video.paused && !video.ended && video.readyState >= 2) {
+        if (!lastRenderTime || timestamp - lastRenderTime >= 32) {
+          lastRenderTime = timestamp;
+          renderSingleFrame();
+        }
       }
 
       if (isMounted) {

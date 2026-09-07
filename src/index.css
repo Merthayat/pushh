@@ -630,6 +630,64 @@ button svg, .button-icon-3d {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* ==========================================================================
+   AKILLI TAHTA (PARDUS / LINUX / DÜŞÜK GPU) PERFORMANS OPTİMİZASYONLARI
+   ========================================================================== */
+
+/* 1. Dokunmatik ekran gecikmesini önle */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent;
+}
+button, a, input, select, [role="button"] {
+  touch-action: manipulation;
+}
+
+/* 2. Donanım hızlandırmalı GPU katmanları oluştur (CPU'dan GPU'ya aktar) */
+.question-visual-box,
+.halat-islem-box,
+.formula-box,
+video,
+canvas,
+.scale-wrapper {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* 3. Düşük donanımlı sistemlerde CPU kilitleyen backdrop-filter: blur() yükünü kaldır */
+.backdrop-blur-sm,
+.backdrop-blur,
+.backdrop-blur-md,
+.backdrop-blur-lg,
+.backdrop-blur-xl,
+.backdrop-blur-2xl,
+.backdrop-blur-3xl,
+[class*="backdrop-blur"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Backdrop-filter yerine temiz ve akıcı yarı saydam arka planlar */
+.bg-white\/10 { background-color: rgba(255, 255, 255, 0.12) !important; }
+.bg-white\/20 { background-color: rgba(255, 255, 255, 0.22) !important; }
+.bg-slate-900\/70,
+.bg-slate-900\/80,
+.bg-slate-900\/90 { background-color: rgba(15, 23, 42, 0.92) !important; }
+
+/* 4. CPU'da ağır piksel taraması yapan karmaşık drop-shadow filtrelerini hafiflet */
+[class*="drop-shadow-[0_"] {
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55)) !important;
+}
+
+/* 5. Animasyonların sürekli repaint yapmasını sınırla */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @keyframes scaleUp {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }

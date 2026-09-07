@@ -6470,7 +6470,7 @@ export default function App() {
                     <div className="h-28 sm:h-36 aspect-[9/16] flex items-center justify-center relative">
                       <ChromaKeyVideo
                         key={customWinVideo || 'default-win-video'}
-                        src={customWinVideo || "/aslan-win.mp4"}
+                        src={customWinVideo || "/3s.mp4"}
                         autoPlay={true}
                         loop={true}
                         muted={true}
