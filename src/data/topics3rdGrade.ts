@@ -2316,14 +2316,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         const yanlis = benzersizYanlislar(dogru, adaylar, 0);
 
         return {
-          question: `${secilen.ad} cisminin kaç tane KÖŞESİ vardır?`,
+          question: `Bu geometrik cismin kaç tane KÖŞESİ vardır?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-              <div class="flex items-center justify-center gap-3">
-                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
-                </div>
-                <span class="px-4 py-2 rounded-2xl bg-amber-400 text-slate-950 font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
+              <div class="flex items-center justify-center">
+                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">KÖŞESİ</span> vardır?
@@ -2339,14 +2336,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         const yanlis = benzersizYanlislar(dogru, adaylar, 0);
 
         return {
-          question: `${secilen.ad} cisminin kaç tane AYRITI vardır?`,
+          question: `Bu geometrik cismin kaç tane AYRITI vardır?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-              <div class="flex items-center justify-center gap-3">
-                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
-                </div>
-                <span class="px-4 py-2 rounded-2xl bg-indigo-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
+              <div class="flex items-center justify-center">
+                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">AYRITI (Kenarı)</span> vardır?
@@ -2362,14 +2356,11 @@ export const topics3rdGrade: Record<string, { title: string; desc: string; gener
         const yanlis = benzersizYanlislar(dogru, adaylar, 1);
 
         return {
-          question: `${secilen.ad} cisminin kaç tane YÜZÜ vardır?`,
+          question: `Bu geometrik cismin kaç tane YÜZÜ vardır?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-              <div class="flex items-center justify-center gap-3">
-                <div class="p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 shadow-md flex items-center justify-center shrink-0">
-                  <img src="${secilen.img}" alt="${secilen.ad}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.8)] hover:scale-105 transition-transform" />
-                </div>
-                <span class="px-4 py-2 rounded-2xl bg-emerald-600 text-white font-black text-base sm:text-xl uppercase border-2 border-white shadow-md">${secilen.ad}</span>
+              <div class="flex items-center justify-center">
+                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
                 Bu geometrik cismin kaç tane <span class="text-amber-300 underline decoration-amber-400 font-black">YÜZÜ</span> vardır?

@@ -1201,9 +1201,9 @@ export const topics2ndGrade: Record<string, { title: string; desc: string; gener
         const dogruAd = CISIM_OZELLIK[secilenKey].ad;
         const tumAdlar = Object.values(CISIM_OZELLIK).map(o => o.ad);
         const wrong = rastgeleSec(tumAdlar.filter(a => a !== dogruAd), 3);
-        const soruHTML = `<div class="flex flex-col items-center justify-center w-full gap-1.5 sm:gap-2 my-auto max-h-full py-0.5"><div class="p-1.5 sm:p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div><div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] w-full px-1">Bu geometrik cismin adı nedir?</div></div>`;
+        const soruHTML = `<div class="flex flex-col items-center justify-center w-full my-auto max-h-full py-0.5"><div class="p-2 sm:p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_25px_rgba(0,0,0,0.4)] flex items-center justify-center shrink-0 drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform">${CISIM_SVG[secilenKey]}</div></div>`;
         return {
-          question: "Bu geometrik cismin adı nedir?",
+          question: "",
           questionHTML: soruHTML,
           correct: dogruAd,
           wrong,

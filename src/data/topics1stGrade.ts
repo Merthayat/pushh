@@ -1983,8 +1983,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       ];
       const secilen = eslesmeler[Math.floor(Math.random() * eslesmeler.length)];
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 text-center my-auto">
-          <div class="text-4xl xs:text-5xl sm:text-6xl filter drop-shadow-xl my-1 animate-pulse">${secilen.emoji}</div>
+        <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto">
           <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
             <b>${secilen.sekil}</b> hangisidir?
           </div>

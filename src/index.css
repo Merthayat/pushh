@@ -336,6 +336,51 @@
   font-size: 0.88rem !important;
 }
 
+/* 4. SINIF SAYI VE ŞEKİL ÖRÜNTÜLERİ */
+.oruntu-sequence-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  overflow: visible !important;
+}
+
+.oruntu-sequence-container > div {
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+
+/* Sadece 3 kişilik modda: Soru metnini biraz küçült */
+.question-visual-box.multi-player-3 .oruntu-soru-metni {
+  font-size: clamp(0.72rem, 1.6vw, 0.88rem) !important;
+  line-height: 1.25 !important;
+  max-width: 96% !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+/* Sadece 3 kişilik modda: Görselleri/kutuları alt satıra inmeyecek şekilde büyüt */
+.question-visual-box.multi-player-3 .oruntu-sequence-container {
+  gap: 0.28rem !important;
+  margin-top: 0.2rem !important;
+  margin-bottom: 0.2rem !important;
+}
+
+.question-visual-box.multi-player-3 .oruntu-sequence-container > div {
+  min-width: 36px !important;
+  height: 34px !important;
+  font-size: 0.92rem !important;
+  padding: 0 0.45rem !important;
+  border-width: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+}
+
 /* Formula & Math Banner auto-fit across multi-player modes */
 .whitespace-nowrap,
 [class*="whitespace-nowrap"],
