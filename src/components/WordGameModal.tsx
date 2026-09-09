@@ -121,17 +121,17 @@ const getWordOptionFontSize = (options: string[], mode: 1 | 2 | 3 = 1) => {
     return 'text-[11px] xs:text-xs sm:text-sm font-black';
   }
   if (mode === 2) {
-    if (maxOptLen <= 4) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
-    if (maxOptLen <= 7) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
-    if (maxOptLen <= 11) return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
-    return 'text-xs xs:text-sm sm:text-base md:text-lg font-black';
+    if (maxOptLen <= 4) return 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black';
+    if (maxOptLen <= 7) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
+    if (maxOptLen <= 11) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
+    return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
   }
   // 1-Player Quiz
-  if (maxOptLen <= 4) return 'text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black';
-  if (maxOptLen <= 7) return 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black';
-  if (maxOptLen <= 11) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
-  if (maxOptLen <= 15) return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
-  return 'text-sm xs:text-base sm:text-lg md:text-xl font-black';
+  if (maxOptLen <= 4) return 'text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-black';
+  if (maxOptLen <= 7) return 'text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-black';
+  if (maxOptLen <= 11) return 'text-xl xs:text-2xl sm:text-3xl md:text-4xl font-black';
+  if (maxOptLen <= 15) return 'text-lg xs:text-xl sm:text-2xl md:text-3xl font-black';
+  return 'text-base xs:text-lg sm:text-xl md:text-2xl font-black';
 };
 
 const getWinnerVideoConfig = (winnerIdx: number | null) => {
@@ -230,7 +230,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
   const [matchMoves, setMatchMoves] = useState(0);
   const [matchTimer, setMatchTimer] = useState(0);
   const [isMatchComplete, setIsMatchComplete] = useState(false);
-  const matchDifficulty = 6; // 6 pairs = 12 cards
+  const matchDifficulty = isIng ? 8 : 6; // İngilizce: 8 çift = 16 kart (4x4), Zıt/Eş: 6 çift = 12 kart
 
   const initMatchingGame = useCallback(() => {
     const shuffledSource = [...rawData].sort(() => Math.random() - 0.5);
@@ -620,15 +620,15 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
     const optFontClass = getWordOptionFontSize(p.currentQuestion?.options || [], activeMode === 'duel3' ? 3 : 2);
     const optHeightClasses = activeMode === 'duel3' 
-      ? "py-1 sm:py-1.5 px-1 sm:px-1.5 min-h-[36px] sm:min-h-[42px]" 
-      : "py-2 sm:py-2.5 px-2 min-h-[44px] sm:min-h-[54px]";
+      ? "py-2 sm:py-2.5 px-1.5 min-h-[46px] sm:min-h-[53px] md:min-h-[58px]" 
+      : "py-3 sm:py-3.5 px-2.5 min-h-[56px] sm:min-h-[68px] md:min-h-[76px]";
 
     // KAZANAN GRUP: KART KENDİ ALANINDA ZAFER VİDEOSUNU GÖSTERİR
     if (isWinnerGroup) {
       return (
         <div
           key={p.id}
-          className={`relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-[#0a0f1d] shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+          className={`relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-4 border-yellow-400 bg-[#0a0f1d] shadow-[0_0_35px_rgba(250,204,21,0.85)] ring-4 ring-yellow-400/50 overflow-hidden min-h-0 z-30 scale-[1.02] transition-all w-full ${activeMode === 'duel2' ? 'max-w-[500px] lg:max-w-[560px]' : 'max-w-none'} mx-auto h-full`}
         >
           <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-br from-yellow-400 via-amber-300 to-yellow-600 border-2 border-white shadow-[0_0_15px_rgba(250,204,21,0.9)] text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center shrink-0 animate-bounce">
@@ -717,7 +717,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
     return (
       <div
         key={p.id}
-        className={`relative flex-1 flex flex-col justify-between p-1 sm:p-2 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-[#0a0f1d] shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[460px]' : 'max-w-none'} mx-auto h-full`}
+        className={`relative flex-1 flex flex-col justify-between p-1.5 sm:p-2.5 rounded-2xl sm:rounded-3xl border-2 ${groupTheme.containerBorder} bg-[#0a0f1d] shadow-2xl overflow-hidden min-h-0 z-10 transition-all w-full ${activeMode === 'duel2' ? 'max-w-[500px] lg:max-w-[560px]' : 'max-w-none'} mx-auto h-full`}
       >
         {/* PLAYER HEADER BAR */}
         <div className="flex items-center justify-between z-10 shrink-0 w-full mb-1">
@@ -749,7 +749,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
         </div>
 
         {/* QUESTION SOLID CONTAINER FOR THIS PLAYER */}
-        <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-cyan-300/60 shadow-[0_8px_32px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.15)] ${activeMode === 'duel3' ? 'px-1 py-1 sm:px-1.5 sm:py-1.5 my-0.5' : 'px-2 py-1.5 sm:px-3 sm:py-2.5 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
+        <div className={`relative flex-1 rounded-2xl sm:rounded-3xl bg-[#0f172a] border-2 border-cyan-300/60 shadow-[0_8px_32px_rgba(0,0,0,0.9),inset_0_1px_2px_rgba(255,255,255,0.15)] ${activeMode === 'duel3' ? 'px-1.5 py-1.5 sm:px-2 sm:py-2 my-0.5' : 'px-3 py-2 sm:px-4 sm:py-3 my-1'} flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-0 w-full`}>
           <div className="absolute top-0 left-0 right-0 h-1/4 bg-gradient-to-b from-white/10 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
           {p.isEliminated || p.lives <= 0 ? (
@@ -763,23 +763,23 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
               </div>
             </div>
           ) : p.currentQuestion ? (
-            <div className="relative z-10 flex flex-col items-center justify-center text-center px-1 sm:px-2 w-full max-h-full overflow-hidden">
-              <div className="text-[10px] sm:text-xs font-black uppercase text-amber-300 tracking-wider mb-1 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
+            <div className="relative z-10 flex flex-col items-center justify-center text-center px-2 sm:px-3 w-full max-h-full overflow-hidden my-auto">
+              <div className="text-xs sm:text-sm md:text-base font-black uppercase text-amber-300 tracking-wider mb-2 drop-shadow-[0_2px_4px_#000] [text-shadow:0_2px_4px_#000]">
                 {isIng ? 'TÜRKÇE ANLAMI:' : `${gameConcept.toUpperCase()} ANLAMLISI:`}
               </div>
 
               {/* TARGET WORD DISPLAY */}
-              <div className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-xs xs:text-sm sm:text-base md:text-lg tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 border-white flex items-center justify-center gap-1.5 max-w-full truncate">
-                {!isIng && p.currentQuestion.emoji && <span className="text-base sm:text-lg shrink-0">{p.currentQuestion.emoji}</span>}
+              <div className="px-5 py-2 sm:px-7 sm:py-3 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-wide uppercase shadow-[0_8px_20px_rgba(245,158,11,0.4)] border-2 sm:border-3 border-white flex items-center justify-center gap-2 max-w-full">
+                {!isIng && p.currentQuestion.emoji && <span className="text-xl sm:text-2xl md:text-3xl shrink-0 filter drop-shadow-sm">{p.currentQuestion.emoji}</span>}
                 <span className="truncate">{p.currentQuestion.word}</span>
               </div>
             </div>
           ) : null}
         </div>
 
-        {/* 4 CHOICES GRID UNDER THE QUESTION */}
+        {/* 4 CHOICES GRID UNDER THE QUESTION - EXACTLY MATCHING QUESTION FRAME WIDTH */}
         {!p.isEliminated && p.lives > 0 && p.currentQuestion && (
-          <div className={`grid grid-cols-2 gap-1.5 sm:gap-2 w-full ${activeMode === 'duel2' ? 'max-w-[340px]' : 'max-w-[280px]'} mx-auto shrink-0 z-10`}>
+          <div className="grid grid-cols-2 gap-2 sm:gap-2.5 w-full mx-auto shrink-0 z-10">
             {p.currentQuestion.options.map((opt, oIdx) => {
               const isSelected = p.selectedOption === opt;
               const isCorrectOpt = opt === p.currentQuestion?.correct;
@@ -1166,24 +1166,24 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                 </div>
 
                 {/* QUESTION CARD - MODERN GLASSMORPHISM DESIGN MATCHING GRADE ACTIVITIES */}
-                <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-3 sm:p-4 my-1.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[140px] sm:min-h-[175px] w-full max-w-xl mx-auto">
+                <div className="relative flex-1 rounded-2xl sm:rounded-3xl bg-slate-950/40 backdrop-blur-xl border-2 border-cyan-200/40 shadow-[0_12px_40px_rgba(0,0,0,0.65),inset_0_1px_2px_rgba(255,255,255,0.45),0_0_25px_rgba(6,182,212,0.2)] p-4 sm:p-6 my-1.5 flex flex-col items-center justify-center text-center z-10 overflow-hidden min-h-[175px] sm:min-h-[220px] w-full max-w-2xl sm:max-w-3xl mx-auto">
                   {/* Inner top glare */}
                   <div className="absolute top-0 left-0 right-0 h-2/5 bg-gradient-to-b from-white/20 via-white/5 to-transparent pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
                   
-                  <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-lg px-2">
-                    <span className="text-xs sm:text-sm font-black text-amber-300 uppercase tracking-widest mb-1.5 [text-shadow:_0_2px_4px_#000]">
+                  <div className="relative z-10 flex flex-col items-center justify-center w-full px-2">
+                    <span className="text-xs sm:text-sm md:text-base font-black text-amber-300 uppercase tracking-widest mb-2 [text-shadow:_0_2px_4px_#000]">
                       {isIng ? 'BU KELİMENİN TÜRKÇE KARŞILIĞI:' : `BU KELİMENİN ${gameConcept.toUpperCase()} ANLAMLISI:`}
                     </span>
                     
-                    <div className="px-5 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-2xl sm:text-3xl md:text-4xl tracking-wide uppercase shadow-[0_8px_24px_rgba(245,158,11,0.5)] border-3 border-white flex items-center gap-2.5 my-1 transform hover:scale-105 transition-transform">
-                      {!isIng && quizQuestion.emoji && <span className="text-2xl sm:text-3xl filter drop-shadow-md">{quizQuestion.emoji}</span>}
+                    <div className="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500 text-slate-950 font-black text-3xl sm:text-4xl md:text-5xl lg:text-6xl tracking-wide uppercase shadow-[0_8px_24px_rgba(245,158,11,0.5)] border-3 sm:border-4 border-white flex items-center gap-3 my-1 transform hover:scale-105 transition-transform">
+                      {!isIng && quizQuestion.emoji && <span className="text-3xl sm:text-4xl md:text-5xl filter drop-shadow-md">{quizQuestion.emoji}</span>}
                       <span className="[text-shadow:_0_1px_2px_rgba(255,255,255,0.8)]">{quizQuestion.word}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* 4 CHOICES - MODERN RESPONSIVE BUTTON DESIGN */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full max-w-xl shrink-0 mt-auto">
+                {/* 4 CHOICES - MODERN RESPONSIVE BUTTON DESIGN MATCHING QUESTION FRAME WIDTH */}
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 w-full max-w-2xl sm:max-w-3xl shrink-0 mt-auto">
                   {(() => {
                     const OPTION_COLOR_THEMES = [
                       {
@@ -1230,7 +1230,7 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                           key={oIdx}
                           disabled={quizFeedback !== 'none'}
                           onClick={() => handleQuizAnswer(opt)}
-                          className={`relative group w-full py-4 sm:py-6 px-2.5 min-h-[72px] sm:min-h-[88px] rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
+                          className={`relative group w-full py-5 sm:py-7 px-3 min-h-[90px] sm:min-h-[110px] rounded-xl sm:rounded-2xl border-2 backdrop-blur-xl transition-all duration-150 flex items-center justify-center text-center cursor-pointer uppercase tracking-wide overflow-hidden active:scale-95 ${btnClass}`}
                         >
                           {/* Inner top glare */}
                           <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/25 via-white/10 to-transparent pointer-events-none rounded-t-xl sm:rounded-t-2xl" />
@@ -1253,32 +1253,32 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
 
             {/* MATCHING / MEMORY CARDS */}
             {activeMode === 'matching' && (
-              <div className="flex-1 flex flex-col items-center justify-between max-w-2xl mx-auto w-full py-1">
+              <div className="flex-1 flex flex-col items-center justify-between max-w-2xl sm:max-w-3xl lg:max-w-4xl mx-auto w-full py-1">
                 {/* STATS */}
                 <div className="flex items-center justify-between w-full px-3 py-1.5 rounded-2xl bg-black/50 border border-amber-400/40 text-white shrink-0 mb-2">
-                  <div className="flex items-center gap-1.5 text-xs font-black">
-                    <Sparkles size={14} className="text-amber-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
+                    <Sparkles size={16} className="text-amber-400" />
                     <span>Eşleşen: {matchedPairsCount} / {matchDifficulty}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-black">
-                    <RotateCcw size={14} className="text-cyan-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
+                    <RotateCcw size={16} className="text-cyan-400" />
                     <span>Hamle: {matchMoves}</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-black">
-                    <Clock size={14} className="text-emerald-400" />
+                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-black">
+                    <Clock size={16} className="text-emerald-400" />
                     <span>Süre: {matchTimer}s</span>
                   </div>
                 </div>
 
-                {/* 3x4 CARDS GRID */}
-                <div className="flex-1 grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-2.5 w-full min-h-0 items-center justify-center">
+                {/* 4x4 or 3x4 CARDS GRID */}
+                <div className={`flex-1 grid ${isIng ? 'grid-cols-4 grid-rows-4' : 'grid-cols-3 sm:grid-cols-4'} gap-2 sm:gap-3 w-full min-h-0 items-center justify-center`}>
                   {cards.map(card => {
                     const isFlipped = card.isFlipped || card.isMatched;
                     return (
                       <div
                         key={card.id}
                         onClick={() => handleCardClick(card.id)}
-                        className={`relative aspect-[4/3] rounded-2xl border-2 sm:border-3 transition-all transform cursor-pointer flex flex-col items-center justify-center p-1.5 text-center shadow-lg ${
+                        className={`relative ${isIng ? 'aspect-square sm:aspect-[4/3] min-h-[56px] sm:min-h-[72px] md:min-h-[82px]' : 'aspect-[4/3] min-h-[60px] sm:min-h-[76px]'} rounded-xl sm:rounded-2xl border-2 sm:border-3 transition-all transform cursor-pointer flex flex-col items-center justify-center p-1.5 sm:p-2 text-center shadow-lg ${
                           card.isMatched
                             ? 'bg-emerald-600/90 border-emerald-300 text-white opacity-85 scale-95'
                             : isFlipped
@@ -1287,16 +1287,16 @@ export const WordGameModal: React.FC<WordGameModalProps> = ({
                         }`}
                       >
                         {isFlipped ? (
-                          <div className="flex flex-col items-center justify-center gap-0.5">
-                            {!isIng && card.emoji && <span className="text-base sm:text-lg">{card.emoji}</span>}
-                            <span className="font-black text-xs sm:text-sm uppercase tracking-wide leading-tight">
+                          <div className="flex flex-col items-center justify-center gap-0.5 max-w-full px-1">
+                            {!isIng && card.emoji && <span className="text-base sm:text-lg md:text-xl">{card.emoji}</span>}
+                            <span className="font-black text-xs sm:text-sm md:text-base uppercase tracking-wide leading-tight break-words">
                               {card.text}
                             </span>
                           </div>
                         ) : (
                           <div className="flex flex-col items-center justify-center">
-                            <span className="text-xl sm:text-2xl filter drop-shadow-md">❓</span>
-                            <span className="text-[8px] sm:text-[9px] font-black tracking-widest text-indigo-200/70 uppercase mt-0.5">
+                            <span className="text-xl sm:text-2xl md:text-3xl filter drop-shadow-md">❓</span>
+                            <span className="text-[9px] sm:text-[10px] font-black tracking-widest text-indigo-200/70 uppercase mt-0.5">
                               KART
                             </span>
                           </div>

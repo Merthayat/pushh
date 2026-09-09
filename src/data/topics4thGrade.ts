@@ -428,12 +428,20 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
       if (mode < 0.5) {
         // En yakın onluğa yuvarlama
         const dogru = birler >= 5 ? Math.ceil(sayi / 10) * 10 : Math.floor(sayi / 10) * 10;
-        const yanlislar = [
-          dogru - 10,
-          dogru + 10,
-          dogru + 20,
-          dogru - 20
-        ].filter(y => y !== dogru && y > 0).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
+        const adaylar = [dogru - 10, dogru + 10, dogru + 20, dogru - 20, dogru + 30, dogru + 40];
+        const yanlisSet = new Set<number>();
+        for (const a of adaylar) {
+          if (a > 0 && a !== dogru) {
+            yanlisSet.add(a);
+            if (yanlisSet.size === 3) break;
+          }
+        }
+        let off = 10;
+        while (yanlisSet.size < 3) {
+          off += 10;
+          if (dogru + off !== dogru) yanlisSet.add(dogru + off);
+        }
+        const yanlislar = Array.from(yanlisSet).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
 
         return {
           question: `${sayi.toLocaleString('tr-TR')} sayısı en yakın onluğa yuvarlandığında hangi sayı elde edilir?`,
@@ -455,12 +463,20 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         // En yakın yüzlüğe yuvarlama
         const sonIki = sayi % 100;
         const dogru = sonIki >= 50 ? Math.ceil(sayi / 100) * 100 : Math.floor(sayi / 100) * 100;
-        const yanlislar = [
-          dogru - 100,
-          dogru + 100,
-          dogru + 200,
-          dogru - 200
-        ].filter(y => y !== dogru && y > 0).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
+        const adaylar = [dogru - 100, dogru + 100, dogru + 200, dogru - 200, dogru + 300, dogru + 400];
+        const yanlisSet = new Set<number>();
+        for (const a of adaylar) {
+          if (a > 0 && a !== dogru) {
+            yanlisSet.add(a);
+            if (yanlisSet.size === 3) break;
+          }
+        }
+        let off = 100;
+        while (yanlisSet.size < 3) {
+          off += 100;
+          if (dogru + off !== dogru) yanlisSet.add(dogru + off);
+        }
+        const yanlislar = Array.from(yanlisSet).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
 
         return {
           question: `${sayi.toLocaleString('tr-TR')} sayısı en yakın yüzlüğe yuvarlandığında hangi sayı elde edilir?`,
@@ -499,17 +515,31 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
       const sequenceHTML = dizi.map((val, idx) => {
         if (idx === boslukIndex) {
-          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-orange-500 border-2 border-white text-blue-950 font-black flex items-center justify-center shadow-md animate-pulse text-xs xs:text-sm sm:text-base shrink-0">❓</div>`;
+          return `<div class="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 border-2 border-white text-white font-black flex items-center justify-center shadow-md text-sm xs:text-base sm:text-lg shrink-0 select-none">?</div>`;
         }
-        return `<div class="px-1 py-0.5 xs:px-1.5 xs:py-0.5 sm:px-2 sm:py-1 rounded-lg bg-slate-900/90 border border-cyan-400 text-cyan-300 font-black text-[10px] xs:text-[11px] sm:text-xs md:text-sm shadow-sm shrink-0 text-center">${val.toLocaleString('tr-TR')}</div>`;
+        return `<div class="px-2 py-1 xs:px-2.5 xs:py-1 sm:px-3 sm:py-1.5 rounded-xl bg-gradient-to-b from-[#16233b] to-[#0c1424] border-2 border-slate-600 text-white font-black text-xs xs:text-sm sm:text-base shadow-sm shrink-0 text-center">${val.toLocaleString('tr-TR')}</div>`;
       }).join('');
 
-      const yanlislar = [
+      const adaylar = [
         dogruCevap + step,
         dogruCevap - step,
         dogruCevap + (step * 2),
-        dogruCevap - (step * 2)
-      ].filter(y => y !== dogruCevap && y > 0).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
+        dogruCevap - (step * 2),
+        dogruCevap + (step * 3)
+      ];
+      const yanlisSet = new Set<number>();
+      for (const a of adaylar) {
+        if (a > 0 && a !== dogruCevap) {
+          yanlisSet.add(a);
+          if (yanlisSet.size === 3) break;
+        }
+      }
+      let off = step;
+      while (yanlisSet.size < 3) {
+        off += step;
+        if (dogruCevap + off !== dogruCevap) yanlisSet.add(dogruCevap + off);
+      }
+      const yanlislar = Array.from(yanlisSet).slice(0, 3).map(n => n.toLocaleString('tr-TR'));
 
       return {
         question: `Ritmik sayma zincirinde soru işareti (❓) yerine hangi sayı gelmelidir?`,
@@ -549,12 +579,25 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
 
       const sequenceHTML = dizi.map((val, idx) => {
         if (idx === boslukIndex) {
-          return `<div class="min-w-[42px] xs:min-w-[50px] sm:min-w-[58px] h-10 xs:h-12 sm:h-14 px-2 rounded-xl bg-gradient-to-tr from-pink-500 to-rose-600 border-2 border-white text-white font-black flex items-center justify-center shadow-lg animate-pulse text-lg xs:text-xl sm:text-2xl shrink-0 whitespace-nowrap">❓</div>`;
+          return `<div class="min-w-[44px] xs:min-w-[52px] sm:min-w-[60px] h-10 xs:h-12 sm:h-14 px-2 rounded-xl bg-gradient-to-tr from-[#1a2842] to-[#121c2e] border-2 border-white text-white font-black flex items-center justify-center shadow-lg text-lg xs:text-xl sm:text-2xl shrink-0 whitespace-nowrap select-none">?</div>`;
         }
-        return `<div class="min-w-[42px] xs:min-w-[50px] sm:min-w-[58px] h-10 xs:h-12 sm:h-14 px-2.5 xs:px-3.5 rounded-xl bg-slate-800 border-2 border-white/70 text-white font-black text-sm xs:text-base sm:text-lg shadow-lg flex items-center justify-center shrink-0 whitespace-nowrap">${val}</div>`;
+        return `<div class="min-w-[44px] xs:min-w-[52px] sm:min-w-[60px] h-10 xs:h-12 sm:h-14 px-2.5 xs:px-3.5 rounded-xl bg-gradient-to-b from-[#16233b] to-[#0c1424] border-2 border-slate-600 text-white font-black text-sm xs:text-base sm:text-lg shadow-lg flex items-center justify-center shrink-0 whitespace-nowrap">${val}</div>`;
       }).join('');
 
-      const yanlislar = [dogru + artis, dogru - artis, dogru + artis * 2, dogru - 1].filter(y => y !== dogru && y > 0).slice(0, 3);
+      const adaylar = [dogru + artis, dogru - artis, dogru + artis * 2, dogru - 1, dogru + 2, dogru - artis * 2];
+      const yanlisSet = new Set<number>();
+      for (const a of adaylar) {
+        if (a > 0 && a !== dogru) {
+          yanlisSet.add(a);
+          if (yanlisSet.size === 3) break;
+        }
+      }
+      let off = 1;
+      while (yanlisSet.size < 3) {
+        off++;
+        if (dogru + off !== dogru) yanlisSet.add(dogru + off);
+      }
+      const yanlislar = Array.from(yanlisSet).slice(0, 3);
 
       return {
         question: `Örüntüde soru işareti yerine hangi sayı gelmelidir?`,
@@ -1019,20 +1062,43 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
     }
   },
 
-  // 3.2 3 Basamaklı Sayılarla Çarpma İşlemi
+  // 3.2 3 Basamaklı Sayılarla Çarpma İşlemi (2. çarpan onluk)
   g4_carpma_islemi_3basamakli: {
     title: "Çarpma İşlemi (3 Basamaklı)",
-    desc: "3 basamaklı sayılarla 1 ve 2 basamaklı sayıları çarpma ve çarpma problemleri.",
+    desc: "3 basamaklı sayılarla 2. çarpanı onluk (10, 20, 30... 90) olan çarpma işlemleri.",
     generate: () => {
-      const s1 = Math.floor(Math.random() * 400) + 110; // 3 basamaklı
-      const s2 = Math.floor(Math.random() * 20) + 5; // 1 veya 2 basamaklı
+      const s1 = Math.floor(Math.random() * 400) + 110; // 3 basamaklı: 110..509
+      const onluklar = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+      const s2 = onluklar[Math.floor(Math.random() * onluklar.length)]; // 2. çarpan kesinlikle onluk
       const dogru = s1 * s2;
 
-      const yanlislar = [
-        (dogru + s1).toLocaleString('tr-TR'),
-        (dogru - s1).toLocaleString('tr-TR'),
-        (dogru + 100).toLocaleString('tr-TR')
+      const altOnluk = s2 > 10 ? s2 - 10 : 20;
+      const ustOnluk = s2 < 90 ? s2 + 10 : 80;
+      const candidates = [
+        s1 * altOnluk,
+        s1 * ustOnluk,
+        (s1 + 10) * s2,
+        (s1 - 10) * s2,
+        dogru + 100,
+        dogru - 100,
+        dogru + (s2 * 5),
+        dogru - (s2 * 5)
       ];
+
+      const wrongSet = new Set<string>();
+      for (const val of candidates) {
+        if (val > 0 && val !== dogru) {
+          wrongSet.add(val.toLocaleString('tr-TR'));
+          if (wrongSet.size === 3) break;
+        }
+      }
+      let step = 100;
+      while (wrongSet.size < 3) {
+        const fallback = dogru + step;
+        wrongSet.add(fallback.toLocaleString('tr-TR'));
+        step += 100;
+      }
+      const yanlislar = Array.from(wrongSet);
 
       return {
         question: `${s1} x ${s2} çarpma işleminin sonucu kaçtır?`,
@@ -1053,7 +1119,373 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
     }
   },
 
-  // 3.3 4 Basamağa Kadar Bölme İşlemi
+  // 3.3 En Çok İki Basamaklı Doğal Sayıları 5 ile Kısa Yoldan Çarpma
+  g4_kisa_yoldan_carpma_5: {
+    title: "5 ile Kısa Yoldan Çarpma",
+    desc: "En çok iki basamaklı doğal sayıları 5 ile kısa yoldan çarpma (10 ile çarpıp 2'ye bölme).",
+    generate: () => {
+      const mode = Math.floor(Math.random() * 4);
+      // İki basamaklı çift sayılar (kısa yoldan bölme kolaylığı için)
+      const ciftSayilar = [12, 14, 16, 18, 22, 24, 26, 28, 32, 34, 36, 38, 42, 44, 46, 48, 52, 54, 56, 58, 62, 64, 66, 72, 74, 82, 84, 86, 92, 94];
+      const sayi = ciftSayilar[Math.floor(Math.random() * ciftSayilar.length)];
+      const dogru = sayi * 5;
+
+      if (mode === 0) {
+        // Doğrudan Kısa Yoldan Çarpma İşlemi
+        const wrongSet = new Set<string>();
+        wrongSet.add((sayi * 10).toLocaleString('tr-TR')); // 2'ye bölmeyi unutan
+        wrongSet.add((dogru + 10).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 10).toLocaleString('tr-TR'));
+        wrongSet.add((Math.floor(sayi / 2) * 5).toLocaleString('tr-TR'));
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 20).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 5 kısa yoldan çarpma işleminin sonucu kaçtır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-600 to-amber-700 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${sayi} × 5 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                ${sayi} sayısını <span class="text-amber-300 underline decoration-amber-400 font-black">5 ile kısa yoldan çarptığımızda</span> sonuç kaçtır?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 1) {
+        // Adım Tamamlama Sorusu (1. Adım -> 2. Adım)
+        const subMode = Math.random() < 0.5;
+        const adim1Sonuc = subMode ? sayi * 10 : sayi / 2;
+        const sembol = subMode ? "★" : "▲";
+
+        const wrongSet = new Set<string>();
+        wrongSet.add(adim1Sonuc.toLocaleString('tr-TR'));
+        wrongSet.add((dogru + 10).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 10).toLocaleString('tr-TR'));
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 15).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 5 kısa yoldan çarpma adımlarında ${sembol} yerine kaç gelmelidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="p-3 sm:p-4 rounded-2xl bg-slate-900/80 border-2 border-amber-400/40 max-w-md w-full shadow-lg">
+                <div class="text-xs sm:text-sm font-bold text-amber-300 mb-1">5 İle Kısa Yoldan Çarpma Adımları:</div>
+                <div class="text-sm sm:text-base font-black text-white space-y-1">
+                  <div>1. Adım: ${subMode ? `${sayi} × 10 = ${adim1Sonuc}` : `${sayi} ÷ 2 = ${adim1Sonuc}`}</div>
+                  <div class="text-amber-300 font-extrabold text-base sm:text-lg">2. Adım: ${subMode ? `${adim1Sonuc} ÷ 2 = ${sembol}` : `${adim1Sonuc} × 10 = ${sembol}`}</div>
+                </div>
+              </div>
+              <div class="text-base sm:text-lg font-black text-white text-center drop-shadow-md">
+                <span class="text-amber-300 font-black">${sembol}</span> yerine hangi sayı gelmelidir?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 2) {
+        // Kural ve Strateji Bilgisi
+        return {
+          question: `Bir doğal sayıyı 5 ile kısa yoldan çarpmak için hangi işlem sırası uygulanmalıdır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-600 to-yellow-600 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-md">
+                ⚡ 5 ile Kısa Yoldan Çarpma Kuralı
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Bir sayıyı <span class="text-amber-300 underline font-black">5 ile kısa yoldan çarpmak için</span> hangisi yapılır?
+              </div>
+            </div>
+          `,
+          correct: "Sayıyı 10 ile çarpıp 2'ye bölmek",
+          wrong: [
+            "Sayıyı 2 ile çarpıp 10'a bölmek",
+            "Sayıyı 100 ile çarpıp 4'e bölmek",
+            "Sayıyı 5 ile toplayıp 2'ye bölmek"
+          ],
+          isLong: true
+        };
+      } else {
+        // Matematiksel İfade / Eşdeğerlik Gösterimi
+        const useDivFirst = Math.random() < 0.5;
+        const dogruIfade = useDivFirst ? `(${sayi} ÷ 2) × 10` : `(${sayi} × 10) ÷ 2`;
+        const yanlis1 = `(${sayi} × 2) ÷ 10`;
+        const yanlis2 = `(${sayi} × 100) ÷ 2`;
+        const yanlis3 = `(${sayi} ÷ 5) × 10`;
+
+        return {
+          question: `${sayi} × 5 işleminin kısa yoldan yapılışı aşağıdakilerden hangisidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-slate-900/85 border-2 border-amber-400 text-white font-black text-2xl sm:text-3xl shadow-lg">
+                ${sayi} × 5 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki işlemin <span class="text-amber-300 underline decoration-amber-400 font-black">kısa yoldan yapılışı</span> hangi seçenekte doğru verilmiştir?
+              </div>
+            </div>
+          `,
+          correct: dogruIfade,
+          wrong: [yanlis1, yanlis2, yanlis3],
+          isLong: false
+        };
+      }
+    }
+  },
+
+  // 3.4 En Çok İki Basamaklı Doğal Sayıları 50 ile Kısa Yoldan Çarpma
+  g4_kisa_yoldan_carpma_50: {
+    title: "50 ile Kısa Yoldan Çarpma",
+    desc: "En çok iki basamaklı doğal sayıları 50 ile kısa yoldan çarpma (100 ile çarpıp 2'ye bölme).",
+    generate: () => {
+      const mode = Math.floor(Math.random() * 4);
+      // İki basamaklı çift sayılar
+      const ciftSayilar = [12, 14, 16, 18, 22, 24, 26, 28, 32, 34, 36, 38, 42, 44, 46, 48, 52, 54, 56, 62, 64, 72, 76, 84];
+      const sayi = ciftSayilar[Math.floor(Math.random() * ciftSayilar.length)];
+      const dogru = sayi * 50;
+
+      if (mode === 0) {
+        // Doğrudan Kısa Yoldan Çarpma İşlemi
+        const wrongSet = new Set<string>();
+        wrongSet.add((sayi * 100).toLocaleString('tr-TR')); // 2'ye bölmeyen
+        wrongSet.add((dogru + 100).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 100).toLocaleString('tr-TR'));
+        wrongSet.add(((sayi / 2) * 10).toLocaleString('tr-TR')); // 100 yerine 10 ile çarpan
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 200).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 50 kısa yoldan çarpma işleminin sonucu kaçtır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-800 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${sayi} × 50 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                ${sayi} sayısını <span class="text-cyan-300 underline decoration-cyan-400 font-black">50 ile kısa yoldan çarptığımızda</span> sonuç kaçtır?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 1) {
+        // Adım Tamamlama Sorusu (1. Adım -> 2. Adım)
+        const subMode = Math.random() < 0.5;
+        const adim1Sonuc = subMode ? sayi * 100 : sayi / 2;
+        const sembol = subMode ? "■" : "●";
+
+        const wrongSet = new Set<string>();
+        wrongSet.add(adim1Sonuc.toLocaleString('tr-TR'));
+        wrongSet.add((dogru + 100).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 100).toLocaleString('tr-TR'));
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 150).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 50 kısa yoldan çarpma adımlarında ${sembol} yerine kaç gelmelidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="p-3 sm:p-4 rounded-2xl bg-slate-900/80 border-2 border-teal-400/40 max-w-md w-full shadow-lg">
+                <div class="text-xs sm:text-sm font-bold text-cyan-300 mb-1">50 İle Kısa Yoldan Çarpma Adımları:</div>
+                <div class="text-sm sm:text-base font-black text-white space-y-1">
+                  <div>1. Adım: ${subMode ? `${sayi} × 100 = ${adim1Sonuc}` : `${sayi} ÷ 2 = ${adim1Sonuc}`}</div>
+                  <div class="text-cyan-300 font-extrabold text-base sm:text-lg">2. Adım: ${subMode ? `${adim1Sonuc} ÷ 2 = ${sembol}` : `${adim1Sonuc} × 100 = ${sembol}`}</div>
+                </div>
+              </div>
+              <div class="text-base sm:text-lg font-black text-white text-center drop-shadow-md">
+                <span class="text-cyan-300 font-black">${sembol}</span> yerine hangi sayı gelmelidir?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 2) {
+        // Kural ve Strateji Bilgisi
+        return {
+          question: `Bir doğal sayıyı 50 ile kısa yoldan çarpmak için hangi kural uygulanmalıdır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-teal-600 to-cyan-600 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-md">
+                ⚡ 50 ile Kısa Yoldan Çarpma Kuralı
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Bir sayıyı <span class="text-cyan-300 underline font-black">50 ile kısa yoldan çarpmak için</span> hangisi yapılır?
+              </div>
+            </div>
+          `,
+          correct: "Sayıyı 100 ile çarpıp 2'ye bölmek",
+          wrong: [
+            "Sayıyı 10 ile çarpıp 5'e bölmek",
+            "Sayıyı 100 ile çarpıp 4'e bölmek",
+            "Sayıyı 50 ile toplayıp 2 ile çarpmak"
+          ],
+          isLong: true
+        };
+      } else {
+        // Matematiksel İfade / Eşdeğerlik Gösterimi
+        const useDivFirst = Math.random() < 0.5;
+        const dogruIfade = useDivFirst ? `(${sayi} ÷ 2) × 100` : `(${sayi} × 100) ÷ 2`;
+        const yanlis1 = `(${sayi} × 10) ÷ 2`;
+        const yanlis2 = `(${sayi} × 100) ÷ 4`;
+        const yanlis3 = `(${sayi} ÷ 50) × 100`;
+
+        return {
+          question: `${sayi} × 50 işleminin kısa yoldan yapılışı aşağıdakilerden hangisidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-slate-900/85 border-2 border-cyan-400 text-white font-black text-2xl sm:text-3xl shadow-lg">
+                ${sayi} × 50 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki işlemin <span class="text-cyan-300 underline decoration-cyan-400 font-black">kısa yoldan yapılışı</span> hangi seçenekte doğru verilmiştir?
+              </div>
+            </div>
+          `,
+          correct: dogruIfade,
+          wrong: [yanlis1, yanlis2, yanlis3],
+          isLong: false
+        };
+      }
+    }
+  },
+
+  // 3.5 En Çok İki Basamaklı Doğal Sayıları 25 ile Kısa Yoldan Çarpma
+  g4_kisa_yoldan_carpma_25: {
+    title: "25 ile Kısa Yoldan Çarpma",
+    desc: "En çok iki basamaklı doğal sayıları 25 ile kısa yoldan çarpma (100 ile çarpıp 4'e bölme).",
+    generate: () => {
+      const mode = Math.floor(Math.random() * 4);
+      // İki basamaklı 4'ün katı sayılar
+      const dordeBolunenler = [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 84, 88, 96];
+      const sayi = dordeBolunenler[Math.floor(Math.random() * dordeBolunenler.length)];
+      const dogru = sayi * 25;
+
+      if (mode === 0) {
+        // Doğrudan Kısa Yoldan Çarpma İşlemi
+        const wrongSet = new Set<string>();
+        wrongSet.add((sayi * 50).toLocaleString('tr-TR')); // 50 ile çarpan
+        wrongSet.add((dogru + 100).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 100).toLocaleString('tr-TR'));
+        wrongSet.add(((sayi / 4) * 10).toLocaleString('tr-TR')); // 100 yerine 10 ile çarpan
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 200).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 25 kısa yoldan çarpma işleminin sonucu kaçtır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-violet-800 text-white font-black text-2xl sm:text-3xl border-2 border-white shadow-md">
+                ${sayi} × 25 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                ${sayi} sayısını <span class="text-amber-300 underline decoration-amber-400 font-black">25 ile kısa yoldan çarptığımızda</span> sonuç kaçtır?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 1) {
+        // Adım Tamamlama Sorusu (1. Adım -> 2. Adım)
+        const subMode = Math.random() < 0.5;
+        const adim1Sonuc = subMode ? sayi * 100 : sayi / 4;
+        const sembol = subMode ? "◆" : "★";
+
+        const wrongSet = new Set<string>();
+        wrongSet.add(adim1Sonuc.toLocaleString('tr-TR'));
+        wrongSet.add((dogru + 100).toLocaleString('tr-TR'));
+        wrongSet.add((dogru - 100).toLocaleString('tr-TR'));
+        wrongSet.delete(dogru.toLocaleString('tr-TR'));
+        const yanlislar = Array.from(wrongSet).slice(0, 3);
+        while (yanlislar.length < 3) yanlislar.push((dogru + (yanlislar.length + 1) * 150).toLocaleString('tr-TR'));
+
+        return {
+          question: `${sayi} × 25 kısa yoldan çarpma adımlarında ${sembol} yerine kaç gelmelidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="p-3 sm:p-4 rounded-2xl bg-slate-900/80 border-2 border-purple-400/40 max-w-md w-full shadow-lg">
+                <div class="text-xs sm:text-sm font-bold text-purple-300 mb-1">25 İle Kısa Yoldan Çarpma Adımları:</div>
+                <div class="text-sm sm:text-base font-black text-white space-y-1">
+                  <div>1. Adım: ${subMode ? `${sayi} × 100 = ${adim1Sonuc}` : `${sayi} ÷ 4 = ${adim1Sonuc}`}</div>
+                  <div class="text-amber-300 font-extrabold text-base sm:text-lg">2. Adım: ${subMode ? `${adim1Sonuc} ÷ 4 = ${sembol}` : `${adim1Sonuc} × 100 = ${sembol}`}</div>
+                </div>
+              </div>
+              <div class="text-base sm:text-lg font-black text-white text-center drop-shadow-md">
+                <span class="text-amber-300 font-black">${sembol}</span> yerine hangi sayı gelmelidir?
+              </div>
+            </div>
+          `,
+          correct: dogru.toLocaleString('tr-TR'),
+          wrong: yanlislar,
+          isLong: false
+        };
+      } else if (mode === 2) {
+        // Kural ve Strateji Bilgisi
+        return {
+          question: `Bir doğal sayıyı 25 ile kısa yoldan çarpmak için hangi işlem sırası uygulanmalıdır?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black text-xl sm:text-2xl border-2 border-white shadow-md">
+                ⚡ 25 ile Kısa Yoldan Çarpma Kuralı
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Bir sayıyı <span class="text-purple-300 underline font-black">25 ile kısa yoldan çarpmak için</span> hangisi yapılır?
+              </div>
+            </div>
+          `,
+          correct: "Sayıyı 100 ile çarpıp 4'e bölmek",
+          wrong: [
+            "Sayıyı 100 ile çarpıp 2'ye bölmek",
+            "Sayıyı 10 ile çarpıp 4'e bölmek",
+            "Sayıyı 25 ile toplayıp 4 ile çarpmak"
+          ],
+          isLong: true
+        };
+      } else {
+        // Matematiksel İfade / Eşdeğerlik Gösterimi
+        const useDivFirst = Math.random() < 0.5;
+        const dogruIfade = useDivFirst ? `(${sayi} ÷ 4) × 100` : `(${sayi} × 100) ÷ 4`;
+        const yanlis1 = `(${sayi} × 100) ÷ 2`;
+        const yanlis2 = `(${sayi} × 10) ÷ 4`;
+        const yanlis3 = `(${sayi} ÷ 25) × 100`;
+
+        return {
+          question: `${sayi} × 25 işleminin kısa yoldan yapılışı aşağıdakilerden hangisidir?`,
+          questionHTML: `
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3 py-1 text-center">
+              <div class="px-6 py-2.5 rounded-2xl bg-slate-900/85 border-2 border-purple-400 text-white font-black text-2xl sm:text-3xl shadow-lg">
+                ${sayi} × 25 = ?
+              </div>
+              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+                Yukarıdaki işlemin <span class="text-purple-300 underline decoration-purple-400 font-black">kısa yoldan yapılışı</span> hangi seçenekte doğru verilmiştir?
+              </div>
+            </div>
+          `,
+          correct: dogruIfade,
+          wrong: [yanlis1, yanlis2, yanlis3],
+          isLong: false
+        };
+      }
+    }
+  },
+
+  // 3.6 4 Basamağa Kadar Bölme İşlemi
   g4_bolme_islemi_4basamakli: {
     title: "Bölme İşlemi (4 Basamağa Kadar)",
     desc: "4 basamağa kadar sayıları bölme, kalan ve bölüm hesabı.",
@@ -1247,11 +1679,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `Görseldeki geometrik cismin kaç yüzü, kaç ayrıtı ve kaç köşesi vardır?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-3 sm:gap-4 py-1 text-center">
               <div class="flex items-center justify-center">
-                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-32 sm:max-h-40 md:max-h-48 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+              <div class="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
                 Görseldeki geometrik cismin <span class="text-cyan-300 underline decoration-cyan-400 font-black">Yüz, Ayrıt ve Köşe sayısı</span> hangisinde doğru verilmiştir?
               </div>
             </div>
@@ -1269,11 +1701,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `Görseldeki geometrik cisim hangisidir?`,
           questionHTML: `
-            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
+            <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-3 sm:gap-4 py-1 text-center">
               <div class="flex items-center justify-center">
-                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-24 sm:max-h-28 md:max-h-32 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+                <img src="${secilen.img}" alt="" class="geo-cisim-img max-h-32 sm:max-h-40 md:max-h-48 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
               </div>
-              <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
+              <div class="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
                 Görseldeki <span class="text-amber-300 underline decoration-amber-400 font-black">geometrik cisim</span> hangisidir?
               </div>
             </div>
@@ -1304,11 +1736,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center my-0.5">
-                <svg viewBox="0 0 160 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-                  <rect x="35" y="25" width="90" height="90" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
-                  <path d="M35 37 L47 37 L47 25" fill="none" stroke="#93c5fd" stroke-width="2" />
-                  <text x="80" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} cm</text>
-                  <text x="27" y="75" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} cm</text>
+                <svg viewBox="0 0 200 135" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" style="overflow: visible;">
+                  <rect x="58" y="24" width="84" height="84" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
+                  <path d="M58 36 L70 36 L70 24" fill="none" stroke="#93c5fd" stroke-width="2" />
+                  <text x="100" y="17" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} cm</text>
+                  <text x="48" y="71" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} cm</text>
                 </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
@@ -1332,11 +1764,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center my-0.5">
-                <svg viewBox="0 0 210 130" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-                  <rect x="25" y="25" width="145" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
-                  <path d="M25 37 L37 37 L37 25" fill="none" stroke="#e9d5ff" stroke-width="2" />
-                  <text x="97" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} cm</text>
-                  <text x="178" y="70" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} cm</text>
+                <svg viewBox="0 0 240 135" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" style="overflow: visible;">
+                  <rect x="30" y="24" width="140" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
+                  <path d="M30 36 L42 36 L42 24" fill="none" stroke="#e9d5ff" stroke-width="2" />
+                  <text x="100" y="17" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} cm</text>
+                  <text x="178" y="69" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} cm</text>
                 </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
@@ -1361,11 +1793,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center my-0.5">
-                <svg viewBox="0 0 180 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-                  <polygon points="90,22 25,115 155,115" fill="#064e3b" fill-opacity="0.85" stroke="#34d399" stroke-width="3" stroke-linejoin="round" />
-                  <text x="48" y="65" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${a} cm</text>
-                  <text x="132" y="65" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${b} cm</text>
-                  <text x="90" y="132" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${c} cm</text>
+                <svg viewBox="0 0 210 135" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" style="overflow: visible;">
+                  <polygon points="105,20 40,110 170,110" fill="#064e3b" fill-opacity="0.85" stroke="#34d399" stroke-width="3" stroke-linejoin="round" />
+                  <text x="60" y="63" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${a} cm</text>
+                  <text x="150" y="63" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${b} cm</text>
+                  <text x="105" y="127" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${c} cm</text>
                 </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
@@ -1384,7 +1816,7 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
   // 4.3 Birim Kareler ile Alan Tahmini ve Hesabı
   g4_alan_tahmini_ve_birim_kare: {
     title: "Birim Karelerle Alan Hesabı",
-    desc: "Kare, dikdörtgen ve birim kare modelleri üzerinden br² cinsinden alan hesaplama.",
+    desc: "Kare, dikdörtgen ve birim kare modelleri üzerinden br2 cinsinden alan hesaplama.",
     generate: () => {
       const mode = Math.random();
 
@@ -1395,29 +1827,48 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const alan = kisa * uzun;
         const cevre = 2 * (kisa + uzun);
 
-        const yanlislar = [cevre, alan + 4, alan - 4 > 0 ? alan - 4 : alan + 8]
-          .filter(y => y !== alan)
-          .slice(0, 3)
-          .map(n => `${n} br²`);
+        // Her zaman tam 3 farklı yanlış seçenek oluştur
+        const adaylar = [
+          cevre,
+          alan + 4,
+          alan > 4 ? alan - 4 : alan + 8,
+          kisa + uzun,
+          alan + 6,
+          alan > 6 ? alan - 6 : alan + 10
+        ];
+        const yanlislarSet = new Set<number>();
+        for (const aday of adaylar) {
+          if (aday > 0 && aday !== alan) {
+            yanlislarSet.add(aday);
+            if (yanlislarSet.size === 3) break;
+          }
+        }
+        let offset = 2;
+        while (yanlislarSet.size < 3) {
+          if (alan + offset !== alan) yanlislarSet.add(alan + offset);
+          if (yanlislarSet.size < 3 && alan - offset > 0) yanlislarSet.add(alan - offset);
+          offset += 2;
+        }
+        const yanlislar = Array.from(yanlislarSet).slice(0, 3).map(n => `${n} br2`);
 
         return {
-          question: `Kısa kenarı ${kisa} br, uzun kenarı ${uzun} br olan dikdörtgenin alanı kaç br²'dir?`,
+          question: `Kısa kenarı ${kisa} br, uzun kenarı ${uzun} br olan dikdörtgenin alanı kaç br2'dir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center my-0.5">
-                <svg viewBox="0 0 210 130" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-                  <rect x="25" y="25" width="145" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
-                  <path d="M25 37 L37 37 L37 25" fill="none" stroke="#e9d5ff" stroke-width="2" />
-                  <text x="97" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} br</text>
-                  <text x="178" y="70" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} br</text>
+                <svg viewBox="0 0 240 135" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" style="overflow: visible;">
+                  <rect x="30" y="24" width="140" height="80" rx="6" fill="#4c1d95" fill-opacity="0.85" stroke="#c084fc" stroke-width="3" />
+                  <path d="M30 36 L42 36 L42 24" fill="none" stroke="#e9d5ff" stroke-width="2" />
+                  <text x="100" y="17" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${uzun} br</text>
+                  <text x="178" y="69" fill="#fde047" font-size="14" font-weight="900" text-anchor="start">${kisa} br</text>
                 </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki dikdörtgenin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br²'dir</span>?
+                Yukarıdaki dikdörtgenin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br2'dir</span>?
               </div>
             </div>
           `,
-          correct: `${alan} br²`,
+          correct: `${alan} br2`,
           wrong: yanlislar,
           isLong: false
         };
@@ -1427,29 +1878,48 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const alan = kenar * kenar;
         const cevre = kenar * 4;
 
-        const yanlislar = [cevre, alan + 5, alan - 5 > 0 ? alan - 5 : alan + 9]
-          .filter(y => y !== alan)
-          .slice(0, 3)
-          .map(n => `${n} br²`);
+        // Her zaman tam 3 farklı yanlış seçenek oluştur (alan === cevre durumu dahil)
+        const adaylar = [
+          cevre,
+          alan + 5,
+          alan > 5 ? alan - 5 : alan + 9,
+          kenar * 2,
+          alan + 7,
+          alan > 7 ? alan - 7 : alan + 12
+        ];
+        const yanlislarSet = new Set<number>();
+        for (const aday of adaylar) {
+          if (aday > 0 && aday !== alan) {
+            yanlislarSet.add(aday);
+            if (yanlislarSet.size === 3) break;
+          }
+        }
+        let offset = 3;
+        while (yanlislarSet.size < 3) {
+          if (alan + offset !== alan) yanlislarSet.add(alan + offset);
+          if (yanlislarSet.size < 3 && alan - offset > 0) yanlislarSet.add(alan - offset);
+          offset += 3;
+        }
+        const yanlislar = Array.from(yanlislarSet).slice(0, 3).map(n => `${n} br2`);
 
         return {
-          question: `Kenar uzunluğu ${kenar} br olan karenin alanı kaç br²'dir?`,
+          question: `Kenar uzunluğu ${kenar} br olan karenin alanı kaç br2'dir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center my-0.5">
-                <svg viewBox="0 0 160 140" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]">
-                  <rect x="35" y="25" width="90" height="90" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
-                  <path d="M35 37 L47 37 L47 25" fill="none" stroke="#93c5fd" stroke-width="2" />
-                  <text x="80" y="18" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} br</text>
-                  <text x="27" y="75" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} br</text>
+                <svg viewBox="0 0 200 135" class="h-20 sm:h-24 md:h-28 w-auto filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]" style="overflow: visible;">
+                  <rect x="58" y="24" width="84" height="84" rx="6" fill="#1e3a8a" fill-opacity="0.85" stroke="#60a5fa" stroke-width="3" />
+                  <path d="M58 36 L70 36 L70 24" fill="none" stroke="#93c5fd" stroke-width="2" />
+                  <text x="100" y="17" fill="#fde047" font-size="14" font-weight="900" text-anchor="middle">${kenar} br</text>
+                  <text x="48" y="71" fill="#fde047" font-size="14" font-weight="900" text-anchor="end">${kenar} br</text>
                 </svg>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki karenin <span class="text-amber-300 underline decoration-amber-400 font-black">alanı kaç br²'dir</span>?
+                Yukarıdaki karenin <span class="text-amber-300 underline decoration-amber-400 font-black">alanı kaç br2'dir</span>?
               </div>
             </div>
           `,
-          correct: `${alan} br²`,
+          correct: `${alan} br2`,
           wrong: yanlislar,
           isLong: false
         };
@@ -1459,17 +1929,35 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
         const sutun = Math.floor(Math.random() * 4) + 3; // 3..6
         const alan = satir * sutun;
 
-        const yanlislar = [alan + 2, alan - 2 > 0 ? alan - 2 : alan + 4, (satir + sutun) * 2]
-          .filter(y => y !== alan)
-          .slice(0, 3)
-          .map(n => `${n} br²`);
+        const adaylar = [
+          alan + 2,
+          alan > 2 ? alan - 2 : alan + 4,
+          (satir + sutun) * 2,
+          satir + sutun,
+          alan + 6,
+          alan > 4 ? alan - 4 : alan + 8
+        ];
+        const yanlislarSet = new Set<number>();
+        for (const aday of adaylar) {
+          if (aday > 0 && aday !== alan) {
+            yanlislarSet.add(aday);
+            if (yanlislarSet.size === 3) break;
+          }
+        }
+        let offset = 2;
+        while (yanlislarSet.size < 3) {
+          if (alan + offset !== alan) yanlislarSet.add(alan + offset);
+          if (yanlislarSet.size < 3 && alan - offset > 0) yanlislarSet.add(alan - offset);
+          offset += 2;
+        }
+        const yanlislar = Array.from(yanlislarSet).slice(0, 3).map(n => `${n} br2`);
 
         const gridCells = Array.from({ length: satir * sutun }).map(() => `
           <div class="w-5 h-5 sm:w-6 sm:h-6 rounded bg-cyan-500/80 border border-cyan-200/60 flex items-center justify-center text-[10px] text-white font-bold shrink-0">1</div>
         `).join('');
 
         return {
-          question: `${satir} satır ve ${sutun} sütundan oluşan şeklin alanı kaç br²'dir?`,
+          question: `${satir} satır ve ${sutun} sütundan oluşan şeklin alanı kaç br2'dir?`,
           questionHTML: `
             <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center">
               <div class="flex items-center justify-center p-2 rounded-xl bg-slate-900/90 border-2 border-cyan-400 shadow-md my-0.5">
@@ -1478,11 +1966,11 @@ export const topics4thGrade: Record<string, { title: string; desc: string; gener
                 </div>
               </div>
               <div class="text-base sm:text-lg md:text-xl font-black text-white text-center leading-snug drop-shadow-md max-w-lg px-2">
-                Yukarıdaki şeklin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br²'dir</span>?
+                Yukarıdaki şeklin <span class="text-yellow-300 underline decoration-yellow-400 font-black">alanı kaç br2'dir</span>?
               </div>
             </div>
           `,
-          correct: `${alan} br²`,
+          correct: `${alan} br2`,
           wrong: yanlislar,
           isLong: false
         };

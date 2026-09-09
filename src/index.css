@@ -1,13 +1,13 @@
 @import "tailwindcss";
-
+ 
 @variant dark (&:where(.dark, .dark *));
-
+ 
 @layer base {
   body {
     font-family: 'Nunito', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   }
 }
-
+ 
 /* HIDE SCROLLBARS GLOBALLY WHILE MAINTAINING SCROLL FUNCTIONALITY */
 ::-webkit-scrollbar {
   display: none;
@@ -15,21 +15,21 @@
   height: 0px;
   background: transparent;
 }
-
+ 
 * {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
-
+ 
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
-
+ 
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
+ 
 /* HIGH-READABILITY MOBILE & DESKTOP FONT OVERRIDES & AUTO-SCALING VISUALS */
 .q-caption {
   font-size: 1.1rem !important;
@@ -42,7 +42,7 @@
     font-size: 1.35rem !important;
   }
 }
-
+ 
 .mini-table-title {
   font-size: 1rem !important;
   font-weight: 900 !important;
@@ -53,7 +53,7 @@
     font-size: 1.25rem !important;
   }
 }
-
+ 
 .mini-table {
   font-size: 0.9rem !important;
   max-width: 100% !important;
@@ -65,7 +65,7 @@
     font-size: 1.15rem !important;
   }
 }
-
+ 
 /* AUTOMATIC RESPONSIVE IMAGE & SVG SIZING IN QUESTIONS (GUARANTEED NO OVERFLOW) */
 /* Çerçeve (.question-visual-box): sabit piksel yok, sadece width: 100% (mevcut kutunun tam genişliği neyse onu alır) */
 .question-visual-box {
@@ -76,17 +76,17 @@
   align-items: center !important;
   justify-content: center !important;
 }
-
+ 
 .question-visual-box.multi-player-2 {
   width: 100% !important;
   max-width: 100% !important;
 }
-
+ 
 .question-visual-box.multi-player-3 {
   width: 100% !important;
   max-width: 100% !important;
 }
-
+ 
 /* Görsel: width: 100% + height: auto + object-fit: contain → görsel her zaman kutunun tam genişliğine yayılır, hiçbir kenar kırpılmaz, yüksekliği kendi oranına göre otomatik ayarlanır */
 .question-visual-box img,
 .question-visual-box svg,
@@ -99,11 +99,11 @@
   display: block !important;
   margin: 0 auto !important;
 }
-
+ 
 /* ==========================================================================
    UZAMSAL İLİŞKİLER - 3 FARKLI OYUN STİLİNE ÖZEL BOYUTLANDIRMA VE GÖRÜNÜM
    ========================================================================== */
-
+ 
 /* Ortak Temel Yapı */
 .question-visual-box .uzamsal-soru-container {
   width: 100% !important;
@@ -114,7 +114,7 @@
   overflow: hidden !important;
   box-sizing: border-box !important;
 }
-
+ 
 .question-visual-box .uzamsal-soru-frame {
   position: relative !important;
   display: flex !important;
@@ -123,7 +123,7 @@
   overflow: hidden !important;
   box-sizing: border-box !important;
 }
-
+ 
 /* --------------------------------------------------------------------------
    1) 3 KİŞİLİK MOD (multi-player-3):
    Kullanıcının beğendiği tam çerçeve, kenardan kenara dolduran büyük görsel
@@ -136,7 +136,7 @@
   justify-content: space-between !important;
   padding: 0 !important;
 }
-
+ 
 .question-visual-box.multi-player-3 .uzamsal-soru-frame {
   width: 100% !important;
   flex: 1 1 0% !important;
@@ -146,7 +146,7 @@
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
   overflow: hidden !important;
 }
-
+ 
 .question-visual-box.multi-player-3 .uzamsal-soru-img {
   width: 100% !important;
   height: 100% !important;
@@ -157,7 +157,7 @@
   display: block !important;
   flex-shrink: 0 !important;
 }
-
+ 
 .question-visual-box.multi-player-3 .uzamsal-soru-text {
   width: 100% !important;
   font-size: clamp(0.75rem, 1.6vw, 0.88rem) !important;
@@ -167,7 +167,7 @@
   flex-shrink: 0 !important;
   text-align: center !important;
 }
-
+ 
 /* --------------------------------------------------------------------------
    2) 2 KİŞİLİK MOD (multi-player-2):
    Çerçeve ölçüleri görselle birebir aynı - kenarlarda siyah boşluk oluşmaz
@@ -180,7 +180,7 @@
   justify-content: space-between !important;
   padding: 0 !important;
 }
-
+ 
 .question-visual-box.multi-player-2 .uzamsal-soru-frame {
   width: 100% !important;
   flex: 1 1 0% !important;
@@ -194,7 +194,7 @@
   background: transparent !important;
   overflow: visible !important;
 }
-
+ 
 .question-visual-box.multi-player-2 .uzamsal-soru-img {
   max-width: 100% !important;
   max-height: 100% !important;
@@ -207,7 +207,7 @@
   border: 2px solid rgba(252, 211, 77, 0.9) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.55) !important;
 }
-
+ 
 .question-visual-box.multi-player-2 .uzamsal-soru-text {
   width: 100% !important;
   font-size: clamp(0.88rem, 1.8vw, 1.08rem) !important;
@@ -217,7 +217,7 @@
   flex-shrink: 0 !important;
   text-align: center !important;
 }
-
+ 
 /* --------------------------------------------------------------------------
    3) TEK KİŞİLİK MOD (multi-player-1 / varsayılan):
    Çerçeve ölçüleri görselle birebir aynı - kenarlarda siyah boşluk oluşmaz
@@ -231,7 +231,7 @@
   justify-content: space-between !important;
   padding: 0 !important;
 }
-
+ 
 .question-visual-box.multi-player-1 .uzamsal-soru-frame,
 .question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-frame {
   width: 100% !important;
@@ -246,7 +246,7 @@
   background: transparent !important;
   overflow: visible !important;
 }
-
+ 
 .question-visual-box.multi-player-1 .uzamsal-soru-img,
 .question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-img {
   max-width: 100% !important;
@@ -260,7 +260,7 @@
   border: 2.5px solid rgba(252, 211, 77, 0.95) !important;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6) !important;
 }
-
+ 
 .question-visual-box.multi-player-1 .uzamsal-soru-text,
 .question-visual-box:not(.multi-player-2):not(.multi-player-3) .uzamsal-soru-text {
   width: 100% !important;
@@ -271,38 +271,38 @@
   flex-shrink: 0 !important;
   text-align: center !important;
 }
-
+ 
 .question-visual-box table {
   max-width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   border-collapse: collapse !important;
 }
-
+ 
 .question-visual-box.multi-player-3 table {
   font-size: 0.78rem !important;
   max-width: 98% !important;
 }
-
+ 
 /* MULTI-PLAYER QUESTION TEXT & LAYOUT OPTIMIZATION */
 .question-visual-box.multi-player-2,
 .question-visual-box.multi-player-3 {
   width: 100% !important;
   max-width: 100% !important;
 }
-
+ 
 .question-visual-box.multi-player-2 .max-w-lg,
 .question-visual-box.multi-player-3 .max-w-lg {
   max-width: 100% !important;
 }
-
+ 
 /* Never clip children inside question visual box with inner overflow-hidden divs */
 .question-visual-box div,
 .question-visual-box span,
 .question-visual-box [class*="overflow-hidden"] {
   overflow: visible !important;
 }
-
+ 
 /* Tighten spacing between numbers and shapes in sequences */
 .question-visual-box .flex-nowrap {
   flex-wrap: nowrap !important;
@@ -335,7 +335,7 @@
   padding-bottom: 0.2rem !important;
   font-size: 0.88rem !important;
 }
-
+ 
 /* 4. SINIF SAYI VE ŞEKİL ÖRÜNTÜLERİ */
 .oruntu-sequence-container {
   display: flex !important;
@@ -346,12 +346,12 @@
   align-items: center !important;
   overflow: visible !important;
 }
-
+ 
 .oruntu-sequence-container > div {
   flex-shrink: 0 !important;
   white-space: nowrap !important;
 }
-
+ 
 /* Sadece 3 kişilik modda: Soru metnini biraz küçült */
 .question-visual-box.multi-player-3 .oruntu-soru-metni {
   font-size: clamp(0.72rem, 1.6vw, 0.88rem) !important;
@@ -360,14 +360,14 @@
   padding-left: 0.25rem !important;
   padding-right: 0.25rem !important;
 }
-
+ 
 /* Sadece 3 kişilik modda: Görselleri/kutuları alt satıra inmeyecek şekilde büyüt */
 .question-visual-box.multi-player-3 .oruntu-sequence-container {
   gap: 0.28rem !important;
   margin-top: 0.2rem !important;
   margin-bottom: 0.2rem !important;
 }
-
+ 
 .question-visual-box.multi-player-3 .oruntu-sequence-container > div {
   min-width: 36px !important;
   height: 34px !important;
@@ -380,7 +380,7 @@
   flex-shrink: 0 !important;
   line-height: 1 !important;
 }
-
+ 
 /* Formula & Math Banner auto-fit across multi-player modes */
 .whitespace-nowrap,
 [class*="whitespace-nowrap"],
@@ -394,7 +394,7 @@
   overflow-wrap: normal !important;
   flex-shrink: 0 !important;
 }
-
+ 
 .question-visual-box .formula-box,
 .question-visual-box.multi-player-2 .formula-box,
 .question-visual-box.multi-player-3 .formula-box,
@@ -413,48 +413,48 @@
   margin-left: auto !important;
   margin-right: auto !important;
 }
-
+ 
 .question-visual-box.multi-player-2 .halat-islem-box,
 .question-visual-box.multi-player-3 .halat-islem-box {
   font-size: clamp(1.2rem, 3.2vw, 2.2rem) !important;
   line-height: 1.15 !important;
 }
-
+ 
 .question-visual-box.multi-player-3 [class*="text-7xl"],
 .question-visual-box.multi-player-3 [class*="text-6xl"],
 .question-visual-box.multi-player-3 [class*="text-5xl"] {
   font-size: 1.85rem !important;
   line-height: 1.2 !important;
 }
-
+ 
 .question-visual-box.multi-player-3 [class*="px-12"],
 .question-visual-box.multi-player-3 [class*="px-8"] {
   padding-left: 0.75rem !important;
   padding-right: 0.75rem !important;
 }
-
+ 
 .question-visual-box.multi-player-3 [class*="py-6"],
 .question-visual-box.multi-player-3 [class*="py-4"] {
   padding-top: 0.5rem !important;
   padding-bottom: 0.5rem !important;
 }
-
+ 
 .question-visual-box.multi-player-3 [class*="gap-5"],
 .question-visual-box.multi-player-3 [class*="gap-4"] {
   gap: 0.35rem !important;
 }
-
+ 
 .question-visual-box.multi-player-2 [class*="text-7xl"],
 .question-visual-box.multi-player-2 [class*="text-6xl"] {
   font-size: 2.25rem !important;
   line-height: 1.2 !important;
 }
-
+ 
 .question-visual-box.multi-player-2 [class*="px-12"] {
   padding-left: 1.25rem !important;
   padding-right: 1.25rem !important;
 }
-
+ 
 /* ========================================================================= */
 /* MONEY / PARALARIMIZ RESPONSIVE STYLING (1, 2 & 3 PLAYER MODES)           */
 /* ========================================================================= */
@@ -471,7 +471,7 @@
   margin-bottom: 0.15rem !important;
   padding: 0 0.15rem !important;
 }
-
+ 
 /* Clear forced auto margins on money images so they sit side by side naturally */
 .question-visual-box .para-container img,
 .question-visual-box img.para-kagit,
@@ -486,7 +486,7 @@
   object-fit: contain !important;
   vertical-align: middle !important;
 }
-
+ 
 /* 1-Player Mode Money Sizing (Enlarged by 100%) */
 .question-visual-box img.para-kagit,
 .question-visual-box img[src*="kagit_para"] {
@@ -496,7 +496,7 @@
   width: auto !important;
   flex-shrink: 1 !important;
 }
-
+ 
 .question-visual-box img.para-madeni,
 .question-visual-box img[src*="madeni_para"] {
   height: clamp(68px, 14vh, 96px) !important;
@@ -505,12 +505,12 @@
   max-width: 96px !important;
   flex-shrink: 0 !important;
 }
-
+ 
 /* 2-Player Mode Money Sizing (Enlarged by 100%) */
 .question-visual-box.multi-player-2 .para-container {
   gap: 0.35rem 0.5rem !important;
 }
-
+ 
 .question-visual-box.multi-player-2 img.para-kagit,
 .question-visual-box.multi-player-2 img[src*="kagit_para"] {
   height: clamp(56px, 10vh, 76px) !important;
@@ -519,7 +519,7 @@
   width: auto !important;
   flex-shrink: 1 !important;
 }
-
+ 
 .question-visual-box.multi-player-2 img.para-madeni,
 .question-visual-box.multi-player-2 img[src*="madeni_para"] {
   height: clamp(48px, 9vh, 68px) !important;
@@ -528,12 +528,12 @@
   max-width: 68px !important;
   flex-shrink: 0 !important;
 }
-
+ 
 /* 3-Player Mode Money Sizing (Enlarged by 100%) */
 .question-visual-box.multi-player-3 .para-container {
   gap: 0.25rem 0.35rem !important;
 }
-
+ 
 .question-visual-box.multi-player-3 img.para-kagit,
 .question-visual-box.multi-player-3 img[src*="kagit_para"] {
   height: clamp(44px, 8.4vh, 60px) !important;
@@ -542,7 +542,7 @@
   width: auto !important;
   flex-shrink: 1 !important;
 }
-
+ 
 .question-visual-box.multi-player-3 img.para-madeni,
 .question-visual-box.multi-player-3 img[src*="madeni_para"] {
   height: clamp(40px, 7.2vh, 52px) !important;
@@ -551,24 +551,24 @@
   max-width: 52px !important;
   flex-shrink: 0 !important;
 }
-
+ 
 /* Ensure questions with single-sentence text don't wrap single words onto new lines when space exists, but never wrap formula or nowrap elements */
 .question-visual-box.multi-player-2 p:not(.whitespace-nowrap):not([class*="whitespace-nowrap"]),
 .question-visual-box.multi-player-2 div:not(.whitespace-nowrap):not([class*="whitespace-nowrap"]):not(.halat-islem-box):not(.formula-box):not([class*="halat-islem-box"]) {
   text-wrap: pretty;
 }
-
+ 
 .question-visual-box.multi-player-3 table td,
 .question-visual-box.multi-player-3 table th {
   padding: 1px 4px !important;
   font-size: 0.78rem !important;
 }
-
+ 
 .question-visual-box.multi-player-3 .scale-wrapper {
   transform: scale(0.9);
   transform-origin: center center;
 }
-
+ 
 /* 3D CLAY & PLASTIC TOY ICON STYLES WITH SHADOW & HIGHLIGHT (MATCHING REFERENCE IMAGE) */
 .icon-3d-box {
   display: inline-flex;
@@ -586,7 +586,7 @@
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, filter 0.2s ease;
   filter: saturate(1.3) drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.35));
 }
-
+ 
 .group:hover .icon-3d-box, button:hover .icon-3d-box {
   transform: translateY(-2px) scale(1.08);
   box-shadow: 
@@ -595,7 +595,7 @@
     0 10px 18px -3px rgba(0, 0, 0, 0.5),
     0 4px 8px -1px rgba(0, 0, 0, 0.35);
 }
-
+ 
 /* 3D DROP SHADOW & HIGHLIGHT FOR EMOJIS AND SVGS INSIDE BUTTONS */
 .icon-3d-shadow {
   filter: drop-shadow(0px 5px 6px rgba(0, 0, 0, 0.45)) drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.25)) drop-shadow(0px -1px 2px rgba(255, 255, 255, 0.6));
@@ -603,12 +603,12 @@
   transform: translateZ(0);
   transition: transform 0.2s ease, filter 0.2s ease;
 }
-
+ 
 .group:hover .icon-3d-shadow, button:hover .icon-3d-shadow {
   filter: drop-shadow(0px 8px 10px rgba(0, 0, 0, 0.55)) drop-shadow(0px 3px 3px rgba(0, 0, 0, 0.3)) drop-shadow(0px -1px 3px rgba(255, 255, 255, 0.8));
   transform: translateY(-2px) scale(1.06);
 }
-
+ 
 /* 3D PILL BADGE FOR BUTTONS */
 .icon-3d-badge {
   background: linear-gradient(180deg, #FFE066 0%, #FFB700 55%, #E68A00 100%);
@@ -619,21 +619,21 @@
   border: 1.5px solid #FFF59D;
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
 }
-
+ 
 /* GLOBAL LUCIDE ICON 3D POP */
 button svg, .button-icon-3d {
   filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.35));
 }
-
+ 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
+ 
 /* ==========================================================================
    AKILLI TAHTA (PARDUS / LINUX / DÜŞÜK GPU) PERFORMANS OPTİMİZASYONLARI
    ========================================================================== */
-
+ 
 /* 1. Dokunmatik ekran gecikmesini önle */
 *, *::before, *::after {
   -webkit-tap-highlight-color: transparent;
@@ -641,7 +641,7 @@ button svg, .button-icon-3d {
 button, a, input, select, [role="button"] {
   touch-action: manipulation;
 }
-
+ 
 /* 2. Donanım hızlandırmalı GPU katmanları oluştur (CPU'dan GPU'ya aktar) */
 .question-visual-box,
 .halat-islem-box,
@@ -652,7 +652,7 @@ canvas,
   transform: translateZ(0);
   backface-visibility: hidden;
 }
-
+ 
 /* 3. Düşük donanımlı sistemlerde CPU kilitleyen backdrop-filter: blur() yükünü kaldır */
 .backdrop-blur-sm,
 .backdrop-blur,
@@ -665,19 +665,19 @@ canvas,
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
-
+ 
 /* Backdrop-filter yerine temiz ve akıcı yarı saydam arka planlar */
 .bg-white\/10 { background-color: rgba(255, 255, 255, 0.12) !important; }
 .bg-white\/20 { background-color: rgba(255, 255, 255, 0.22) !important; }
 .bg-slate-900\/70,
 .bg-slate-900\/80,
 .bg-slate-900\/90 { background-color: rgba(15, 23, 42, 0.92) !important; }
-
+ 
 /* 4. CPU'da ağır piksel taraması yapan karmaşık drop-shadow filtrelerini hafiflet */
 [class*="drop-shadow-[0_"] {
   filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.55)) !important;
 }
-
+ 
 /* 5. Animasyonların sürekli repaint yapmasını sınırla */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -687,77 +687,85 @@ canvas,
     scroll-behavior: auto !important;
   }
 }
-
+ 
 @keyframes scaleUp {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
-
+ 
 @keyframes bounceGentle {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
 }
-
+ 
 @keyframes spinSlow {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-
+ 
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out forwards;
 }
-
+ 
 .animate-scaleUp {
   animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
-
+ 
 .animate-bounce-gentle {
   animation: bounceGentle 2s infinite ease-in-out;
 }
-
+ 
 .animate-spin-slow {
   animation: spinSlow 12s linear infinite;
 }
-
+ 
 /* ==========================================================================
    4K AKILLI TAHTA & ULTRA-HD EKRANLAR İÇİN OTOMATİK ÖLÇEKLEME (3840x2160)
    ========================================================================== */
 @media (min-width: 2100px) or (min-height: 1200px) {
+  html {
+    zoom: 1.5; /* TÜM sayfayı (görseller, butonlar, kutular dahil) oranlı büyütür, sadece yazı değil */
+  }
+ 
   :root {
     font-size: 18.5px; /* Rem bazlı tüm metin, buton ve kutular orantılı büyür */
   }
-
+ 
   /* 4K ekranda kartların dar kalmasını önle */
   #tug-of-war-arena {
     width: 380px !important;
   }
 }
-
+ 
 @media (min-width: 2800px) or (min-height: 1600px) {
+  html {
+    zoom: 1.9; /* Gerçek 4K (3840px) ekranlarda daha güçlü büyütme */
+  }
+ 
   :root {
     font-size: 22px; /* Gerçek 4K ekranda uzaktan rahatça görülebilen boyut */
   }
-
+ 
   #tug-of-war-arena {
     width: 440px !important;
   }
 }
-
+ 
 /* MANUEL VEYA OTOMATİK 4K AKILLI TAHTA MODU AKTİFKEN */
 html.smartboard-4k-active {
   font-size: 19px !important;
 }
-
+ 
 html.smartboard-4k-active #tug-of-war-arena {
   width: 360px !important;
 }
-
+ 
 @media (max-width: 1400px) {
   html.smartboard-4k-active {
     font-size: 17px !important;
   }
 }
-
+ 
 /* ==========================================================================
    AKILLI TAHTA VE DÜŞÜK DONANIM İÇİN ŞIK BUTONLARI HIZLANDIRMA (ZERO-LAG)
    ========================================================================== */
@@ -770,7 +778,4 @@ html.smartboard-4k-active #tug-of-war-arena {
   will-change: transform;
   touch-action: manipulation;
 }
-
-
-
-
+ 

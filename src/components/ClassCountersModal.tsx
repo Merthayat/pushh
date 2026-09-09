@@ -16,6 +16,7 @@ interface ClassCountersModalProps {
   onClose: () => void;
   countersData: ClassCountersData;
   onCountersUpdated: (newData: ClassCountersData) => void;
+  onResetStats?: () => void;
   playMp3?: (src: string) => void;
 }
 
@@ -119,6 +120,7 @@ export const ClassCountersModal: React.FC<ClassCountersModalProps> = ({
   onClose,
   countersData,
   onCountersUpdated,
+  onResetStats,
   playMp3
 }) => {
   const [activeTab, setActiveTab] = useState<'overview' | 'classes' | 'questions' | 'visits'>('overview');
@@ -186,6 +188,7 @@ export const ClassCountersModal: React.FC<ClassCountersModalProps> = ({
   const handleReset = () => {
     const fresh = resetAllCounters();
     onCountersUpdated(fresh);
+    onResetStats?.();
     setShowResetConfirm(false);
     playMp3?.('/coin.mp3');
   };

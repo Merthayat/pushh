@@ -48,7 +48,7 @@ const renderHalatQuestionHTML = (islemStr: string, islemTuru: string, aciklama: 
 
 const renderSureliQuestionHTML = (islemStr: string, islemTuru: string, aciklama: string, renk: string) => `
   <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center select-none">
-    <div class="flex items-center justify-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/80 border border-rose-400/60 text-rose-300 font-black text-xs sm:text-sm tracking-wider uppercase shadow-md animate-pulse whitespace-nowrap" style="white-space: nowrap !important; text-wrap: nowrap !important;">
+    <div class="flex items-center justify-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/80 border border-slate-700 text-slate-300 font-black text-xs sm:text-sm tracking-wider uppercase shadow-md whitespace-nowrap" style="white-space: nowrap !important; text-wrap: nowrap !important;">
       <span>⚡ SÜRELİ İŞLEM YARIŞI</span>
       <span class="text-white/70">|</span>
       <span>${islemTuru}</span>

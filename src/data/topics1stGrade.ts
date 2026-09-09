@@ -149,7 +149,7 @@ function renderSequenceCardsHTML(dizi: (number | string)[], boslukIndex: number,
   const cardsHTML = dizi.map((val, idx) => {
     if (idx === boslukIndex) {
       return `
-        <div class="relative w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-amber-400 border-2 border-yellow-200 shadow-[0_0_12px_rgba(236,72,153,0.8)] flex items-center justify-center transform scale-105 animate-pulse shrink-0">
+        <div class="relative w-7 h-7 xs:w-8 xs:h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl bg-gradient-to-tr from-fuchsia-600 via-pink-500 to-amber-400 border-2 border-yellow-200 shadow-[0_0_12px_rgba(236,72,153,0.8)] flex items-center justify-center transform scale-105 shrink-0 select-none">
           <span class="text-white font-black text-xs xs:text-sm sm:text-base md:text-xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] inline-flex items-center justify-center leading-none">?</span>
         </div>
       `;
@@ -613,15 +613,15 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       const m = modeller[Math.floor(Math.random() * modeller.length)];
 
       const visualHTML = (m as any).img
-        ? `<div class="p-2 sm:p-3 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_6px_20px_rgba(0,0,0,0.5)] shrink-0 flex items-center justify-center">
-             <img src="${(m as any).img}" alt="${m.nesne}" class="geo-cisim-img max-h-20 sm:max-h-24 md:max-h-28 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
+        ? `<div class="p-2.5 sm:p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_6px_20px_rgba(0,0,0,0.5)] shrink-0 flex items-center justify-center">
+             <img src="${(m as any).img}" alt="${m.nesne}" class="geo-cisim-img max-h-28 sm:max-h-36 md:max-h-44 w-auto object-contain filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform" />
            </div>`
-        : `<div class="text-5xl xs:text-6xl sm:text-7xl leading-none filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform my-1">${m.emoji}</div>`;
+        : `<div class="text-7xl xs:text-8xl sm:text-9xl leading-none filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.85)] hover:scale-105 transition-transform my-1 sm:my-2">${m.emoji}</div>`;
 
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 text-center my-auto">
+        <div class="flex flex-col items-center justify-center gap-2 sm:gap-3 text-center my-auto w-full px-1">
           ${visualHTML}
-          <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+          <div class="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
             <b>"${m.nesne}"</b> hangi geometrik şekle benzer?
           </div>
         </div>
@@ -897,23 +897,43 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
           isLong: true
         };
       } else {
-        const sekiller = ["⭐", "❤️", "🔷", "🟢"];
-        const s1 = sekiller[0];
-        const s2 = sekiller[1];
+        const SEKIL_GORSLLERI: Record<string, { svgBox: string; svgBtn: string }> = {
+          "⭐": {
+            svgBox: `<svg viewBox="0 0 36 36" class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0 select-none filter drop-shadow"><polygon points="18,2 22,12 33,13 25,20 28,31 18,25 8,31 11,20 3,13 14,12" fill="#eab308" stroke="#fef08a" stroke-width="2" /></svg>`,
+            svgBtn: `<svg viewBox="0 0 36 36" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0 select-none filter drop-shadow"><polygon points="18,2 22,12 33,13 25,20 28,31 18,25 8,31 11,20 3,13 14,12" fill="#eab308" stroke="#fef08a" stroke-width="2" /></svg>`
+          },
+          "❤️": {
+            svgBox: `<svg viewBox="0 0 36 36" class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0 select-none filter drop-shadow"><path d="M18 30s-12-7.5-12-16a6 6 0 0 1 12-2 6 6 0 0 1 12 2c0 8.5-12 16-12 16z" fill="#ef4444" stroke="#fca5a5" stroke-width="2" /></svg>`,
+            svgBtn: `<svg viewBox="0 0 36 36" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0 select-none filter drop-shadow"><path d="M18 30s-12-7.5-12-16a6 6 0 0 1 12-2 6 6 0 0 1 12 2c0 8.5-12 16-12 16z" fill="#ef4444" stroke="#fca5a5" stroke-width="2" /></svg>`
+          },
+          "🔷": {
+            svgBox: `<svg viewBox="0 0 36 36" class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0 select-none filter drop-shadow"><polygon points="18,3 32,18 18,33 4,18" fill="#3b82f6" stroke="#93c5fd" stroke-width="2" /></svg>`,
+            svgBtn: `<svg viewBox="0 0 36 36" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0 select-none filter drop-shadow"><polygon points="18,3 32,18 18,33 4,18" fill="#3b82f6" stroke="#93c5fd" stroke-width="2" /></svg>`
+          },
+          "🟢": {
+            svgBox: `<svg viewBox="0 0 36 36" class="w-6 h-6 xs:w-7 xs:h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 shrink-0 select-none filter drop-shadow"><circle cx="18" cy="18" r="14" fill="#22c55e" stroke="#86efac" stroke-width="2" /></svg>`,
+            svgBtn: `<svg viewBox="0 0 36 36" class="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 shrink-0 select-none filter drop-shadow"><circle cx="18" cy="18" r="14" fill="#22c55e" stroke="#86efac" stroke-width="2" /></svg>`
+          }
+        };
+
+        const anahtarlar = ["⭐", "❤️", "🔷", "🟢"];
+        const s1 = anahtarlar[0];
+        const s2 = anahtarlar[1];
         const dizi = [s1, s2, s1, s2, s1, s2];
         const boslukIndex = Math.floor(Math.random() * 4) + 1;
-        const dogru = dizi[boslukIndex];
+        const dogruKey = dizi[boslukIndex];
 
         const cardsHTML = dizi.map((val, idx) => {
           if (idx === boslukIndex) {
-            return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg bg-pink-600/80 border-2 border-yellow-300 text-yellow-200 font-black flex items-center justify-center text-sm xs:text-base sm:text-xl animate-pulse shrink-0">?</div>`;
+            return `<div class="w-8 h-8 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl bg-pink-600/80 border-2 border-yellow-300 text-yellow-200 font-black flex items-center justify-center text-lg xs:text-xl sm:text-2xl shrink-0 select-none">?</div>`;
           }
-          return `<div class="w-6 h-6 xs:w-7 xs:h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 rounded-lg bg-blue-900/80 border border-blue-400 flex items-center justify-center text-sm xs:text-base sm:text-xl shrink-0">${val}</div>`;
+          const sekil = SEKIL_GORSLLERI[val];
+          return `<div class="w-8 h-8 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-xl bg-blue-950/80 border border-blue-400 flex items-center justify-center p-0.5 sm:p-1 shrink-0 shadow-md">${sekil ? sekil.svgBox : val}</div>`;
         }).join('');
 
         const questionHTML = `
-          <div class="flex flex-col items-center justify-center gap-1 sm:gap-2 text-center my-auto px-0.5 w-full">
-            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden py-0.5">
+          <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 text-center my-auto px-0.5 w-full">
+            <div class="flex items-center justify-center gap-1 xs:gap-1.5 sm:gap-2 flex-nowrap max-w-full overflow-hidden py-1">
               ${cardsHTML}
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
@@ -925,8 +945,8 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         return {
           question: `Şekil örüntüsünde ? yerine hangi şekil gelmelidir?`,
           questionHTML,
-          correct: dogru,
-          wrong: sekiller.filter(s => s !== dogru).slice(0, 3),
+          correct: SEKIL_GORSLLERI[dogruKey].svgBtn,
+          wrong: anahtarlar.filter(s => s !== dogruKey).slice(0, 3).map(s => SEKIL_GORSLLERI[s].svgBtn),
           isLong: false
         };
       }
@@ -987,28 +1007,48 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
     desc: "Nesneleri ağırlıklarına göre karşılaştırma (Daha ağır / Daha hafif).",
     generate: () => {
       const karsilastirmalar = [
-        { agir: "Karpuz 🍉", hafif: "Elma 🍎" },
-        { agir: "Fil 🐘", hafif: "Kuş 🐦" },
-        { agir: "Okul Çantası 🎒", hafif: "Kalem ✏️" },
-        { agir: "Araba 🚗", hafif: "Bisiklet 🚲" },
-        { agir: "Balkabağı 🎃", hafif: "Çilek 🍓" }
+        { agirAd: "Karpuz", agirEmoji: "🍉", hafifAd: "Elma", hafifEmoji: "🍎" },
+        { agirAd: "Fil", agirEmoji: "🐘", hafifAd: "Kuş", hafifEmoji: "🐦" },
+        { agirAd: "Okul Çantası", agirEmoji: "🎒", hafifAd: "Kalem", hafifEmoji: "✏️" },
+        { agirAd: "Araba", agirEmoji: "🚗", hafifAd: "Bisiklet", hafifEmoji: "🚲" },
+        { agirAd: "Balkabağı", agirEmoji: "🎃", hafifAd: "Çilek", hafifEmoji: "🍓" },
+        { agirAd: "Otobüs", agirEmoji: "🚌", hafifAd: "Top", hafifEmoji: "⚽" },
+        { agirAd: "Masa", agirEmoji: "🪑", hafifAd: "Defter", hafifEmoji: "📓" }
       ];
       const secilen = karsilastirmalar[Math.floor(Math.random() * karsilastirmalar.length)];
       const agirSoruluyor = Math.random() < 0.5;
 
+      // Nesnelerin ekrandaki sol/sağ sırasını rastgele yapalım
+      const siraTers = Math.random() < 0.5;
+      const sol = siraTers ? { ad: secilen.hafifAd, emoji: secilen.hafifEmoji, metin: `${secilen.hafifAd} ${secilen.hafifEmoji}` } : { ad: secilen.agirAd, emoji: secilen.agirEmoji, metin: `${secilen.agirAd} ${secilen.agirEmoji}` };
+      const sag = siraTers ? { ad: secilen.agirAd, emoji: secilen.agirEmoji, metin: `${secilen.agirAd} ${secilen.agirEmoji}` } : { ad: secilen.hafifAd, emoji: secilen.hafifEmoji, metin: `${secilen.hafifAd} ${secilen.hafifEmoji}` };
+
+      const dogruMetin = agirSoruluyor ? `${secilen.agirAd} ${secilen.agirEmoji}` : `${secilen.hafifAd} ${secilen.hafifEmoji}`;
+      const yanlisMetin = agirSoruluyor ? `${secilen.hafifAd} ${secilen.hafifEmoji}` : `${secilen.agirAd} ${secilen.agirEmoji}`;
+
       const questionHTML = `
-        <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2.5 text-center my-auto px-1 w-full">
-          <div class="flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-3 flex-nowrap max-w-full overflow-hidden text-center py-0.5">
-            <span class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-slate-900/90 border border-slate-700 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl shrink-0 whitespace-nowrap">
-              ${secilen.agir}
-            </span>
-            <span class="text-sm xs:text-base sm:text-xl text-amber-300 font-black shrink-0">⚖️</span>
-            <span class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] bg-slate-900/90 border border-slate-700 px-2 sm:px-3 py-1 rounded-lg sm:rounded-xl shrink-0 whitespace-nowrap">
-              ${secilen.hafif}
-            </span>
+        <div class="flex flex-col items-center justify-center gap-2 sm:gap-2.5 text-center my-auto px-1 w-full">
+          <div class="flex items-center justify-center gap-2 xs:gap-3 sm:gap-4 flex-nowrap max-w-full my-0.5">
+            <!-- Sol Varlık Kartı (Büyük Görsel) -->
+            <div class="flex flex-col items-center justify-center px-3 py-1.5 xs:px-3.5 xs:py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-gradient-to-b from-slate-800/95 to-slate-900/95 border-2 border-cyan-400/80 shadow-[0_8px_20px_rgba(0,0,0,0.6)] min-w-[76px] xs:min-w-[86px] sm:min-w-[100px] shrink-0">
+              <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] leading-none my-0.5">${sol.emoji}</span>
+              <span class="text-xs xs:text-sm sm:text-base font-black text-amber-300 drop-shadow-sm whitespace-nowrap mt-1">${sol.ad}</span>
+            </div>
+            
+            <div class="flex flex-col items-center justify-center shrink-0 px-0.5">
+              <span class="text-2xl xs:text-3xl sm:text-4xl text-amber-300 filter drop-shadow-md">⚖️</span>
+              <span class="text-[10px] sm:text-xs font-black text-cyan-300 tracking-wider">VS</span>
+            </div>
+
+            <!-- Sağ Varlık Kartı (Büyük Görsel) -->
+            <div class="flex flex-col items-center justify-center px-3 py-1.5 xs:px-3.5 xs:py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-gradient-to-b from-slate-800/95 to-slate-900/95 border-2 border-cyan-400/80 shadow-[0_8px_20px_rgba(0,0,0,0.6)] min-w-[76px] xs:min-w-[86px] sm:min-w-[100px] shrink-0">
+              <span class="text-3xl xs:text-4xl sm:text-5xl filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] leading-none my-0.5">${sag.emoji}</span>
+              <span class="text-xs xs:text-sm sm:text-base font-black text-amber-300 drop-shadow-sm whitespace-nowrap mt-1">${sag.ad}</span>
+            </div>
           </div>
-          <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white px-1 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
-            Yukarıdaki iki varlıktan hangisi daha <b>${agirSoruluyor ? 'AĞIRDIR' : 'HAFİFTİR'}</b>?
+
+          <div class="text-sm xs:text-base sm:text-lg md:text-xl font-black text-white px-2 leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] max-w-md">
+            Yukarıdaki iki varlıktan hangisi daha <span class="text-amber-300 underline font-black decoration-amber-400">${agirSoruluyor ? 'AĞIRDIR' : 'HAFİFTİR'}</span>?
           </div>
         </div>
       `;
@@ -1016,9 +1056,9 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       return {
         question: `Yukarıdaki iki varlıktan hangisi daha ${agirSoruluyor ? 'AĞIRDIR' : 'HAFİFTİR'}?`,
         questionHTML,
-        correct: agirSoruluyor ? secilen.agir : secilen.hafif,
+        correct: dogruMetin,
         wrong: [
-          agirSoruluyor ? secilen.hafif : secilen.agir,
+          yanlisMetin,
           "İkisi Eşit",
           "Tartılamaz"
         ],
@@ -1694,7 +1734,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
         const questionHTML = `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg animate-pulse">
+            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg select-none">
               ${s1} + ${s2} = ?
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
@@ -1717,7 +1757,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
 
         const questionHTML = `
           <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2.5 sm:gap-3.5 py-1 text-center">
-            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg animate-pulse">
+            <div class="px-6 py-2.5 sm:px-8 sm:py-3.5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-rose-600 to-red-700 text-white font-black text-2xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg select-none">
               ${s1} - ${s2} = ?
             </div>
             <div class="text-base xs:text-lg sm:text-xl md:text-2xl font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2">
@@ -1843,7 +1883,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
       ];
 
       const wheelSVG = `
-        <svg viewBox="0 0 200 200" class="w-28 h-28 xs:w-32 xs:h-32 sm:w-36 sm:h-36 filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.7)] mx-auto">
+        <svg viewBox="0 0 200 200" class="h-20 xs:h-22 sm:h-24 md:h-28 w-auto max-h-[105px] sm:max-h-[120px] filter drop-shadow-[0_6px_16px_rgba(0,0,0,0.7)] mx-auto shrink-0">
           <defs>
             <radialGradient id="hubGrad" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#1E293B" />
@@ -1885,12 +1925,12 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
         <div class="flex flex-col items-center justify-center gap-1.5 sm:gap-2 my-auto w-full px-1 text-center">
           ${wheelSVG}
           <div class="flex items-center justify-center gap-2 my-0.5">
-            <span class="px-3.5 py-1 rounded-xl bg-slate-900/95 border-2 border-amber-400 text-amber-300 font-black text-sm xs:text-base sm:text-lg shadow-md whitespace-nowrap">
+            <span class="px-4 py-1 sm:py-1.5 rounded-2xl bg-slate-950/95 border-2 border-amber-400 text-amber-300 font-black text-base sm:text-lg md:text-xl shadow-lg whitespace-nowrap">
               ${merkez} + ${eklenen} = ❓
             </span>
           </div>
-          <div class="text-xs xs:text-sm sm:text-base font-black text-white text-center leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] px-2">
-            🎡 Çarkın ortasındaki <span class="text-amber-300 font-black">${merkez}</span> sayısına ibrenin gösterdiği <span class="text-cyan-300 font-black">+${eklenen}</span> eklenirse ibre kaçı gösterir?
+          <div class="text-sm xs:text-base sm:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] px-2 max-w-md">
+            Çarkın ortasındaki <span class="text-amber-300 font-black">${merkez}</span> sayısına ibrenin gösterdiği <span class="text-cyan-300 font-black">+${eklenen}</span> eklenirse sonuç kaç olur?
           </div>
         </div>
       `;
@@ -1940,7 +1980,7 @@ export const topics1stGrade: Record<string, { title: string; desc: string; gener
           <div class="flex items-center justify-center gap-2 sm:gap-3 my-1.5 flex-wrap">
             ${sira.map((item) => {
               if (item === "?") {
-                return `<div class="px-3.5 py-1.5 xs:px-4 xs:py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-rose-500 via-rose-600 to-pink-600 border-2 border-white text-white font-black text-xl xs:text-2xl sm:text-3xl shadow-[0_4px_16px_rgba(244,63,94,0.7)] animate-pulse ring-2 ring-rose-400/50 shrink-0">?</div>`;
+                return `<div class="px-3.5 py-1.5 xs:px-4 xs:py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-rose-500 via-rose-600 to-pink-600 border-2 border-white text-white font-black text-xl xs:text-2xl sm:text-3xl shadow-[0_4px_16px_rgba(244,63,94,0.7)] ring-2 ring-rose-400/50 shrink-0 select-none">?</div>`;
               }
               return `<div class="px-3.5 py-1.5 xs:px-4 xs:py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-amber-400 via-yellow-400 to-amber-500 border-2 border-white text-slate-950 font-black text-xl xs:text-2xl sm:text-3xl shadow-[0_4px_14px_rgba(245,158,11,0.5)] shrink-0">${item}</div>`;
             }).join('')}

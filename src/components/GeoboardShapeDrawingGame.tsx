@@ -363,6 +363,8 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   const [drawnPoints, setDrawnPoints] = useState<Point[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [dragCurrentCoord, setDragCurrentCoord] = useState<{ x: number; y: number } | null>(null);
+  const [hoveredPeg, setHoveredPeg] = useState<Point | null>(null);
+  const [history, setHistory] = useState<Point[][]>([]);
   const [selectedColorIndex, setSelectedColorIndex] = useState<number>(0);
   const [showGhostHint, setShowGhostHint] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
@@ -380,6 +382,8 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   // Görev değiştiğinde temizle
   useEffect(() => {
     setDrawnPoints([]);
+    setHistory([]);
+    setHoveredPeg(null);
     setShowGhostHint(false);
     setStatusMessage(null);
   }, [missionIndex, currentMission]);
@@ -397,6 +401,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   }, [drawnPoints]);
 
   // Manyetik Nokta Yakalama
+  // Not: STEP = 19%, 12% yakalama yarıçapı komşu noktalara taşmadan hedef noktayı net yakalar
   const getNearestPeg = useCallback((clientX: number, clientY: number): Point | null => {
     if (!boardRef.current) return null;
     const rect = boardRef.current.getBoundingClientRect();
@@ -404,7 +409,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
     const relY = ((clientY - rect.top) / rect.height) * 100;
 
     let closestPoint: Point | null = null;
-    let minDistance = 15; // % yakalama yarıçapı
+    let minDistance = 12; // % yakalama yarıçapı
 
     for (let gy = 0; gy < GRID_SIZE; gy++) {
       for (let gx = 0; gx < GRID_SIZE; gx++) {
@@ -419,13 +424,14 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
     return closestPoint;
   }, []);
 
-  // Dokunma / Tıklama ile Nokta Ekleme
+  // Dokunma / Tıklama veya Parmağı Kaldırma ile Nokta Bağlama
   const handlePegTap = useCallback((gx: number, gy: number) => {
     if (isClosed) return; // Şekil kapatıldıysa tahtaya rastgele tıklama şekli bozmasın
 
     setDrawnPoints(prev => {
       if (prev.length === 0) {
         if (soundEnabled) playTone(480, 0.08, 'triangle', 0, 0.2);
+        setHistory([]);
         return [{ x: gx, y: gy }];
       }
 
@@ -438,81 +444,107 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
           playTone(520, 0.08, 'sine', 0, 0.25);
           playTone(680, 0.15, 'sine', 0.08, 0.25);
         }
+        setHistory(h => [...h, prev]);
         const linePegs = getLinePegs(last, { x: gx, y: gy });
         return [...prev, ...linePegs];
       }
 
-      // Aynı noktaya çift tıklamayı engelle
+      // Aynı noktaya tekrar basıldığında işlem yapma
       if (last.x === gx && last.y === gy) return prev;
 
       if (soundEnabled) playTone(440 + (gx + gy) * 35, 0.06, 'sine', 0, 0.2);
+      setHistory(h => [...h, prev]);
       const linePegs = getLinePegs(last, { x: gx, y: gy });
       return [...prev, ...linePegs];
     });
   }, [isClosed, soundEnabled]);
 
-  // Pointer Down (Sürüklemeye Başlama)
+  // Pointer Down (Sürüklemeye veya Dokunmaya Başlama)
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isClosed) return;
-    const peg = getNearestPeg(e.clientX, e.clientY);
-    if (!peg) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
 
+    try {
+      (e.currentTarget as HTMLElement)?.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+
+    const peg = getNearestPeg(e.clientX, e.clientY);
     setIsDragging(true);
+
     if (boardRef.current) {
       const rect = boardRef.current.getBoundingClientRect();
       setDragCurrentCoord({ x: e.clientX - rect.left, y: e.clientY - rect.top });
     }
 
-    if (drawnPoints.length === 0) {
-      handlePegTap(peg.x, peg.y);
-    } else {
-      const last = drawnPoints[drawnPoints.length - 1];
-      if (last.x !== peg.x || last.y !== peg.y) {
-        handlePegTap(peg.x, peg.y);
+    if (peg) {
+      setHoveredPeg(peg);
+      // Eğer tahtada henüz hiç nokta yoksa, ilk başlangıç noktası olarak ata
+      if (drawnPoints.length === 0) {
+        setDrawnPoints([{ x: peg.x, y: peg.y }]);
+        if (soundEnabled) playTone(480, 0.08, 'triangle', 0, 0.2);
       }
+    } else {
+      setHoveredPeg(null);
     }
   };
 
-  // Pointer Move (Sürükleme)
+  // Pointer Move (Sürükleme - DİKKAT: Parmak kalkmadan KESİNLİKLE ara nokta bağlanmaz!)
+  // Çapraz üçgen gibi şekillerde aradaki komşu noktalara atlamaması için parmak havadayken sadece önizleme yapılır
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging || isClosed || !boardRef.current) return;
     const rect = boardRef.current.getBoundingClientRect();
-    setDragCurrentCoord({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    const curX = e.clientX - rect.left;
+    const curY = e.clientY - rect.top;
+    setDragCurrentCoord({ x: curX, y: curY });
 
     const peg = getNearestPeg(e.clientX, e.clientY);
-    if (peg) {
-      setDrawnPoints(prev => {
-        if (prev.length === 0) return [{ x: peg.x, y: peg.y }];
-        const first = prev[0];
-        const last = prev[prev.length - 1];
-
-        // Şekli kapatma sürüklemesi
-        if (peg.x === first.x && peg.y === first.y && prev.length >= 3) {
-          if (last.x !== peg.x || last.y !== peg.y) {
-            if (soundEnabled) {
-              playTone(520, 0.08, 'sine', 0, 0.2);
-              playTone(660, 0.12, 'sine', 0.08, 0.2);
-            }
-            const linePegs = getLinePegs(last, { x: peg.x, y: peg.y });
-            return [...prev, ...linePegs];
-          }
-          return prev;
-        }
-
-        if (last.x !== peg.x || last.y !== peg.y) {
-          if (soundEnabled) playTone(440 + (peg.x + peg.y) * 35, 0.05, 'sine', 0, 0.15);
-          const linePegs = getLinePegs(last, { x: peg.x, y: peg.y });
-          return [...prev, ...linePegs];
-        }
-        return prev;
-      });
-    }
+    setHoveredPeg(peg);
   };
 
-  // Pointer Up (Sürüklemeyi Bitirme)
-  const handlePointerUp = () => {
+  // Pointer Up (Parmağı Kaldırma - NOKTA TAM BU ANDA BAĞLANIR)
+  const handlePointerUp = (e: React.PointerEvent) => {
+    try {
+      (e.currentTarget as HTMLElement)?.releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+
+    if (!isDragging || isClosed) {
+      setIsDragging(false);
+      setDragCurrentCoord(null);
+      setHoveredPeg(null);
+      return;
+    }
+
+    const peg = getNearestPeg(e.clientX, e.clientY);
     setIsDragging(false);
     setDragCurrentCoord(null);
+    setHoveredPeg(null);
+
+    if (!peg) {
+      // Parmak boşlukta bırakıldıysa: eğer henüz sadece 1 başlangıç noktası seçilmişse temizle
+      if (drawnPoints.length === 1) {
+        setDrawnPoints([]);
+      }
+      return;
+    }
+
+    // Hedef noktaya parmak kaldırıldığında bağlanır
+    handlePegTap(peg.x, peg.y);
+  };
+
+  // Pointer Cancel (Beklenmeyen jest/dokunma kesintilerinde güvenli sıfırlama)
+  const handlePointerCancel = (e: React.PointerEvent) => {
+    try {
+      (e.currentTarget as HTMLElement)?.releasePointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+    setIsDragging(false);
+    setDragCurrentCoord(null);
+    setHoveredPeg(null);
   };
 
   // Şekli Doğrulama / Onaylama
@@ -584,16 +616,20 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
   // Temizle
   const handleClear = () => {
     setDrawnPoints([]);
+    setHistory([]);
     setStatusMessage(null);
     if (soundEnabled) playTone(300, 0.08, 'sine', 0, 0.2);
   };
 
   // Geri Al
   const handleUndo = () => {
-    setDrawnPoints(prev => {
-      if (prev.length <= 1) return [];
-      return prev.slice(0, -1);
-    });
+    if (history.length > 0) {
+      const prevPoints = history[history.length - 1];
+      setHistory(h => h.slice(0, -1));
+      setDrawnPoints(prevPoints);
+    } else {
+      setDrawnPoints([]);
+    }
     setStatusMessage(null);
     if (soundEnabled) playTone(350, 0.06, 'sine', 0, 0.2);
   };
@@ -671,6 +707,10 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
         <p className="text-xs sm:text-sm text-slate-200 font-medium">
           {currentMission.instruction}
         </p>
+        <div className="flex items-center gap-1.5 text-[11px] text-amber-200/90 font-semibold bg-amber-500/10 px-2 py-1 rounded-lg border border-amber-400/20">
+          <span>💡</span>
+          <span>Noktaya kadar sürükleyip parmağını kaldır veya noktalara dokunarak çiz!</span>
+        </div>
 
         {/* Canlı Şekil Tanıma Rozeti */}
         <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[11px] font-bold">
@@ -696,6 +736,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
+          onPointerCancel={handlePointerCancel}
         >
           {/* Tahta Dokusu & Izgara Çizgileri */}
           <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
@@ -786,10 +827,15 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
               const last = drawnPoints[drawnPoints.length - 1];
               const p1 = getPegPositionPercent(last.x, last.y);
               const rect = boardRef.current.getBoundingClientRect();
-              const p2 = {
-                x: (dragCurrentCoord.x / rect.width) * 100,
-                y: (dragCurrentCoord.y / rect.height) * 100
-              };
+
+              // Eğer hoveredPeg varsa ve son noktadan farklıysa lastik ucu o noktaya manyetik yapışır
+              const p2 = hoveredPeg && (hoveredPeg.x !== last.x || hoveredPeg.y !== last.y)
+                ? getPegPositionPercent(hoveredPeg.x, hoveredPeg.y)
+                : {
+                    x: (dragCurrentCoord.x / rect.width) * 100,
+                    y: (dragCurrentCoord.y / rect.height) * 100
+                  };
+
               return (
                 <g>
                   <line
@@ -834,6 +880,9 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
               const pos = getPegPositionPercent(gx, gy);
               const isSelected = drawnPoints.some(p => p.x === gx && p.y === gy);
               const isFirst = drawnPoints.length > 0 && drawnPoints[0].x === gx && drawnPoints[0].y === gy;
+              const isLast = drawnPoints.length > 0 && drawnPoints[drawnPoints.length - 1].x === gx && drawnPoints[drawnPoints.length - 1].y === gy;
+              const isHovered = isDragging && hoveredPeg && hoveredPeg.x === gx && hoveredPeg.y === gy;
+              const canCloseHover = isHovered && isFirst && drawnPoints.length >= 3;
 
               return (
                 <button
@@ -849,15 +898,21 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
                   <div className="relative flex items-center justify-center">
                     {/* İlk noktayı kapatma yönlendiricisi */}
                     {isFirst && !isClosed && drawnPoints.length >= 3 && (
-                      <span className="absolute -top-5 text-[9px] font-black bg-emerald-500 text-white px-1.5 py-0.5 rounded shadow-md animate-bounce pointer-events-none whitespace-nowrap z-30">
+                      <span className={`absolute -top-5 text-[9px] font-black ${
+                        canCloseHover ? 'bg-cyan-400 text-slate-950 scale-110' : 'bg-emerald-500 text-white'
+                      } px-1.5 py-0.5 rounded shadow-md animate-bounce pointer-events-none whitespace-nowrap z-30 transition-transform`}>
                         KAPAT
                       </span>
                     )}
 
                     {/* Dış Pin Gövdesi */}
                     <div
-                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-transform duration-150 ${
-                        isSelected 
+                      className={`w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full flex items-center justify-center transition-all duration-150 ${
+                        canCloseHover
+                          ? 'bg-emerald-300 ring-4 ring-emerald-400 shadow-[0_0_16px_rgba(52,211,153,1)] scale-130 animate-pulse'
+                          : isHovered && !isLast
+                          ? 'bg-amber-200 ring-4 ring-cyan-400 shadow-[0_0_16px_rgba(34,211,238,1)] scale-130 animate-pulse'
+                          : isSelected 
                           ? 'bg-white ring-4 ring-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.9)] scale-110' 
                           : 'bg-gradient-to-br from-amber-300 via-amber-600 to-amber-900 shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-125'
                       }`}
@@ -865,7 +920,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
                       {/* İç Metalik Çekirdek */}
                       <div
                         className={`w-1.5 h-1.5 rounded-full ${
-                          isSelected ? 'bg-amber-600' : 'bg-slate-950/80'
+                          canCloseHover ? 'bg-emerald-700' : isHovered ? 'bg-cyan-700' : isSelected ? 'bg-amber-600' : 'bg-slate-950/80'
                         }`}
                       />
                     </div>

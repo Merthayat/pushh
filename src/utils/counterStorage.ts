@@ -189,17 +189,34 @@ export function syncHistoricalQuestions(
 ): ClassCountersData {
   const data = loadCounters();
   
+  // If already marked as synced or explicitly reset, do not re-sync
+  try {
+    if (localStorage.getItem('olcico_historical_synced') === 'true') {
+      return data;
+    }
+  } catch {}
+
   // Calculate existing question count
   const existingCount = Object.values(data.questions).reduce(
     (acc, q) => acc + (q?.correct || 0) + (q?.wrong || 0),
     0
   );
 
-  // If already populated, return as is
-  if (existingCount > 0) return data;
+  // If already populated, mark as synced and return as is
+  if (existingCount > 0) {
+    try {
+      localStorage.setItem('olcico_historical_synced', 'true');
+    } catch {}
+    return data;
+  }
 
   const entries = Object.entries(statsData || {});
-  if (entries.length === 0) return data;
+  if (entries.length === 0) {
+    try {
+      localStorage.setItem('olcico_historical_synced', 'true');
+    } catch {}
+    return data;
+  }
 
   const t1Set = new Set(topics1Keys);
   const t3Set = new Set(topics3Keys);
@@ -229,6 +246,10 @@ export function syncHistoricalQuestions(
     data.questions[targetKey].wrong += w;
   });
 
+  try {
+    localStorage.setItem('olcico_historical_synced', 'true');
+  } catch {}
+
   saveCounters(data);
   return data;
 }
@@ -246,5 +267,14 @@ export function resetAllCounters(): ClassCountersData {
     },
   };
   saveCounters(fresh);
+
+  try {
+    // Explicitly mark historical sync as finished so old stats are NOT restored on reload
+    localStorage.setItem('olcico_historical_synced', 'true');
+    localStorage.removeItem('mathGameStats_v1');
+    localStorage.removeItem('mathGameGroupStats_v1');
+    localStorage.removeItem('mathGameStats');
+  } catch {}
+
   return fresh;
 }

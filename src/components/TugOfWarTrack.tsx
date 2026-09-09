@@ -94,7 +94,7 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
   return (
     <div
       id="tug-of-war-arena"
-      className={`relative flex flex-col items-center justify-between h-full w-[200px] xs:w-[225px] sm:w-[260px] md:w-[295px] lg:w-[325px] rounded-2xl sm:rounded-3xl bg-gradient-to-b from-[#0b1329] via-[#070c1b] to-[#0b1329] border-2 border-amber-400/60 shadow-[0_0_35px_rgba(245,158,11,0.3),inset_0_1px_2px_rgba(255,255,255,0.2)] p-2 sm:p-2.5 overflow-hidden select-none ${className}`}
+      className={`relative flex flex-col items-center justify-between h-full w-[280px] xs:w-[320px] sm:w-[400px] md:w-[480px] lg:w-[580px] xl:w-[700px] 2xl:w-[820px] rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#121c2e] via-[#1b2b48] to-[#121c2e] border-2 border-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.35)] border-l-4 border-l-amber-400 p-2 sm:p-2.5 overflow-hidden select-none ${className}`}
     >
       {/* BACKGROUND FIELD DECORATION */}
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:16px_16px]" />
@@ -250,12 +250,12 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
           
           {/* THE ROPE (VİDEODAKİ HALAT İLE BİREBİR AYNI RENK, DOKU VE HİZADA - SAHANIN VE KARAKTERLERİN ÜSTÜNDE) */}
           <div
-            className="absolute left-3 right-3 top-1/2 -translate-y-1/2 h-[5px] sm:h-[6px] rounded-full transition-all duration-500 ease-out z-30 pointer-events-none"
+            className="absolute left-3 right-3 top-1/2 -translate-y-1/2 h-[6px] sm:h-[8px] md:h-[10px] rounded-full transition-all duration-500 ease-out z-30 pointer-events-none"
             style={{
               background: 'repeating-linear-gradient(-45deg, #4a341e 0px, #4a341e 2px, #8c6742 2px, #b8936b 3.5px, #cfab83 4.5px, #8c6742 6px, #4a341e 7.5px)',
-              boxShadow: '0 1.5px 3px rgba(0,0,0,0.65), inset 0 1px 1px rgba(255,255,255,0.22), inset 0 -1px 1px rgba(0,0,0,0.45)',
-              borderTop: '1px solid rgba(184, 147, 107, 0.45)',
-              borderBottom: '1px solid rgba(58, 40, 23, 0.75)'
+              boxShadow: '0 2px 4px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.25), inset 0 -1px 1px rgba(0,0,0,0.5)',
+              borderTop: '1px solid rgba(184, 147, 107, 0.55)',
+              borderBottom: '1px solid rgba(58, 40, 23, 0.85)'
             }}
           >
             {/* ROPE TEXTURE SHINE */}
@@ -267,8 +267,8 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
             className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-500 ease-out z-40 flex items-center justify-center pointer-events-none"
             style={{ left: `${ribbonCenterPercent}%` }}
           >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-              <span className="text-2xl sm:text-3xl select-none leading-none">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 md:w-13 md:h-13 flex items-center justify-center filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+              <span className="text-2xl sm:text-3xl md:text-4xl select-none leading-none">
                 🏀
               </span>
             </div>
@@ -276,7 +276,7 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
 
           {/* LEFT MASCOT: KAPLUMBAĞA (hakap.mp4 VİDEO - ELİ TAM HALATIN ÜZERİNDE) */}
           <div
-            className="absolute left-1 sm:left-3 md:left-4 top-1/2 z-20 flex items-center justify-center transition-transform duration-500 ease-out pointer-events-auto"
+            className="absolute left-1.5 sm:left-3 md:left-4 top-1/2 z-20 flex items-center justify-center transition-transform duration-500 ease-out pointer-events-auto"
             style={{
               transform: `translateY(-48.5%) ${
                 lastPullTeam === 'p1'
@@ -301,7 +301,7 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
             )}
 
             {/* Video container with 9:16 aspect ratio */}
-            <div className="relative w-[64px] h-[114px] sm:w-[76px] sm:h-[135px] md:w-[84px] md:h-[150px] flex items-center justify-center">
+            <div className="relative w-[70px] h-[124px] sm:w-[86px] sm:h-[153px] md:w-[102px] md:h-[181px] lg:w-[118px] lg:h-[210px] flex items-center justify-center">
               <TransparentVideo
                 src="/hakap.mp4"
                 fallbackImg="/kap1.png"
@@ -321,7 +321,7 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
 
           {/* RIGHT MASCOT: EJDERHA (haej.mp4 VİDEO - ELİ TAM HALATIN ÜZERİNDE) */}
           <div
-            className="absolute right-1 sm:right-3 md:right-4 top-1/2 z-20 flex items-center justify-center transition-transform duration-500 ease-out pointer-events-auto"
+            className="absolute right-1.5 sm:right-3 md:right-4 top-1/2 z-20 flex items-center justify-center transition-transform duration-500 ease-out pointer-events-auto"
             style={{
               transform: `translateY(-48.5%) ${
                 lastPullTeam === 'p2'
@@ -346,7 +346,7 @@ export const TugOfWarTrack: React.FC<TugOfWarTrackProps> = ({
             )}
 
             {/* Video container with 9:16 aspect ratio */}
-            <div className="relative w-[64px] h-[114px] sm:w-[76px] sm:h-[135px] md:w-[84px] md:h-[150px] flex items-center justify-center">
+            <div className="relative w-[70px] h-[124px] sm:w-[86px] sm:h-[153px] md:w-[102px] md:h-[181px] lg:w-[118px] lg:h-[210px] flex items-center justify-center">
               <TransparentVideo
                 src="/haej.mp4"
                 fallbackImg="/ejd1.png"
