@@ -409,7 +409,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
     const relY = ((clientY - rect.top) / rect.height) * 100;
 
     let closestPoint: Point | null = null;
-    let minDistance = 12; // % yakalama yarıçapı
+    let minDistance = 7.5; // % yakalama yarıçapı (komşu noktalara taşmadan hedef noktayı net yakalar)
 
     for (let gy = 0; gy < GRID_SIZE; gy++) {
       for (let gx = 0; gx < GRID_SIZE; gx++) {
@@ -445,8 +445,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
           playTone(680, 0.15, 'sine', 0.08, 0.25);
         }
         setHistory(h => [...h, prev]);
-        const linePegs = getLinePegs(last, { x: gx, y: gy });
-        return [...prev, ...linePegs];
+        return [...prev, { x: gx, y: gy }];
       }
 
       // Aynı noktaya tekrar basıldığında işlem yapma
@@ -454,8 +453,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
 
       if (soundEnabled) playTone(440 + (gx + gy) * 35, 0.06, 'sine', 0, 0.2);
       setHistory(h => [...h, prev]);
-      const linePegs = getLinePegs(last, { x: gx, y: gy });
-      return [...prev, ...linePegs];
+      return [...prev, { x: gx, y: gy }];
     });
   }, [isClosed, soundEnabled]);
 
@@ -524,14 +522,11 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
     setHoveredPeg(null);
 
     if (!peg) {
-      // Parmak boşlukta bırakıldıysa: eğer henüz sadece 1 başlangıç noktası seçilmişse temizle
-      if (drawnPoints.length === 1) {
-        setDrawnPoints([]);
-      }
+      // Parmak boşlukta bırakıldıysa hiçbir çizim yapılmaz, ara noktaya atlamaz
       return;
     }
 
-    // Hedef noktaya parmak kaldırıldığında bağlanır
+    // Hedef noktaya YALNIZCA parmak kaldırıldığında bağlanır!
     handlePegTap(peg.x, peg.y);
   };
 
@@ -675,7 +670,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
       </div>
 
       {/* GÖREV VE TALİMAT KARTI */}
-      <div className="relative z-20 w-full max-w-md my-1 sm:my-2 p-3 rounded-2xl bg-gradient-to-r from-white/10 to-white/5 border border-white/20 shadow-xl backdrop-blur-md flex flex-col gap-1.5 shrink-0">
+      <div className="relative z-20 w-full max-w-md my-1 sm:my-2 p-3 rounded-2xl bg-gradient-to-r from-[#121c2e] via-[#1b2b48] to-[#121c2e] border-2 border-amber-400/90 shadow-[0_0_20px_rgba(245,158,11,0.3)] border-l-4 border-l-amber-400 flex flex-col gap-1.5 shrink-0">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-2xl shrink-0">{currentMission.icon}</span>
@@ -885,15 +880,10 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
               const canCloseHover = isHovered && isFirst && drawnPoints.length >= 3;
 
               return (
-                <button
+                <div
                   key={`${gx}-${gy}`}
-                  type="button"
                   style={{ left: `${pos.x}%`, top: `${pos.y}%` }}
-                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center p-2 z-20 cursor-pointer group focus:outline-none`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePegTap(gx, gy);
-                  }}
+                  className={`absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center p-2 z-20 pointer-events-none`}
                 >
                   <div className="relative flex items-center justify-center">
                     {/* İlk noktayı kapatma yönlendiricisi */}
@@ -914,7 +904,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
                           ? 'bg-amber-200 ring-4 ring-cyan-400 shadow-[0_0_16px_rgba(34,211,238,1)] scale-130 animate-pulse'
                           : isSelected 
                           ? 'bg-white ring-4 ring-amber-400 shadow-[0_0_12px_rgba(251,191,36,0.9)] scale-110' 
-                          : 'bg-gradient-to-br from-amber-300 via-amber-600 to-amber-900 shadow-[0_2px_4px_rgba(0,0,0,0.8)] group-hover:scale-125'
+                          : 'bg-gradient-to-br from-amber-300 via-amber-600 to-amber-900 shadow-[0_2px_4px_rgba(0,0,0,0.8)]'
                       }`}
                     >
                       {/* İç Metalik Çekirdek */}
@@ -925,7 +915,7 @@ export const GeoboardShapeDrawingGame: React.FC<GeoboardShapeDrawingGameProps> =
                       />
                     </div>
                   </div>
-                </button>
+                </div>
               );
             })
           )}

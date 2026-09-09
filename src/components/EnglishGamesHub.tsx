@@ -86,16 +86,18 @@ export const EnglishGamesHub: React.FC<EnglishGamesHubProps> = ({
       <main className="relative z-10 flex-1 p-2 sm:p-4 max-w-4xl mx-auto w-full overflow-y-auto no-scrollbar flex flex-col items-center gap-2 sm:gap-2.5 pt-3 sm:pt-4 md:pt-5">
         {/* GLOWING HEADER BADGE - 6. İNGİLİZCE OYUNLAR */}
         <div className="flex flex-col items-center justify-center mt-0.5 sm:mt-1 mb-1.5 sm:mb-2 max-w-2xl w-full mx-auto shrink-0 py-0.5">
-          <div className="inline-flex items-center gap-2 sm:gap-3 px-5 sm:px-8 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-teal-600/30 via-cyan-500/35 to-emerald-600/30 border-2 border-teal-400/80 shadow-[0_4px_20px_rgba(20,184,166,0.4)] backdrop-blur-xs">
-            <img src="/icon_6.png" alt="6. İngilizce Oyunlar" className="w-6 h-6 sm:w-7 sm:h-7 object-contain filter drop-shadow-sm shrink-0" />
-            <span className="text-xs sm:text-sm md:text-base font-black text-white tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
-              6. İNGİLİZCE OYUNLAR
-            </span>
-            <span className="text-slate-400 font-bold">•</span>
-            <span className="text-[10px] sm:text-xs md:text-sm font-black text-teal-300 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
-              OYUNUNU SEÇ VE BAŞLA
-            </span>
-            <span className="text-amber-300 text-xs sm:text-sm animate-pulse">✨</span>
+          <div className="w-full flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5 rounded-2xl bg-gradient-to-r from-[#121c2e] via-[#1b2b48] to-[#121c2e] border-2 border-amber-400/90 shadow-[0_0_20px_rgba(245,158,11,0.3)] border-l-4 border-l-amber-400">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <img src="/icon_6.png" alt="6. İngilizce Oyunlar" className="w-6 h-6 sm:w-7 sm:h-7 object-contain filter drop-shadow-sm shrink-0" />
+              <span className="text-xs sm:text-sm md:text-base font-black text-white tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                6. İNGİLİZCE OYUNLAR
+              </span>
+              <span className="text-amber-400/60 font-bold">•</span>
+              <span className="text-[10px] sm:text-xs md:text-sm font-black text-amber-300 tracking-wider uppercase drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] whitespace-nowrap">
+                OYUNUNU SEÇ VE BAŞLA
+              </span>
+            </div>
+            <span className="text-amber-400 text-sm sm:text-base animate-pulse">✨</span>
           </div>
         </div>
 

@@ -1900,7 +1900,7 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   // 2. SAYILAR VE NİCELİKLER (1. ve 2. Sınıf)
   nesne_sayisi: '/MENUIKON/grid_icon_18.png',
   sira_sayilari: '/MENUIKON/grid_icon_24.png',
-  cok_az_esit: '/MENUIKON/grid_icon_20.png',
+  cok_az_esit: '/MENUIKON/grid_icon_07.png',
   sayi_basamak_degeri: '/MENUIKON/grid_icon_21.png',
   deste_duzine: '/MENUIKON/grid_icon_27.png',
   kesirler: '/MENUIKON/grid_icon_11.png',
@@ -1925,9 +1925,9 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   ritmik_geri_10: '/MENUIKON/grid_icon_20.png',
 
   // Saati Okuma (2. Sınıf)
-  saat_tam: '/MENUIKON/grid_icon_07.png',
-  saat_yarim: '/MENUIKON/grid_icon_32.png',
-  saat_ceyrek_gece: '/MENUIKON/grid_icon_17.png',
+  saat_tam: '/MENUIKON/grid_icon_16.png',
+  saat_yarim: '/MENUIKON/grid_icon_29.png',
+  saat_ceyrek_gece: '/MENUIKON/grid_icon_38.png',
   saat_ceyrek_kala: '/MENUIKON/grid_icon_35.png',
 
   // 3. İŞLEMLER VE CEBİR - TOPLAMA (1. ve 2. Sınıf)
@@ -1954,7 +1954,7 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   toplama_cikarma_problemleri: '/MENUIKON/grid_icon_04.png',
   ardisik_toplama: '/MENUIKON/grid_icon_28.png',
   ritmik_carpim: '/MENUIKON/grid_icon_15.png',
-  esit_paylastirma: '/MENUIKON/grid_icon_24.png',
+  esit_paylastirma: '/MENUIKON/grid_icon_27.png',
   ardisik_cikarma: '/MENUIKON/grid_icon_30.png',
   kalansiz_bolme: '/MENUIKON/grid_icon_03.png',
 
@@ -1976,25 +1976,25 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   sureli_on_tamamlama: '/MENUIKON/grid_icon_09.png',
   sureli_carpma: '/MENUIKON/grid_icon_04.png',
   sureli_bolme: '/MENUIKON/grid_icon_05.png',
-  sureli_carpma_bolme: '/MENUIKON/grid_icon_04.png',
+  sureli_carpma_bolme: '/MENUIKON/grid_icon_28.png',
   sureli_carpma_3: '/MENUIKON/grid_icon_04.png',
   sureli_bolme_3: '/MENUIKON/grid_icon_05.png',
   sureli_carpma_4: '/MENUIKON/grid_icon_04.png',
   sureli_bolme_4: '/MENUIKON/grid_icon_05.png',
-  halat_toplama_1: '/MENUIKON/grid_icon_32.png',
-  halat_cikarma_1: '/MENUIKON/grid_icon_32.png',
-  halat_toplama_2: '/MENUIKON/grid_icon_32.png',
-  halat_cikarma_2: '/MENUIKON/grid_icon_32.png',
+  halat_toplama_1: '/MENUIKON/grid_icon_08.png',
+  halat_cikarma_1: '/MENUIKON/grid_icon_30.png',
+  halat_toplama_2: '/MENUIKON/grid_icon_08.png',
+  halat_cikarma_2: '/MENUIKON/grid_icon_30.png',
   halat_carpma_2: '/MENUIKON/grid_icon_32.png',
-  halat_bolme_2: '/MENUIKON/grid_icon_32.png',
-  halat_toplama_3: '/MENUIKON/grid_icon_32.png',
-  halat_cikarma_3: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_2: '/MENUIKON/grid_icon_03.png',
+  halat_toplama_3: '/MENUIKON/grid_icon_08.png',
+  halat_cikarma_3: '/MENUIKON/grid_icon_30.png',
   halat_carpma_3: '/MENUIKON/grid_icon_32.png',
-  halat_bolme_3: '/MENUIKON/grid_icon_32.png',
-  halat_toplama_4: '/MENUIKON/grid_icon_32.png',
-  halat_cikarma_4: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_3: '/MENUIKON/grid_icon_03.png',
+  halat_toplama_4: '/MENUIKON/grid_icon_08.png',
+  halat_cikarma_4: '/MENUIKON/grid_icon_30.png',
   halat_carpma_4: '/MENUIKON/grid_icon_32.png',
-  halat_bolme_4: '/MENUIKON/grid_icon_32.png',
+  halat_bolme_4: '/MENUIKON/grid_icon_03.png',
   balon_patlatma_mat: '/MENUIKON/grid_icon_35.png',
   matematik_hafiza: '/MENUIKON/grid_icon_06.png',
   hizli_islem_carki: '/MENUIKON/grid_icon_10.png',
@@ -2022,7 +2022,7 @@ export const TOPIC_3D_ICONS: Record<string, string> = {
   g3_ritmik_saymalar: '/MENUIKON/grid_icon_23.png',
 
   // 3. Sınıf Tek-Çift ve Örüntü
-  g3_tek_cift_nesne_toplami: '/MENUIKON/grid_icon_18.png',
+  g3_tek_cift_nesne_toplami: '/MENUIKON/grid_icon_27.png',
   g3_tek_cift_20ye_kadar_islemler: '/MENUIKON/grid_icon_26.png',
   g3_tek_cift_sayilar: '/MENUIKON/grid_icon_10.png',
   g3_tek_cift_islemler: '/MENUIKON/grid_icon_24.png',
@@ -6353,7 +6353,7 @@ export default function App() {
             {(() => {
               const uniformOptFontClass = getDynamicOptionFontClass(optionsList, 1, selectedGrade);
               const singleOptHeightClass = selectedGrade === 4
-                ? 'h-[49px] sm:h-[57px] md:h-[64px] lg:h-[71px] xl:h-[79px] 2xl:h-[86px] max-h-[49px] sm:max-h-[57px] md:max-h-[64px] lg:max-h-[71px] xl:max-h-[79px] 2xl:max-h-[86px] px-2 sm:px-3'
+                ? 'h-[37px] sm:h-[43px] md:h-[48px] lg:h-[53px] xl:h-[59px] 2xl:h-[64px] max-h-[37px] sm:max-h-[43px] md:max-h-[48px] lg:max-h-[53px] xl:max-h-[59px] 2xl:max-h-[64px] px-2 sm:px-3'
                 : (currentTopic === 'uzamsal_iliskiler' ? 'py-2 px-2.5 min-h-[48px] sm:min-h-[58px]' : 'py-3 sm:py-3.5 px-3 min-h-[68px] sm:min-h-[80px] md:min-h-[88px]');
 
               return optionsList.map((opt, idx) => {
@@ -6468,8 +6468,8 @@ export default function App() {
               const uniformOptFontClass = getDynamicOptionFontClass(p.shuffledOptions, playerCountMode, selectedGrade);
               const optHeightClasses = selectedGrade === 4
                 ? (playerCountMode === 3
-                    ? "h-[35px] sm:h-[40px] md:h-[46px] lg:h-[52px] xl:h-[57px] max-h-[35px] sm:max-h-[40px] md:max-h-[46px] lg:max-h-[52px] xl:max-h-[57px] px-1.5"
-                    : "h-[40px] sm:h-[51px] md:h-[58px] lg:h-[64px] xl:h-[72px] 2xl:h-[81px] max-h-[40px] sm:max-h-[51px] md:max-h-[58px] lg:max-h-[64px] xl:max-h-[72px] 2xl:max-h-[81px] px-2")
+                    ? "h-[26px] sm:h-[30px] md:h-[34px] lg:h-[39px] xl:h-[43px] max-h-[26px] sm:max-h-[30px] md:max-h-[34px] lg:max-h-[39px] xl:max-h-[43px] px-1.5"
+                    : "h-[30px] sm:h-[38px] md:h-[43px] lg:h-[48px] xl:h-[54px] 2xl:h-[61px] max-h-[30px] sm:max-h-[38px] md:max-h-[43px] lg:max-h-[48px] xl:max-h-[54px] 2xl:max-h-[61px] px-2")
                 : (playerCountMode === 3
                     ? "py-2 px-1.5 min-h-[48px] sm:min-h-[58px] md:min-h-[64px]"
                     : (currentTopic === 'uzamsal_iliskiler' ? "py-2 sm:py-2.5 px-2 min-h-[48px] sm:min-h-[58px]" : "py-3 sm:py-3.5 px-2.5 min-h-[58px] sm:min-h-[72px] md:min-h-[80px] lg:min-h-[86px]"));

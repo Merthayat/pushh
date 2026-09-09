@@ -30,18 +30,10 @@ function benzersizYanlislar(correct: number, adaylar: number[], minVal = 0): num
   return sonuc;
 }
 
-const renderHalatQuestionHTML = (islemStr: string, islemTuru: string, aciklama: string, renk: string) => `
-  <div class="flex flex-col items-center justify-center w-full h-full my-auto gap-2 sm:gap-2.5 py-1 text-center select-none">
-    <div class="flex items-center justify-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900/80 border border-amber-400/60 text-amber-300 font-black text-xs sm:text-sm tracking-wider uppercase shadow-md whitespace-nowrap" style="white-space: nowrap !important; text-wrap: nowrap !important;">
-      <span>🪢 HALAT ÇEKME DÜELLOSU</span>
-      <span class="text-white/70">|</span>
-      <span>${islemTuru}</span>
-    </div>
-    <div class="halat-islem-box px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3 rounded-2xl sm:rounded-3xl bg-gradient-to-r ${renk} text-white font-black text-xl xs:text-2xl sm:text-3xl md:text-4xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg shrink-0 inline-flex items-center justify-center" style="white-space: nowrap !important; text-wrap: nowrap !important; word-break: keep-all !important;">
+const renderHalatQuestionHTML = (islemStr: string, _islemTuru: string, _aciklama: string, renk: string) => `
+  <div class="flex flex-col items-center justify-center w-full h-full my-auto py-1 text-center select-none">
+    <div class="halat-islem-box px-5 py-3 sm:px-7 sm:py-3.5 md:px-9 md:py-4 rounded-2xl sm:rounded-3xl bg-gradient-to-r ${renk} text-white font-black text-2xl xs:text-3xl sm:text-4xl md:text-5xl border-2 sm:border-3 border-white shadow-[0_8px_25px_rgba(0,0,0,0.5)] whitespace-nowrap tracking-wide drop-shadow-lg shrink-0 inline-flex items-center justify-center" style="white-space: nowrap !important; text-wrap: nowrap !important; word-break: keep-all !important;">
       ${islemStr} = ?
-    </div>
-    <div class="text-xs xs:text-sm sm:text-base md:text-lg font-black text-white text-center leading-snug drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] max-w-lg px-2 whitespace-nowrap" style="white-space: nowrap !important; text-wrap: nowrap !important;">
-      ${aciklama}
     </div>
   </div>
 `;
